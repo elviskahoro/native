@@ -32,55 +32,6 @@ def docpage(main_content, toc_content):
         on_mount=[
             rx.call_script(
                 """
-                (() => {
-                    try {
-                        const DEFAULT_COMMAND = "buridan add";
-
-                        const get = (selector) => document.querySelector(selector);
-
-                        const setText = (selector, text) => {
-                            const el = get(selector);
-                            if (el) {
-                                el.innerText = text;
-                            }
-                        };
-
-                        let activeCommand = localStorage.getItem("buridan-command");
-
-                        if (!activeCommand) {
-                            activeCommand = DEFAULT_COMMAND;
-                            localStorage.setItem("buridan-command", activeCommand);
-                        }
-
-                        document.querySelectorAll(".command-prefix").forEach(el => {
-                            el.innerText = activeCommand;
-                        });
-
-                        document.querySelectorAll(".command-check").forEach(el => {
-                            el.innerText = "";
-                        });
-
-                        switch (activeCommand) {
-                            case "buridan add":
-                                setText("#command-option-cli .command-check", "✓");
-                                break;
-
-                            case "uv run buridan add":
-                                setText("#command-option-uv .command-check", "✓");
-                                break;
-
-                            case "python -m buridan add":
-                                setText("#command-option-module .command-check", "✓");
-                                break;
-                        }
-                    } catch (err) {
-                        console.error("Failed to initialize command selector:", err);
-                    }
-                })();
-                """,
-            ),
-            rx.call_script(
-                """
                 requestAnimationFrame(() => {
                     Prism.highlightAll();
                 });
