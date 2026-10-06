@@ -135,7 +135,10 @@ def render_token(cmd: str, raw_arg: str) -> rx.Component:
         # Placeholder for render_parse_error
         return rx.el.div(
             f"Error: Reference Target '{name}' not found",
-            class_name="text-destructive font-mono text-sm my-2 p-2 border border-destructive/20 bg-destructive/5 rounded",
+            class_name=(
+                "text-destructive font-mono text-sm my-2 p-2 "
+                "border border-destructive/20 bg-destructive/5 rounded"
+            ),
         )
 
     obj, _preferred_name = entry
@@ -209,3 +212,52 @@ def parse_and_render(content: str) -> list[rx.Component]:
         pieces.append(render_markdown_chunk(content[cursor:]))
 
     return pieces
+
+
+def _collect_headings(html: str, toc_data: list[dict]) -> None:
+    soup = BeautifulSoup(html, "html.parser")
+    for heading in soup.find_all(["h1", "h2"]):
+        text = heading.get_text().strip()
+        toc_data.append(
+            {
+                "text": text,
+                "id": heading.get("id") or text,
+                "level": int(heading.name[1]),
+            }
+        )
+
+
+def extract_toc(content: str) -> list[dict]:
+    """Build the in-page table of contents for a docs markdown body.
+
+    Headings are collected by rendering each markdown chunk between
+    --TOKEN-- delimiters with the same extensions used to render the page,
+    then parsing the resulting HTML for <h1>/<h2>. Rendering per-chunk (not
+    one full-document pass) keeps heading ids in lock-step with
+    parse_and_render: python-markdown's toc extension disambiguates duplicate
+    headings within a single markdown.markdown() call, so duplicates that
+    straddle a --TOKEN-- boundary get the same id here and on the rendered
+    page. fenced_code ensures '#' lines inside code blocks are never treated
+    as headings.
+    """
+    toc_data: list[dict] = []
+    cursor = 0
+
+    for match in _TOKEN_MATCH_RE.finditer(content):
+        start, end = match.span()
+        if start > cursor:
+            chunk = content[cursor:start]
+            if chunk.strip():
+                _collect_headings(
+                    markdown.markdown(chunk, extensions=_MD_EXTENSIONS), toc_data
+                )
+        cursor = end
+
+    if cursor < len(content):
+        chunk = content[cursor:]
+        if chunk.strip():
+            _collect_headings(
+                markdown.markdown(chunk, extensions=_MD_EXTENSIONS), toc_data
+            )
+
+    return toc_data
