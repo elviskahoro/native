@@ -49,7 +49,7 @@ def _create_markdown_toc_links(url: str, toc_data: list[dict]) -> rx.Component:
             rx.el.li(
                 rx.el.a(
                     entry["text"],
-                    href=f"#{entry['id'].lower().replace(' ', '-')}",
+                    href=f"#{entry['id']}",
                     class_name=(
                         "toc-link "
                         "cursor-pointer transition-colors duration-200 "
