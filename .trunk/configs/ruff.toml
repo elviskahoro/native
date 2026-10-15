@@ -1,13 +1,13 @@
 # Copied from the oss-linter-trunk plugin's exported configs/ruff.toml at
 # ref v0.2026.04.14.00.00 (the version gtm-sdk pins in its plugins.sources).
 # The plugin's export is the maintained copy: it renames the removed
-# `force-sort-with-sections` field to `force-sort-within-sections` (rejected
-# by ruff 0.16.8) and drops gtm-sdk's stale PLR0917 ignore and libs/dlt
-# per-file-ignores. Only deviation here: the tests/** S101 ignore (assert is
-# pytest's normal check mechanism, not a production safety bypass).
+# `force-sort-with-sections` field to `force-sort-within-sections` and drops
+# gtm-sdk's stale PLR0917 ignore and libs/dlt per-file-ignores. Only deviation
+# here: the tests/** S101 ignore (assert is pytest's normal check mechanism,
+# not a production safety bypass).
 # Note E501 (line length) is ignored -- the pre-existing codebase has a large
-# line-length backlog that is intentionally not being fixed yet (hold-the-line:
-# trunk check fails only on new issues).
+# line-length backlog that is intentionally not being fixed yet; touched-file
+# correctness is on the contributor (file-diff gating).
 [format]
 quote-style = "double"
 
@@ -103,7 +103,6 @@ ignore = [
 [lint.isort]
 case-sensitive = true
 combine-as-imports = true
-force-sort-within-sections = false
 force-wrap-aliases = true
 order-by-type = true
 

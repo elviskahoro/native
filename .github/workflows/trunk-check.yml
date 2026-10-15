@@ -9,11 +9,7 @@
 #   gates only on issues the queued PR introduces.
 # - push to main: checks the files changed in that push (post-merge net).
 #
-# All modes are new-issue detection (hold-the-line): the repo has a large
-# pre-existing lint backlog (docs + line-length; see .trunk/trunk.yaml), and
-# this gate fails only on issues a PR newly introduces. Do NOT set
-# `check-mode: all` here until that backlog is burned down -- a full-repo
-# check would fail every queue test and deadlock the merge queue.
+# All three modes are file-diff gated; touched-file correctness is on the contributor.
 #
 # The job name "Trunk Check" is a live status name referenced by
 # .trunk/trunk.yaml -> merge.required_statuses: renaming it breaks the queue.
