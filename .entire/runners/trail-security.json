@@ -1,0 +1,37 @@
+{
+  "id": "trail-security",
+  "display_name": "Security Review",
+  "enabled": true,
+  "scope": "trail",
+  "runtime": {
+    "kind": "prompt_runner",
+    "agent": "claude",
+    "timeout_ms": 300000,
+    "sandbox": {
+      "base_template": "claude",
+      "repo_token": "read"
+    }
+  },
+  "automation": {
+    "kind": "trail_prompt"
+  },
+  "prompt": {
+    "template": "You are a security risk evaluator for the Buridan Native framework (an open-source library of UI components users copy into their own apps, plus a docs site, docs build/export tooling, and a CLI). Analyze the changes on branch \"{{branch}}\" compared to \"{{base_branch}}\".\n\nRun `git diff origin/{{base_branch}}...HEAD`, then score **security risk** from 0 to 100 (review adversarially; higher = more suspicious or insecure).\n\nThe realistic attack surfaces in this repo are:\n- Injection: user-authored content (Markdown, frontmatter, code-block text, component props/examples) interpolated into generated HTML or the docs site without escaping — this code ships into users' apps.\n- CLI: new flags or code paths in cli/ that read/write outside expected paths, execute commands, or take arbitrary unvalidated input.\n- Secret leaks: credentials, API keys, or tokens added to code, docs, examples, or assets.\n- Dependency changes: new packages in reflex.lock or imports from unexpected sources.\n\nTypical component styling, behavior, and docs prose changes with none of the above score low (below 20).\n\nOutput ONLY this JSON object as the very last line of your response:\n\n{\"value\": <number 0-100>, \"rationale\": \"<1-2 sentence explanation>\"}"
+  },
+  "select": {
+    "trigger_types": [
+      "api",
+      "push"
+    ]
+  },
+  "output": {
+    "adapter": "last_json_line",
+    "result_type": "trail_monitor",
+    "trail_monitor": {
+      "key": "security",
+      "label": "Security",
+      "value_type": "percent",
+      "polarity": "lower_is_better"
+    }
+  }
+}

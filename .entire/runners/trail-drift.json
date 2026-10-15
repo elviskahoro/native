@@ -1,0 +1,37 @@
+{
+  "id": "trail-drift",
+  "display_name": "Drift Eval",
+  "enabled": true,
+  "scope": "trail",
+  "runtime": {
+    "kind": "prompt_runner",
+    "agent": "claude",
+    "timeout_ms": 300000,
+    "sandbox": {
+      "base_template": "claude",
+      "repo_token": "read"
+    }
+  },
+  "automation": {
+    "kind": "trail_prompt"
+  },
+  "prompt": {
+    "template": "You are a drift evaluator for the Buridan Native framework (Reflex-based UI components, docs site, and CLI). Analyze the changes on branch \"{{branch}}\" compared to \"{{base_branch}}\".\n\nRun `git diff origin/{{base_branch}}...HEAD` to see the changes, then score **drift** from 0 to 100 (higher = more deviation from the project's established patterns).\n\nEstablished patterns to measure against:\n- Components follow the existing component structure and naming in components/, designed to extend/override naturally rather than fork.\n- Every component has a docs/components/<component>.md page matching the structure of sibling pages; docs paths map to URLs with underscores converted to hyphens and the extension removed.\n- Docs pages use the existing token and frontmatter conventions (valid order values, tokens that resolve to real components).\n- Examples and demos import components from the same library paths as existing demos rather than re-implementing or bypassing them.\n- Existing components and patterns are preferred over new abstractions.\n\nScore bands: 0-20 = changes follow existing component/docs/CLI patterns; 30-60 = new component or docs page that diverges from sibling structure, missing required component docs, or examples importing around the library; 70+ = parallel re-implementation of an existing component, restructured docs/build conventions, or a new abstraction layer where an existing component fits.\n\nOutput ONLY this JSON object as the very last line of your response:\n\n{\"value\": <number 0-100>, \"rationale\": \"<1-2 sentence explanation>\"}"
+  },
+  "select": {
+    "trigger_types": [
+      "api",
+      "push"
+    ]
+  },
+  "output": {
+    "adapter": "last_json_line",
+    "result_type": "trail_monitor",
+    "trail_monitor": {
+      "key": "drift",
+      "label": "Drift",
+      "value_type": "percent",
+      "polarity": "lower_is_better"
+    }
+  }
+}
