@@ -46,10 +46,14 @@ categories = [
 def _gradient(id_: str, color: int) -> rx.Component:
     return rx.el.svg.linear_gradient(
         rx.el.svg.stop(
-            stop_color=f"var(--chart-{color})", offset="5%", stop_opacity=0.2
+            stop_color=f"var(--chart-{color})",
+            offset="5%",
+            stop_opacity=0.2,
         ),
         rx.el.svg.stop(
-            stop_color=f"var(--chart-{color})", offset="95%", stop_opacity=0.2
+            stop_color=f"var(--chart-{color})",
+            offset="95%",
+            stop_opacity=0.2,
         ),
         x1=0,
         x2=0,
@@ -90,7 +94,11 @@ def _mini_chart(key: str, color: int) -> rx.Component:
 
 
 def _kpi_mini_chart(
-    name: str, key: str, color: int, avg: float, suffix: str
+    name: str,
+    key: str,
+    color: int,
+    avg: float,
+    suffix: str,
 ) -> rx.Component:
     return card.root(
         rx.el.div(

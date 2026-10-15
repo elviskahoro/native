@@ -206,6 +206,17 @@ lint:
     - linters: [markdownlint, markdownlint-cli2]
       paths:
         - docs/**/*.mdx
+    # Generated copies are validated from their source docs; runtime typeset
+    # snippets are Markdown content, not authored documentation.
+    - linters: [markdownlint-cli2]
+      paths:
+        - assets/docs/**
+        - native/lib/typeset/**
+    # This test file has inline pytest parametrization lambdas where the
+    # trailing-comma autofixer conflicts with Ruff's formatter.
+    - linters: [add-trailing-comma]
+      paths:
+        - tests/test_generated_assets.py
     # Same rationale as the gtm-sdk reference: semgrep is slow and noisy on
     # non-source file types.
     - linters: [checkov, semgrep]

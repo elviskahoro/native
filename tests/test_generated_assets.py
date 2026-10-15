@@ -1,5 +1,5 @@
 """
-Tests to verify that all source markdown files in docs/ have been correctly
+Tests that verify all source markdown files in docs/ are correctly processed.
 processed into their expected outputs:
   - assets/docs/   → markdown files (underscores → hyphens)
   - assets/social/ → .webp social cards

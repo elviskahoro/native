@@ -541,7 +541,7 @@ def line_chart_footer_legend():
                 *[
                     rx.el.div(
                         rx.el.div(
-                            class_name=f"w-2.5 h-2.5 rounded-[2.5px] bg-chart-{index + 1}"
+                            class_name=f"w-2.5 h-2.5 rounded-[2.5px] bg-chart-{index + 1}",
                         ),
                         rx.el.p(device, class_name="text-sm text-foreground"),
                         class_name="flex flex-row items-center gap-x-2",
@@ -592,8 +592,8 @@ rx.recharts.line_chart(
 | Prop | Type | Default |
 | --- | --- | --- |
 | `data` | `list[dict]` |  |
-| `width` | `str | int` |  |
-| `height` | `str | int` |  |
+| `width` | `str \| int` |  |
+| `height` | `str \| int` |  |
 | `margin` | `dict` |  |
 
 ## line
@@ -617,7 +617,7 @@ rx.recharts.line(
 | `stroke` | `str` |  |
 | `stroke_width` | `int` |  |
 | `type_` | `str` | `"text"` |
-| `dot` | `bool | dict` | `True` |
+| `dot` | `bool \| dict` | `True` |
 | `active_dot` | `dict` |  |
 | `is_animation_active` | `bool` | `True` |
 
@@ -664,7 +664,7 @@ rx.recharts.x_axis(
 | `tick_size` | `int` |  |
 | `tick` | `dict` |  |
 | `min_tick_gap` | `int` |  |
-| `interval` | `str | int` |  |
+| `interval` | `str \| int` |  |
 
 ## y_axis
 

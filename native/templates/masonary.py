@@ -13,14 +13,7 @@ def masonry_card(func=None, *, label="General"):
 
         return div(
             inner_component,
-            class_name=" ".join(
-                [
-                    "break-inside-avoid",
-                    "w-full",
-                    "[&>*]:shadow-lg",
-                    "[&>*]:border-t-[0.85px] [&>*]:border-input/80",
-                ]
-            ),
+            class_name="break-inside-avoid w-full [&>*]:shadow-lg [&>*]:border-t-[0.85px] [&>*]:border-input/80",
         )
 
     return wrapper

@@ -36,7 +36,7 @@ def create_copy_button(content: str) -> tuple[Button, str]:
                 setTimeout(() => {{
                     icon.innerHTML = `{copy_icon_svg}`;
                 }}, 1500);
-            """
+            """,
         ),
     )
 

@@ -22,7 +22,7 @@ def get_file_comments(file_path: Path) -> list[tuple[int, str]]:
     return comments
 
 
-def test_no_comments_in_components():
+def test_no_comments_in_components() -> None:
     assert COMPONENTS_DIR.exists(), f"Target directory not found: {COMPONENTS_DIR}"
 
     # Recursively find all .py files, ignoring __pycache__ directories
