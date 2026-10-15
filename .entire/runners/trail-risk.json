@@ -1,0 +1,37 @@
+{
+  "id": "trail-risk",
+  "display_name": "Risk Eval",
+  "enabled": true,
+  "scope": "trail",
+  "runtime": {
+    "kind": "prompt_runner",
+    "agent": "claude",
+    "timeout_ms": 300000,
+    "sandbox": {
+      "base_template": "claude",
+      "repo_token": "read"
+    }
+  },
+  "automation": {
+    "kind": "trail_prompt"
+  },
+  "prompt": {
+    "template": "You are a risk evaluator for the Buridan Native framework (Reflex-based copy-paste UI components, docs site, docs build/export tooling, and CLI). Analyze the changes on branch \"{{branch}}\" compared to \"{{base_branch}}\".\n\nRun `git diff origin/{{base_branch}}...HEAD` to see the changes, then score **risk** from 0 to 100 (higher = more potential damage if something is wrong).\n\nWeigh these dimensions:\n- Docs build/export robustness (highest weight): changes to docs processing — token resolution, frontmatter parsing, sidebar/heading extraction, example counting — that can crash the entire site build on malformed input are high risk.\n- Public component API: changing or breaking documented component props or behavior (event-handler props, open/dismiss flags, theme/preset parameters). Users copy-paste this code directly into their apps, so silent behavior changes are high risk.\n- Stateful UI behavior: component-internal state sync (tab/selection highlight state, toggled indicators, focus handling, preset URL parameters) is medium risk — regressions here are subtle and demos may not catch them.\n- Docs/URL correctness: docs path changes that break the underscore-to-hyphen URL mapping, or component changes without a matching docs/components page, are medium risk.\n- Docs-only prose edits, asset updates, or purely additive examples: low risk.\n\nOutput ONLY this JSON object as the very last line of your response:\n\n{\"value\": <number 0-100>, \"rationale\": \"<1-2 sentence explanation>\"}"
+  },
+  "select": {
+    "trigger_types": [
+      "api",
+      "push"
+    ]
+  },
+  "output": {
+    "adapter": "last_json_line",
+    "result_type": "trail_monitor",
+    "trail_monitor": {
+      "key": "risk",
+      "label": "Risk",
+      "value_type": "percent",
+      "polarity": "lower_is_better"
+    }
+  }
+}

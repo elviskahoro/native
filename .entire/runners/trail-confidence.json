@@ -1,0 +1,37 @@
+{
+  "id": "trail-confidence",
+  "display_name": "Confidence Eval",
+  "enabled": true,
+  "scope": "trail",
+  "runtime": {
+    "kind": "prompt_runner",
+    "agent": "claude",
+    "timeout_ms": 300000,
+    "sandbox": {
+      "base_template": "claude",
+      "repo_token": "read"
+    }
+  },
+  "automation": {
+    "kind": "trail_prompt"
+  },
+  "prompt": {
+    "template": "You are a confidence evaluator for the Buridan Native framework (Reflex-based UI components, docs site, docs build/export tooling, and CLI). Analyze the changes on branch \"{{branch}}\" compared to \"{{base_branch}}\".\n\nRun `git diff origin/{{base_branch}}...HEAD` to see the changes, then score **confidence** from 0 to 100 (higher = more confident the changes are correct and well-tested).\n\nSignals to check in the diff:\n- Component behavior changes: is there matching coverage in tests/ (rendering, event handlers, state sync)? Untested component state changes lower confidence sharply — state-sync regressions are this repo's most common failure mode.\n- Docs build/export changes: malformed frontmatter (e.g. non-integer order values) or token references to nonexistent components crash the export. High confidence requires the diff to handle malformed input gracefully rather than only the happy path.\n- Docs content: do new/changed pages follow the URL mapping rules (underscores become hyphens, extension removed, /docs/ prefix preserved) and the structure of sibling docs pages?\n- New components or examples: do they follow existing component structure and import from the same library paths (e.g. charts via the framework's charts module) as sibling implementations?\n- CLI changes: are flags and examples kept consistent with the CLI documentation pages?\n- Pure prose/asset edits with no code paths: high confidence.\n\nOutput ONLY this JSON object as the very last line of your response:\n\n{\"value\": <number 0-100>, \"rationale\": \"<1-2 sentence explanation>\"}"
+  },
+  "select": {
+    "trigger_types": [
+      "api",
+      "push"
+    ]
+  },
+  "output": {
+    "adapter": "last_json_line",
+    "result_type": "trail_monitor",
+    "trail_monitor": {
+      "key": "confidence",
+      "label": "Confidence",
+      "value_type": "percent",
+      "polarity": "higher_is_better"
+    }
+  }
+}
