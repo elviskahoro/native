@@ -93,6 +93,32 @@ When information conflicts, use this priority:
 
 The Native documentation and source code are the source of truth.
 
+## Landing PRs
+
+PRs land through the Trunk Merge Queue, not the GitHub Merge button.
+
+- Submit: `trunk merge <pr-number>` (a number, not a URL or branch name).
+- Check once: `trunk merge status <pr-number>`. States: Queued, Testing,
+  Tests Passed, Merged. Report the state and stop. Never poll in a loop.
+- Never use `gh pr merge` or the GitHub Merge button. They bypass the queue.
+- Never use `--force`, `pause` or `resume`.
+- Leave priority at the default (`medium`). `urgent` and `high` are for
+  incidents and need an explicit reason from the user.
+- Failed or PENDING_FAILURE: PENDING_FAILURE may be a flake, so retry once.
+  Failed means push a fix to the PR branch and resubmit. Do not resubmit
+  blindly in a loop.
+- Auth failure: run `trunk login` once and retry.
+- Refuse to queue from main or a protected branch.
+- A `Closes #N` line in the PR body auto-closes the issue when the queue lands
+  the PR. Do not close the issue by hand beforehand.
+
+The queue gates on the statuses in `.trunk/trunk.yaml` →
+`merge.required_statuses` ("Trunk Check", "Unit tests", "Generate & Verify
+Docs and Social Cards"). All three workflows trigger on every PR to `main`
+and on the queue's `trunk-merge/**` test branches. The queue itself is
+created in the Trunk web app (app.trunk.io); do not attempt to configure it
+from the repo.
+
 ## Agent Skills
 
 Specialized agent skills are located at:

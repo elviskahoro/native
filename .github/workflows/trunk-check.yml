@@ -1,0 +1,46 @@
+# Lint gate for PRs and the Trunk Merge Queue. Ports the reference setup in
+# SanhedrinTech/gtm-sdk (.rwx/trunk-check.yml) to GitHub Actions via
+# trunk-io/trunk-action, which auto-detects the right mode per event:
+# - pull_request: checks the PR's changed files against the PR's exact base
+#   commit (not the moving tip of main) -- same as the reference's
+#   `trunk check --upstream="${BASE_SHA}" --ci` task.
+# - push to trunk-merge/**: the action's trunk_merge mode checks the queue's
+#   merge commit against HEAD^1 (the main side), so predictive queue testing
+#   gates only on issues the queued PR introduces.
+# - push to main: checks the files changed in that push (post-merge net).
+#
+# All three modes are file-diff gated; touched-file correctness is on the contributor.
+#
+# The job name "Trunk Check" is a live status name referenced by
+# .trunk/trunk.yaml -> merge.required_statuses: renaming it breaks the queue.
+name: Trunk Check
+on:
+  push:
+    branches:
+      - main
+      - trunk-merge/**
+  pull_request:
+    branches:
+      - main
+concurrency:
+  # Repo-scoped group: prefix with the workflow name so this never shares a
+  # group with another required workflow on the same PR (a shared group would
+  # cancel one required check against the other).
+  group: ${{ github.workflow }}-${{ github.head_ref || github.run_id }}
+  cancel-in-progress: true
+permissions: read-all
+jobs:
+  trunk_check:
+    name: Trunk Check
+    runs-on: ubuntu-latest
+    permissions:
+      checks: write # For trunk to post annotations
+      contents: read # For repo checkout
+    steps:
+      - name: Checkout
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+        with:
+          # Full history so trunk can resolve the PR base and merge commits.
+          fetch-depth: 0
+      - name: Trunk Code Quality
+        uses: trunk-io/trunk-action@04ba50e7658c81db7356da96657e6e77f220bfa3 # v1.3.1

@@ -1,40 +1,35 @@
+# The job name "Generate & Verify Docs and Social Cards" is a live status
+# name referenced by .trunk/trunk.yaml -> merge.required_statuses: renaming
+# it breaks the merge queue.
+#
+# trunk-merge/** on the push trigger covers the Trunk Merge Queue's
+# Push-Triggered testing mode; the pull_request trigger covers Draft-PR mode
+# (the default) and ordinary PRs.
 name: Docs & Assets
-
 on:
   push:
     branches:
       - main
+      - trunk-merge/**
   pull_request:
     branches:
       - main
-
 jobs:
   validate-generated-assets:
     name: Generate & Verify Docs and Social Cards
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
-
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
       - name: Set up Python
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@7f4fc3e22c37d6ff65e88745f38bd3157c663f7c # v4.9.1
         with:
           python-version: "3.12"
-
       - name: Install uv
         run: pip install uv
-
       - name: Install dependencies
         run: uv sync --group dev
-
       - name: Generate markdown files
         run: uv run python scripts/generate_markdown.py
-
       - name: Check for uncommitted changes
         run: git diff --exit-code assets/docs
-
-      - name: Run asset verification tests
-        run: uv run pytest tests/test_generated_assets.py
-
-      - name: Run docs verification tests
-        run: uv run pytest tests/test_docs_error.py

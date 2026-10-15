@@ -1,0 +1,14 @@
+# Copied from the gtm-sdk reference setup (.trunk/configs/.yamllint.yaml).
+# Deliberately minimal: GitHub Actions `on:` keys, long SHA-pinned action
+# refs, and comment style are all legal here; yamllint's default ruleset
+# (truthy, document-start, line-length, comments) rejects them.
+rules:
+  quoted-strings:
+    required: only-when-needed
+    extra-allowed: ["{|}"]
+  empty-values:
+    forbid-in-block-mappings: true
+    forbid-in-flow-mappings: true
+  key-duplicates: {}
+  octal-values:
+    forbid-implicit-octal: true
