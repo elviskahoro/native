@@ -1,0 +1,40 @@
+# Unit test gate for PRs and the Trunk Merge Queue. Runs the full pytest
+# suite on every PR targeting main and on the queue's trunk-merge/** test
+# branches. Before this workflow, only two of the three files in tests/ ran
+# in CI (inside validate-assets.yml); tests/test_clean_code.py -- which
+# enforces the no-comments-in-components convention -- ran nowhere.
+#
+# The job name "Unit tests" is a live status name referenced by
+# .trunk/trunk.yaml -> merge.required_statuses: renaming it breaks the queue.
+name: Unit tests
+on:
+  push:
+    branches:
+      - main
+      - trunk-merge/**
+  pull_request:
+    branches:
+      - main
+concurrency:
+  # Repo-scoped group: prefix with the workflow name so this never shares a
+  # group with another required workflow on the same PR (a shared group would
+  # cancel one required check against the other).
+  group: ${{ github.workflow }}-${{ github.head_ref || github.run_id }}
+  cancel-in-progress: true
+permissions:
+  contents: read
+jobs:
+  unit_tests:
+    name: Unit tests
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+      - name: Set up uv
+        uses: astral-sh/setup-uv@d4b2f3b6ecc6e67c4457f6d3e41ec42d3d0fcb86 # v5.4.2
+        with:
+          python-version: "3.12"
+      - name: Install dependencies
+        run: uv sync --group dev
+      - name: Run unit tests
+        run: uv run pytest tests/

@@ -1,0 +1,19 @@
+# Tach module boundary enforcement -- seeded empty.
+# Structure adapted from the gtm-sdk reference setup (tach.toml there maps
+# its full module graph with root_module = "forbid"). No modules are declared
+# here yet, so `tach check` is trivially green; declare modules and their
+# depends_on edges over time to start enforcing architecture boundaries.
+source_roots = ["."]
+exclude = [
+  "tests/**",
+  "docs/**",
+  "assets/**",
+  ".github/**",
+  ".web/**",
+  "frontend/**",
+  "tmp/**",
+  "worktrees/**",
+  ".venv/**",
+  "ai/**",
+]
+modules = []
