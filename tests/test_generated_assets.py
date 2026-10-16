@@ -77,7 +77,9 @@ _md_with_frontmatter = [f for f in _all_md if has_frontmatter(f)]
 
 class TestMarkdownGeneration:
     @pytest.mark.parametrize(
-        "md_file", _all_md, ids=lambda f: str(f.relative_to(DOCS_DIR))
+        "md_file",
+        _all_md,
+        ids=lambda f: str(f.relative_to(DOCS_DIR)),
     )
     def test_output_file_exists(self, md_file):
         """Every source .md file must have a corresponding generated output file."""
@@ -88,7 +90,9 @@ class TestMarkdownGeneration:
         )
 
     @pytest.mark.parametrize(
-        "md_file", _all_md, ids=lambda f: str(f.relative_to(DOCS_DIR))
+        "md_file",
+        _all_md,
+        ids=lambda f: str(f.relative_to(DOCS_DIR)),
     )
     def test_output_file_is_not_empty(self, md_file):
         """Generated markdown files must not be empty."""
@@ -100,7 +104,9 @@ class TestMarkdownGeneration:
         )
 
     @pytest.mark.parametrize(
-        "md_file", _all_md, ids=lambda f: str(f.relative_to(DOCS_DIR))
+        "md_file",
+        _all_md,
+        ids=lambda f: str(f.relative_to(DOCS_DIR)),
     )
     def test_no_unresolved_delimiters(self, md_file):
         """
@@ -171,7 +177,9 @@ class TestSocialCardGeneration:
         )
 
     @pytest.mark.parametrize(
-        "md_file", _md_with_frontmatter, ids=lambda f: str(f.relative_to(DOCS_DIR))
+        "md_file",
+        _md_with_frontmatter,
+        ids=lambda f: str(f.relative_to(DOCS_DIR)),
     )
     def test_doc_social_card_exists(self, md_file):
         """Every docs/ markdown file with frontmatter must have a .webp social card."""
@@ -182,7 +190,9 @@ class TestSocialCardGeneration:
         )
 
     @pytest.mark.parametrize(
-        "md_file", _md_with_frontmatter, ids=lambda f: str(f.relative_to(DOCS_DIR))
+        "md_file",
+        _md_with_frontmatter,
+        ids=lambda f: str(f.relative_to(DOCS_DIR)),
     )
     def test_doc_social_card_is_not_empty(self, md_file):
         """Social cards for docs pages must not be zero-byte files."""
@@ -194,7 +204,9 @@ class TestSocialCardGeneration:
         )
 
     @pytest.mark.parametrize(
-        "md_file", _md_with_frontmatter, ids=lambda f: str(f.relative_to(DOCS_DIR))
+        "md_file",
+        _md_with_frontmatter,
+        ids=lambda f: str(f.relative_to(DOCS_DIR)),
     )
     def test_doc_social_card_is_webp(self, md_file):
         """
