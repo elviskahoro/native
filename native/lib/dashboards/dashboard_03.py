@@ -179,7 +179,8 @@ def sidebar_footer():
         ),
         rx.el.div(
             rx.el.p(
-                "Maya Chen", class_name="text-sm font-medium leading-tight truncate"
+                "Maya Chen",
+                class_name="text-sm font-medium leading-tight truncate",
             ),
             rx.el.p(
                 "maya@acme.com",
@@ -226,8 +227,10 @@ def breadcrumb():
     for i, crumb in enumerate(BREADCRUMB_ITEMS):
         items.append(
             _breadcrumb_item(
-                crumb["label"], crumb["icon"], i == len(BREADCRUMB_ITEMS) - 1
-            )
+                crumb["label"],
+                crumb["icon"],
+                i == len(BREADCRUMB_ITEMS) - 1,
+            ),
         )
         if i < len(BREADCRUMB_ITEMS) - 1:
             items.append(rx.el.span("/", class_name="text-muted-foreground/50"))
@@ -269,7 +272,7 @@ def topbar():
             rx.el.button(
                 hi("Notification03Icon", class_name="size-4.5"),
                 rx.el.span(
-                    class_name="absolute top-1.5 right-1.5 size-1.5 rounded-full bg-foreground"
+                    class_name="absolute top-1.5 right-1.5 size-1.5 rounded-full bg-foreground",
                 ),
                 class_name="relative size-9 flex items-center justify-center rounded-lg hover:bg-accent shrink-0",
             ),
@@ -400,7 +403,8 @@ def main_header_row():
     return rx.el.div(
         rx.el.div(
             rx.el.h1(
-                "Welcome Back, Maya", class_name="text-3xl font-bold tracking-tight"
+                "Welcome Back, Maya",
+                class_name="text-3xl font-bold tracking-tight",
             ),
             rx.el.p(
                 "Here is what is happening across your workspace today.",

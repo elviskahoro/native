@@ -36,7 +36,9 @@ class CoreComponent(Component):
 
     @classmethod
     def set_class_name(
-        cls, default_class_name: str | Var[str], props: dict[str, Any]
+        cls,
+        default_class_name: str | Var[str],
+        props: dict[str, Any],
     ) -> None:
 
         if "render_" in props:
@@ -443,11 +445,12 @@ class TableRoot(Div, CoreComponent):
 
         table_props = {"class_name": ClassNames.TABLE}
         scroll_wrapper = rx.el.div(
-            Table.create(*children, **table_props), class_name=ClassNames.SCROLL
+            Table.create(*children, **table_props),
+            class_name=ClassNames.SCROLL,
         )
 
         props["on_mount"] = rx.call_script(
-            f"window.__dataTable.init({table_id!r}, {{pageSize: {page_size}}})"
+            f"window.__dataTable.init({table_id!r}, {{pageSize: {page_size}}})",
         )
 
         parts = [p for p in (toolbar, scroll_wrapper, pagination) if p is not None]
@@ -460,7 +463,11 @@ class TableRoot(Div, CoreComponent):
 class TableSearch(CoreComponent):
     @classmethod
     def create(
-        cls, *, for_table: str, placeholder: str = "Search\u2026", **props
+        cls,
+        *,
+        for_table: str,
+        placeholder: str = "Search\u2026",
+        **props,
     ) -> Component:
         props.setdefault("placeholder", placeholder)
         props["data-dt-search-for"] = for_table
@@ -598,26 +605,30 @@ def table_block() -> rx.Component:
                     table.header(
                         table.row(
                             table.head(
-                                "Description", class_name="pl-3 whitespace-nowrap"
+                                "Description",
+                                class_name="pl-3 whitespace-nowrap",
                             ),
                             table.head(
                                 "Category",
                                 class_name="hidden sm:table-cell whitespace-nowrap",
                             ),
                             table.head(
-                                "Qty", class_name="text-right whitespace-nowrap"
+                                "Qty",
+                                class_name="text-right whitespace-nowrap",
                             ),
                             table.head(
                                 "Unit",
                                 class_name="hidden text-right md:table-cell whitespace-nowrap",
                             ),
                             table.head(
-                                "Unit Price", class_name="text-right whitespace-nowrap"
+                                "Unit Price",
+                                class_name="text-right whitespace-nowrap",
                             ),
                             table.head(
-                                "Amount", class_name="pr-3 text-right whitespace-nowrap"
+                                "Amount",
+                                class_name="pr-3 text-right whitespace-nowrap",
                             ),
-                        )
+                        ),
                     ),
                     table.body(
                         *[
@@ -648,7 +659,7 @@ def table_block() -> rx.Component:
                                 ),
                             )
                             for item in LINE_ITEMS
-                        ]
+                        ],
                     ),
                     table.footer(
                         table.row(
@@ -669,7 +680,8 @@ def table_block() -> rx.Component:
                         ),
                         table.row(
                             *summary_label(
-                                "Total Due", "font-semibold text-foreground"
+                                "Total Due",
+                                "font-semibold text-foreground",
                             ),
                             table.cell(
                                 fmt(total),
@@ -742,18 +754,22 @@ def table_demo_two() -> rx.Component:
                         table.head("Project", class_name="hidden sm:table-cell"),
                         table.head("Method", class_name="hidden md:table-cell"),
                         table.head(
-                            "Due", sort_key="due", class_name="hidden md:table-cell"
+                            "Due",
+                            sort_key="due",
+                            class_name="hidden md:table-cell",
                         ),
                         table.head("Status"),
                         table.head(
-                            "Amount", sort_key="amount", class_name="text-right"
+                            "Amount",
+                            sort_key="amount",
+                            class_name="text-right",
                         ),
                         table.head(
                             rx.el.span("Actions", class_name="sr-only"),
                             class_name="w-10 pr-4",
                         ),
                         class_name="whitespace-nowrap",
-                    )
+                    ),
                 ),
                 table.body(*[render_row(inv) for inv in INVOICES]),
                 id="invoices-table",

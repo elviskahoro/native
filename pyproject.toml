@@ -7,26 +7,24 @@ dependencies = []
 
 readme = "cli/README.md"
 license = "MIT"
-authors = [
-    { name = "LineIndent", email = "line.indent@gmail.com" }
-]
+authors = [{ name = "LineIndent", email = "line.indent@gmail.com" }]
 keywords = [
-    "cli",
-    "ui",
-    "design-system",
-    "reflex",
-    "components",
-    "tailwind",
-    "base-ui"
+  "cli",
+  "ui",
+  "design-system",
+  "reflex",
+  "components",
+  "tailwind",
+  "base-ui",
 ]
 
 classifiers = [
-    "Programming Language :: Python :: 3",
-    "Programming Language :: Python :: 3.11",
-    "License :: OSI Approved :: MIT License",
-    "Operating System :: OS Independent",
-    "Topic :: Software Development :: Libraries",
-    "Topic :: Software Development :: Code Generators"
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.11",
+  "License :: OSI Approved :: MIT License",
+  "Operating System :: OS Independent",
+  "Topic :: Software Development :: Libraries",
+  "Topic :: Software Development :: Code Generators",
 ]
 
 [project.urls]
@@ -36,17 +34,17 @@ Issues = "https://github.com/LineIndent/native/issues"
 
 [dependency-groups]
 dev = [
-    "reflex==0.9.10.post1",
-    "pillow>=12.2.0",
-    "PyYAML>=6.0.3",
-    "questionary>=2.1.1",
-    "google-genai",
-    "beautifulsoup4>=4.15.0",
-    "markdown>=3.10.2",
-    "ruff>=0.15.22",
-    "black",
-    "pytest>=9.1.1",
-    "inquirerpy",
+  "reflex==0.9.10.post1",
+  "pillow>=12.2.0",
+  "PyYAML>=6.0.3",
+  "questionary>=2.1.1",
+  "google-genai",
+  "beautifulsoup4>=4.15.0",
+  "markdown>=3.10.2",
+  "ruff>=0.15.22",
+  "black",
+  "pytest>=9.1.1",
+  "inquirerpy",
 ]
 
 [tool.ruff]

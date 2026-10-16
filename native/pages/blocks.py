@@ -132,6 +132,6 @@ def blocks_page():
             requestAnimationFrame(() => {
                 Prism.highlightAll();
             });
-            """
+            """,
         ),
     )

@@ -19,7 +19,7 @@ def bubble_reactions_demo():
         ),
         bubble.root(
             bubble.content(
-                "Bold. Fine I'll add some tests. I'll let you know when they're done."
+                "Bold. Fine I'll add some tests. I'll let you know when they're done.",
             ),
             bubble.reactions(
                 rx.el.span("👀"),
@@ -32,7 +32,7 @@ def bubble_reactions_demo():
         ),
         bubble.root(
             bubble.content(
-                "Tests passed on the first try. All 142 of them. Looking good!"
+                "Tests passed on the first try. All 142 of them. Looking good!",
             ),
             bubble.reactions(
                 rx.el.span("🎉"),

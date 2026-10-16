@@ -20,7 +20,8 @@ def card_11() -> rx.Component:
         card.header(
             rx.el.div(
                 rx.el.p(
-                    "Transfer Funds", class_name="text-lg font-semibold text-foreground"
+                    "Transfer Funds",
+                    class_name="text-lg font-semibold text-foreground",
                 ),
                 rx.el.p(
                     "Move money between your connected accounts.",
@@ -63,7 +64,8 @@ def card_11() -> rx.Component:
                         ),
                         rx.el.select(
                             rx.el.option(
-                                "Main Checking (--8402) — $12,450.00", value="checking"
+                                "Main Checking (--8402) — $12,450.00",
+                                value="checking",
                             ),
                             rx.el.option(
                                 "Business Account (--3301) — $5,200.00",
@@ -116,7 +118,7 @@ def card_11() -> rx.Component:
                     class_name="w-full flex flex-col rounded-lg border border-input px-3",
                 ),
                 class_name="flex flex-col gap-y-4",
-            )
+            ),
         ),
         card.footer(
             button("Confirm Transfer", variant="default", class_name="w-full"),

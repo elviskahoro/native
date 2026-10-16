@@ -49,7 +49,7 @@ def attachment_image_demo():
                         attachment.action(
                             hi("Cancel01Icon"),
                             aria_label=f"Remove {image['name']}",
-                        )
+                        ),
                     ),
                     orientation="vertical",
                 )
