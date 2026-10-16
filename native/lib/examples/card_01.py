@@ -69,7 +69,7 @@ def card_01() -> rx.Component:
                     for field in social_fields
                 ],
                 class_name="w-full flex flex-col gap-y-3",
-            ),
+            )
         ),
         card.footer(
             button("Discard", variant="secondary"),

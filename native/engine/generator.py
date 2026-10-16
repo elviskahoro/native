@@ -1,7 +1,7 @@
 import os
 import re
 
-from native.engine import constants
+import native.engine.constants as constants
 from native.engine.parser import parse_and_render
 from native.engine.utils import parse_frontmatter
 
@@ -20,7 +20,7 @@ def generate_docs_library() -> list[constants.DocDataStruct]:
     for md_file in all_md_files:
         relative_path = md_file.relative_to(constants.DOCS_BASE_DIR)
         slug = "/".join(
-            [part.replace("_", "-") for part in relative_path.with_suffix("").parts],
+            [part.replace("_", "-") for part in relative_path.with_suffix("").parts]
         )
         slug_to_path_map[slug] = md_file
 
@@ -66,7 +66,7 @@ def generate_docs_library() -> list[constants.DocDataStruct]:
                     "text": heading_text,
                     "id": heading_text,
                     "level": level,
-                },
+                }
             )
 
         doc = constants.DocDataStruct(

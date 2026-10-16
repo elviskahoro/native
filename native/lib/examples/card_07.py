@@ -37,7 +37,7 @@ def card_07() -> rx.Component:
                     class_name="flex flex-col gap-y-2",
                 ),
                 class_name="flex flex-col gap-y-4",
-            ),
+            )
         ),
         card.footer(
             button("Close", variant="default"),

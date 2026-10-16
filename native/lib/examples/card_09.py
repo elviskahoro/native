@@ -16,7 +16,7 @@ def card_09() -> rx.Component:
             ),
             card.title("Connect Bank"),
             card.description(
-                "Link your payout method to receive monthly royalty distributions automatically.",
+                "Link your payout method to receive monthly royalty distributions automatically."
             ),
             class_name="flex flex-col items-center text-center",
         ),

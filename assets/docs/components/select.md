@@ -36,9 +36,7 @@ class CoreComponent(Component):
 
     @classmethod
     def set_class_name(
-        cls,
-        default_class_name: str | Var[str],
-        props: dict[str, Any],
+        cls, default_class_name: str | Var[str], props: dict[str, Any]
     ) -> None:
 
         if "render_" in props:
@@ -113,7 +111,7 @@ class HugeIcon(CoreComponent):
                 props[prop] = Var(
                     value,
                     _var_data=VarData(
-                        imports={CORE_ICONS_LIBRARY: [ImportVar(tag=value)]},
+                        imports={CORE_ICONS_LIBRARY: [ImportVar(tag=value)]}
                     ),
                 )
 
@@ -265,10 +263,7 @@ def select_optgroup() -> rx.Component:
             field.label("Ingredient", html_for="ingredient-select"),
             select(
                 select.option(
-                    "Select an ingredient",
-                    value="",
-                    disabled=True,
-                    hidden=True,
+                    "Select an ingredient", value="", disabled=True, hidden=True
                 ),
                 select.optgroup(
                     select.option("Apple", value="apple"),

@@ -10,10 +10,7 @@ def select_optgroup() -> rx.Component:
             field.label("Ingredient", html_for="ingredient-select"),
             select(
                 select.option(
-                    "Select an ingredient",
-                    value="",
-                    disabled=True,
-                    hidden=True,
+                    "Select an ingredient", value="", disabled=True, hidden=True
                 ),
                 select.optgroup(
                     select.option("Apple", value="apple"),

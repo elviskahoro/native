@@ -6,7 +6,7 @@ import reflex as rx
 
 @dataclass
 class DocDataStruct:
-    """The data structure for the generated doc page."""
+    """The data structure for the generated doc page"""
 
     url: str
     description: str

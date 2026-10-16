@@ -36,9 +36,7 @@ class CoreComponent(Component):
 
     @classmethod
     def set_class_name(
-        cls,
-        default_class_name: str | Var[str],
-        props: dict[str, Any],
+        cls, default_class_name: str | Var[str], props: dict[str, Any]
     ) -> None:
 
         if "render_" in props:
@@ -119,8 +117,11 @@ class RadioGroupItem(CoreComponent):
 
         input_props = {"name": name, "value": value}
         for key in list(props.keys()):
-            if key in ClassNames._KNOWN_INPUT_PROPS or key.startswith(
-                ("on_", "data-", "aria-"),
+            if (
+                key in ClassNames._KNOWN_INPUT_PROPS
+                or key.startswith("on_")
+                or key.startswith("data-")
+                or key.startswith("aria-")
             ):
                 input_props[key] = props.pop(key)
 
@@ -235,9 +236,7 @@ def radio_group_fieldset() -> rx.Component:
                         default_checked=(value == "monthly"),
                     ),
                     field.label(
-                        label,
-                        html_for=f"plan-{value}",
-                        class_name="font-normal",
+                        label, html_for=f"plan-{value}", class_name="font-normal"
                     ),
                     orientation="horizontal",
                 )

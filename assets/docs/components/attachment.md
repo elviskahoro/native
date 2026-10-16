@@ -36,9 +36,7 @@ class CoreComponent(Component):
 
     @classmethod
     def set_class_name(
-        cls,
-        default_class_name: str | Var[str],
-        props: dict[str, Any],
+        cls, default_class_name: str | Var[str], props: dict[str, Any]
     ) -> None:
 
         if "render_" in props:
@@ -478,7 +476,7 @@ def attachment_image_demo():
                         attachment.action(
                             hi("Cancel01Icon"),
                             aria_label=f"Remove {image['name']}",
-                        ),
+                        )
                     ),
                     orientation="vertical",
                 )
@@ -507,9 +505,8 @@ def attachment_states_demo():
             ),
             attachment.actions(
                 attachment.action(
-                    hi("Cancel01Icon"),
-                    aria_label="Remove selected-file.pdf",
-                ),
+                    hi("Cancel01Icon"), aria_label="Remove selected-file.pdf"
+                )
             ),
             state="idle",
         ),
@@ -523,7 +520,7 @@ def attachment_states_demo():
                 attachment.description("Uploading · 64%"),
             ),
             attachment.actions(
-                attachment.action(hi("Cancel01Icon"), aria_label="Cancel upload"),
+                attachment.action(hi("Cancel01Icon"), aria_label="Cancel upload")
             ),
             state="uploading",
         ),
@@ -535,9 +532,8 @@ def attachment_states_demo():
             ),
             attachment.actions(
                 attachment.action(
-                    hi("Cancel01Icon"),
-                    aria_label="Remove market-research.pdf",
-                ),
+                    hi("Cancel01Icon"), aria_label="Remove market-research.pdf"
+                )
             ),
             state="processing",
         ),
@@ -550,8 +546,7 @@ def attachment_states_demo():
             attachment.actions(
                 attachment.action(hi("RefreshIcon"), aria_label="Retry upload"),
                 attachment.action(
-                    hi("Cancel01Icon"),
-                    aria_label="Remove financial-model.xlsx",
+                    hi("Cancel01Icon"), aria_label="Remove financial-model.xlsx"
                 ),
             ),
             state="error",
@@ -564,9 +559,8 @@ def attachment_states_demo():
             ),
             attachment.actions(
                 attachment.action(
-                    hi("Cancel01Icon"),
-                    aria_label="Remove uploaded-report.pdf",
-                ),
+                    hi("Cancel01Icon"), aria_label="Remove uploaded-report.pdf"
+                )
             ),
             state="done",
         ),
@@ -635,9 +629,8 @@ def attachment_group_demo():
                     ),
                     attachment.actions(
                         attachment.action(
-                            hi("Cancel01Icon"),
-                            aria_label=f"Remove {item['name']}",
-                        ),
+                            hi("Cancel01Icon"), aria_label=f"Remove {item['name']}"
+                        )
                     ),
                     class_name="w-64",
                 )
@@ -668,8 +661,7 @@ def attachment_trigger_dialog_demo():
                 attachment.actions(
                     attachment.action(hi("Copy01Icon"), aria_label="Copy link"),
                     attachment.action(
-                        hi("Cancel01Icon"),
-                        aria_label="Remove research-summary.pdf",
+                        hi("Cancel01Icon"), aria_label="Remove research-summary.pdf"
                     ),
                 ),
                 dialog.trigger(attachment.trigger(link=False)),
@@ -679,7 +671,7 @@ def attachment_trigger_dialog_demo():
                 dialog.title("research-summary.pdf"),
                 dialog.description(
                     "The attachment trigger fills the card and opens the dialog, "
-                    "while the actions stay independently clickable above it.",
+                    "while the actions stay independently clickable above it."
                 ),
                 class_name="max-w-md rounded-2xl",
             ),
@@ -811,7 +803,7 @@ A full-card overlay that activates the attachment. Renders a `rx.el.button` by d
 | Prop         | Type                  | Default | Description                                                                   |
 | ------------ | --------------------- | ------- | ----------------------------------------------------------------------------- |
 | `link`       | `bool`         | `False`  | If set, renders an anchor (`rx.el.a`) instead of a button.                        |
-| `aria_label` | `str \| None`        | `None`  | Accessibility label for screen readers. Required when no visible text exists. |
+| `aria_label` | `str | None`         | `None`  | Accessibility label for screen readers. Required when no visible text exists. |
 | `class_name` | `str`                 | `""`    | Additional CSS classes applied to the trigger.                                |
 
 

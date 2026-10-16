@@ -2,7 +2,7 @@ import reflex as rx
 
 from components.ui.button import button
 
-ADD_SWATCHES_JS = r"""
+ADD_SWATCHES_JS = """
 (function() {
     function injectSwatches() {
         const block = document.getElementById("get-css-theme");
@@ -37,10 +37,7 @@ APP_CONFIG = """app = rx.App(stylesheets=[globals.css])"""
 
 
 def get_code_section(
-    title: str,
-    description: str,
-    component: rx.Component,
-    has_copy: bool = False,
+    title: str, description: str, component: rx.Component, has_copy: bool = False
 ):
 
     if has_copy:
@@ -92,14 +89,14 @@ def get_code():
             title="2. Tailwind Plugins",
             description="Copy the following plugins into your rxconfig.py file",
             component=rx.el.pre(
-                rx.el.code(PLUGIN_STRING, class_name="language-python w-full"),
+                rx.el.code(PLUGIN_STRING, class_name="language-python w-full")
             ),
         ),
         get_code_section(
             title="3. App Config",
             description="Import the globals.css into your app. Adjust path as needed.",
             component=rx.el.pre(
-                rx.el.code(APP_CONFIG, class_name="language-python w-full"),
+                rx.el.code(APP_CONFIG, class_name="language-python w-full")
             ),
         ),
         class_name="w-full h-full p-4 overflow-y-scroll overscroll-y-none flex flex-col gap-y-6 scrollbar-none",

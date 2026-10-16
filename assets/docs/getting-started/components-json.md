@@ -72,7 +72,7 @@ Records the theme preset currently applied to your project.
 
 This section is written by `buridan apply --preset <ID>` and fully overwritten (not merged) on every subsequent `apply`, it always reflects only the most recently applied preset.
 
-## theme.preset
+### theme.preset
 
 The raw preset ID from the [theme builder](/docs/getting-started/cli#create), exactly as passed to `--preset`. This is the source of truth for the rest of the fields below, since it fully encodes the theme, it's the most reliable value to reference if you ever need to reconstruct or re-apply the same theme programmatically.
 
@@ -84,27 +84,27 @@ The raw preset ID from the [theme builder](/docs/getting-started/cli#create), ex
 }
 ```
 
-## theme.baseId
+### theme.baseId
 
 The base theme (background, foreground, and neutral tones) the preset is built on.
 
-## theme.colorId
+### theme.colorId
 
 The accent color palette applied on top of the base theme.
 
-## theme.chartId
+### theme.chartId
 
 The color palette used for chart-specific CSS variables (`--chart-1` through `--chart-5`, etc.). This can differ from `colorId` if the preset uses a separate chart palette.
 
-## theme.styleId
+### theme.styleId
 
 The component style variant (e.g. spacing, shadow, and border conventions) the preset applies.
 
-## theme.fontId
+### theme.fontId
 
 The font family applied by the preset.
 
-## theme.radius
+### theme.radius
 
 The border-radius value applied by the preset, e.g. `"0.5rem"`. Omitted from `components.json` if the preset doesn't override the style's own default radius.
 

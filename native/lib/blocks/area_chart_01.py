@@ -107,7 +107,7 @@ def area_chart_01():
                     rx.el.li(
                         rx.el.div(
                             rx.el.span(
-                                class_name=f"w-1 h-6 shrink-0 rounded-sm bg-{color}",
+                                class_name=f"w-1 h-6 shrink-0 rounded-sm bg-{color}"
                             )
                             if color
                             else None,

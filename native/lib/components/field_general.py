@@ -137,7 +137,7 @@ def field_demo() -> rx.Component:
                 field.set(
                     field.legend("Billing Address"),
                     field.description(
-                        "The billing address associated with your payment method",
+                        "The billing address associated with your payment method"
                     ),
                     field.group(
                         field.root(
@@ -152,7 +152,7 @@ def field_demo() -> rx.Component:
                                 class_name="font-normal",
                             ),
                             orientation="horizontal",
-                        ),
+                        )
                     ),
                 ),
                 field.set(
@@ -164,15 +164,15 @@ def field_demo() -> rx.Component:
                                 placeholder="Add any additional comments",
                                 class_name="resize-none",
                             ),
-                        ),
-                    ),
+                        )
+                    )
                 ),
                 field.root(
                     button("Submit", type="submit"),
                     button("Cancel", variant="outline", type="button"),
                     orientation="horizontal",
                 ),
-            ),
+            )
         ),
         class_name="w-full max-w-md my-10",
     )

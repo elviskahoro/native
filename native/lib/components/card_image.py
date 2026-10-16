@@ -21,7 +21,7 @@ def card_image() -> rx.Component:
             ),
             card.title("Design systems meetup"),
             card.description(
-                "A practical talk on component APIs, accessibility, and shipping faster.",
+                "A practical talk on component APIs, accessibility, and shipping faster."
             ),
         ),
         card.footer(

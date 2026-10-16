@@ -69,7 +69,7 @@ def card_06() -> rx.Component:
                     class_name="w-full flex flex-col gap-y-2",
                 ),
                 class_name="w-full flex flex-col gap-y-4",
-            ),
+            )
         ),
         card.footer(
             button("Send Invites", class_name="w-full"),

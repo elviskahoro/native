@@ -1,13 +1,14 @@
 import glob
 import os
 
-from native.engine import constants
+import native.engine.constants as constants
 from native.engine.utils import parse_frontmatter
 
 
 # --- Method: Generate doc routes/urls ---
 def generate_doc_routes(section_folder, base_path) -> list[dict]:
-    """Generates routes for a documentation section by recursively reading
+    """
+    Generates routes for a documentation section by recursively reading
     frontmatter from markdown files.
 
     Args:

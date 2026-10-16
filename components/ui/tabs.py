@@ -45,9 +45,7 @@ class TabsRoot(Div, CoreComponent):
         props["data-value"] = default_value
 
         return super().create(
-            *children,
-            class_name=cn(ClassNames.ROOT, custom_classes),
-            **props,
+            *children, class_name=cn(ClassNames.ROOT, custom_classes), **props
         )
 
 
@@ -61,9 +59,7 @@ class TabsList(Div, CoreComponent):
         props["data-variant"] = variant
 
         return super().create(
-            *children,
-            class_name=cn(ClassNames.LIST, custom_classes),
-            **props,
+            *children, class_name=cn(ClassNames.LIST, custom_classes), **props
         )
 
 

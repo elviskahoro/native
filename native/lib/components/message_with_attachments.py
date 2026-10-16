@@ -23,7 +23,7 @@ def message_with_attachment():
                 bubble.root(
                     bubble.content(
                         "Here's the image. Can you add it to the PDF? "
-                        "Use it for the cover page.",
+                        "Use it for the cover page."
                     ),
                 ),
             ),
@@ -33,7 +33,7 @@ def message_with_attachment():
             message.content(
                 bubble.root(
                     bubble.content(
-                        "Done. Here's the PDF with the image added as the cover page.",
+                        "Done. Here's the PDF with the image added as the cover page."
                     ),
                     variant="muted",
                 ),

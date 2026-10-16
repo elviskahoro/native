@@ -8,10 +8,7 @@ from native.templates.navbar import navbar
 
 
 def layout_decorator(
-    title: str,
-    description: str,
-    ctas: list | None = None,
-    logos: list | None = None,
+    title: str, description: str, ctas: list | None = None, logos: list | None = None
 ) -> Callable[[Callable[..., Section]], Callable[..., Main]]:
 
     def decorator(func):

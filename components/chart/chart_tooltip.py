@@ -23,9 +23,9 @@ class _ChartTooltip:
         is_animation_active: bool = False,
         separator: str = "",
         cursor: bool = False,
-        item_style: dict | None = None,
-        label_style: dict | None = None,
-        content_style: dict | None = None,
+        item_style: dict = {},
+        label_style: dict = {},
+        content_style: dict = {},
     ) -> rx.Component:
         defaults = {
             "is_animation_active": is_animation_active,
@@ -39,14 +39,14 @@ class _ChartTooltip:
                     "justifyContent": "space-between",
                     "textTransform": "capitalize",
                 },
-                item_style or {},
+                item_style,
             ),
             "label_style": _deep_merge(
                 {
                     "display": "none" if label == "hide" else "flex",
                     "fontWeight": "500",
                 },
-                label_style or {},
+                label_style,
             ),
             "content_style": _deep_merge(
                 {
@@ -56,7 +56,7 @@ class _ChartTooltip:
                     "padding": "0.25rem 0.65rem",
                     "position": "relative",
                 },
-                content_style or {},
+                content_style,
             ),
         }
 

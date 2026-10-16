@@ -40,4 +40,4 @@ rx.el.button(
 )
 ```
 
->Custom JavaScript code in your Reflex app presents a maintenance challenge, as it will be harder to debug and may be unstable across Reflex versions. Prefer to use the Python API whenever possible and file an issue if you need additional functionality that is not currently provided.
+>Custom Javascript code in your Reflex app presents a maintenance challenge, as it will be harder to debug and may be unstable across Reflex versions. Prefer to use the Python API whenever possible and file an issue if you need additional functionality that is not currently provided.

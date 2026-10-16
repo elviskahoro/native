@@ -24,9 +24,7 @@ def radio_group_fieldset() -> rx.Component:
                         default_checked=(value == "monthly"),
                     ),
                     field.label(
-                        label,
-                        html_for=f"plan-{value}",
-                        class_name="font-normal",
+                        label, html_for=f"plan-{value}", class_name="font-normal"
                     ),
                     orientation="horizontal",
                 )

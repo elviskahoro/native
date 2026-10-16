@@ -332,12 +332,11 @@ class TableRoot(Div, CoreComponent):
 
         table_props = {"class_name": ClassNames.TABLE}
         scroll_wrapper = rx.el.div(
-            Table.create(*children, **table_props),
-            class_name=ClassNames.SCROLL,
+            Table.create(*children, **table_props), class_name=ClassNames.SCROLL
         )
 
         props["on_mount"] = rx.call_script(
-            f"window.__dataTable.init({table_id!r}, {{pageSize: {page_size}}})",
+            f"window.__dataTable.init({table_id!r}, {{pageSize: {page_size}}})"
         )
 
         parts = [p for p in (toolbar, scroll_wrapper, pagination) if p is not None]
@@ -350,11 +349,7 @@ class TableRoot(Div, CoreComponent):
 class TableSearch(CoreComponent):
     @classmethod
     def create(
-        cls,
-        *,
-        for_table: str,
-        placeholder: str = "Search\u2026",
-        **props,
+        cls, *, for_table: str, placeholder: str = "Search\u2026", **props
     ) -> Component:
         props.setdefault("placeholder", placeholder)
         props["data-dt-search-for"] = for_table

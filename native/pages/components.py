@@ -168,7 +168,7 @@ def no_results():
                       const termEl = document.getElementById('no-results-term');
                       if (termEl) termEl.textContent = '';
                     })()
-                    """,
+                    """
                 ),
             ),
             class_name="flex w-full max-w-sm min-w-0 flex-col items-center gap-2.5 text-xs text-balance",
@@ -217,7 +217,7 @@ def filter_script(value: Var) -> Var:
   const termEl = document.getElementById('no-results-term');
   if (termEl) termEl.textContent = '"' + term + '"';
 }})({value})
-""",
+"""
     )
 
 

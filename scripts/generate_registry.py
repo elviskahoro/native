@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
-"""generate_registry.py.
+"""
+generate_registry.py
 
 Regenerates `registry/components.py` (COMPONENT_REGISTRY) by scanning the
 actual source tree and parsing real import statements -- instead of
@@ -60,8 +61,7 @@ def _unique_name(stem: str, rel_path: str, seen: dict[str, str]) -> str:
 
 
 def build_component_index(
-    repo_root: Path,
-    files: list[Path],
+    repo_root: Path, files: list[Path]
 ) -> dict[str, ComponentFile]:
     by_name: dict[str, ComponentFile] = {}
     seen_stems: dict[str, str] = {}
@@ -116,9 +116,7 @@ def find_dependencies(comp: ComponentFile, module_lookup: dict[str, str]) -> set
         if isinstance(node, ast.ImportFrom):
             if node.level and node.level > 0:
                 base = resolve_relative_module(
-                    comp.package_dotted,
-                    node.level,
-                    node.module,
+                    comp.package_dotted, node.level, node.module
                 )
             else:
                 base = node.module or ""
@@ -143,9 +141,7 @@ def find_dependencies(comp: ComponentFile, module_lookup: dict[str, str]) -> set
 
 
 def find_package_aliases(
-    repo_root: Path,
-    roots: list[str],
-    module_lookup: dict[str, str],
+    repo_root: Path, roots: list[str], module_lookup: dict[str, str]
 ) -> dict[str, str]:
     """Versioned components (e.g. a `button/` folder containing v1.py/v2.py)
     need an `__init__.py` that re-exports one version, e.g.:
@@ -181,8 +177,7 @@ def find_package_aliases(
 
             try:
                 tree = ast.parse(
-                    init_path.read_text(encoding="utf-8"),
-                    filename=str(init_path),
+                    init_path.read_text(encoding="utf-8"), filename=str(init_path)
                 )
             except SyntaxError as e:
                 print(
@@ -197,9 +192,7 @@ def find_package_aliases(
 
                 if node.level and node.level > 0:
                     base = resolve_relative_module(
-                        package_dotted,
-                        node.level,
-                        node.module,
+                        package_dotted, node.level, node.module
                     )
                 else:
                     base = node.module or ""
@@ -225,8 +218,7 @@ def build_registry(repo_root: Path, roots: list[str]) -> dict[str, ComponentFile
     files = discover_files(repo_root, roots)
     if not files:
         print(
-            "No component files found -- check your --roots argument.",
-            file=sys.stderr,
+            "No component files found -- check your --roots argument.", file=sys.stderr
         )
         sys.exit(1)
 
@@ -285,8 +277,7 @@ def render_registry(by_name: dict[str, ComponentFile]) -> str:
 
 def main() -> None:
     parser = argparse.ArgumentParser(
-        description=__doc__,
-        formatter_class=argparse.RawDescriptionHelpFormatter,
+        description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter
     )
     parser.add_argument("--roots", nargs="+", default=DEFAULT_ROOTS)
     parser.add_argument("--out", default=DEFAULT_OUT)
@@ -296,8 +287,7 @@ def main() -> None:
     repo_root = Path(__file__).resolve().parent.parent
 
     print(
-        f"Scanning: {', '.join(args.roots)} (repo root: {repo_root})",
-        file=sys.stderr,
+        f"Scanning: {', '.join(args.roots)} (repo root: {repo_root})", file=sys.stderr
     )
     by_name = build_registry(repo_root, args.roots)
     rendered = render_registry(by_name)

@@ -12,7 +12,7 @@ def message_with_actions():
             message.content(
                 bubble.root(
                     bubble.content(
-                        "The install failure is coming from the workspace package.",
+                        "The install failure is coming from the workspace package."
                     ),
                     variant="muted",
                 ),

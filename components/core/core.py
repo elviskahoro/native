@@ -21,9 +21,7 @@ class CoreComponent(Component):
 
     @classmethod
     def set_class_name(
-        cls,
-        default_class_name: str | Var[str],
-        props: dict[str, Any],
+        cls, default_class_name: str | Var[str], props: dict[str, Any]
     ) -> None:
 
         if "render_" in props:

@@ -39,9 +39,7 @@ def card_spacing() -> rx.Component:
                     variant="outline",
                     size="sm",
                     class_name=rx.cond(
-                        selected_card_spacing.value == item["value"],
-                        "!bg-muted",
-                        "",
+                        selected_card_spacing.value == item["value"], "!bg-muted", ""
                     ),
                     on_click=selected_card_spacing.set_value(item["value"]),
                 )
@@ -98,8 +96,8 @@ def card_spacing() -> rx.Component:
                             class_name="grid gap-2",
                         ),
                         class_name="flex flex-col gap-6",
-                    ),
-                ),
+                    )
+                )
             ),
             card.footer(
                 button("Login", type="submit", class_name="w-full"),

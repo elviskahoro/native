@@ -36,9 +36,7 @@ class CoreComponent(Component):
 
     @classmethod
     def set_class_name(
-        cls,
-        default_class_name: str | Var[str],
-        props: dict[str, Any],
+        cls, default_class_name: str | Var[str], props: dict[str, Any]
     ) -> None:
 
         if "render_" in props:
@@ -127,7 +125,7 @@ class DialogTrigger(CoreComponent):
                     if (dlg) dlg.showModal();
                 }}, true);
             }})()
-            """,
+            """
         )
         return rx.el.div(*children, **props)
 
@@ -167,7 +165,7 @@ class DialogPopup(Div, CoreComponent):
                         if (e.target === dlg) dlg.close();
                     }});
                 }})()
-                """,
+                """
             )
             if existing_on_mount is not None:
                 events = (
@@ -207,7 +205,7 @@ class DialogClose(CoreComponent):
                     if (dlg) dlg.close();
                 }}, true);
             }})()
-            """,
+            """
         )
         return rx.el.div(*children, **props)
 
@@ -275,7 +273,7 @@ def dialog_close_button() -> rx.Component:
             dialog.header(
                 dialog.title("Share link"),
                 dialog.description(
-                    "Anyone who has this link will be able to view this.",
+                    "Anyone who has this link will be able to view this."
                 ),
             ),
             rx.el.div(
@@ -300,7 +298,7 @@ def dialog_close_button() -> rx.Component:
                     variant="ghost",
                     size="icon-sm",
                     class_name=dialog.class_names.CLOSE_ICON,
-                ),
+                )
             ),
             class_name="sm:max-w-md",
         ),
@@ -321,7 +319,7 @@ def dialog_no_close_button() -> rx.Component:
             dialog.header(
                 dialog.title("No Close Button"),
                 dialog.description(
-                    "This dialog doesn't have a close button in the top-right corner.",
+                    "This dialog doesn't have a close button in the top-right corner."
                 ),
             ),
         ),
@@ -342,7 +340,7 @@ def dialog_sticky_footer() -> rx.Component:
             dialog.header(
                 dialog.title("Sticky Footer"),
                 dialog.description(
-                    "This dialog has a sticky footer that stays visible while the content scrolls.",
+                    "This dialog has a sticky footer that stays visible while the content scrolls."
                 ),
             ),
             rx.el.div(
@@ -370,7 +368,7 @@ def dialog_sticky_footer() -> rx.Component:
                     variant="ghost",
                     size="icon-sm",
                     class_name=dialog.class_names.CLOSE_ICON,
-                ),
+                )
             ),
         ),
     )

@@ -13,7 +13,7 @@ def dialog_close_button() -> rx.Component:
             dialog.header(
                 dialog.title("Share link"),
                 dialog.description(
-                    "Anyone who has this link will be able to view this.",
+                    "Anyone who has this link will be able to view this."
                 ),
             ),
             rx.el.div(
@@ -38,7 +38,7 @@ def dialog_close_button() -> rx.Component:
                     variant="ghost",
                     size="icon-sm",
                     class_name=dialog.class_names.CLOSE_ICON,
-                ),
+                )
             ),
             class_name="sm:max-w-md",
         ),

@@ -36,9 +36,7 @@ class CoreComponent(Component):
 
     @classmethod
     def set_class_name(
-        cls,
-        default_class_name: str | Var[str],
-        props: dict[str, Any],
+        cls, default_class_name: str | Var[str], props: dict[str, Any]
     ) -> None:
 
         if "render_" in props:
@@ -293,10 +291,8 @@ textarea = TextAreaComponent.create
 from typing import Literal
 
 from reflex.components.component import ComponentNamespace
-from reflex_components_core.el import (
-    Div as ElDiv,
-    Span as ElSpan,
-)
+from reflex_components_core.el import Div as ElDiv
+from reflex_components_core.el import Span as ElSpan
 
 from ..core.core import CoreComponent, cn
 from .button import button
@@ -459,8 +455,7 @@ class InputGroupTextarea(CoreComponent):
     def create(cls, *children, **props):
         props["data_slot"] = "input-group-control"
         props["class_name"] = cn(
-            ClassNames.CONTROL_TEXTAREA,
-            props.get("class_name", ""),
+            ClassNames.CONTROL_TEXTAREA, props.get("class_name", "")
         )
 
         return textarea(*children, **props)
@@ -548,7 +543,7 @@ def input_group_block_start() -> rx.Component:
                         align="block-start",
                     ),
                     class_name="h-auto",
-                ),
+                )
             ),
             field.description("Header positioned above the input."),
             orientation="vertical",
@@ -573,7 +568,7 @@ def input_group_block_start() -> rx.Component:
                         ),
                         align="block-start",
                     ),
-                ),
+                )
             ),
             field.description("Header positioned above the textarea."),
             orientation="vertical",
@@ -602,7 +597,7 @@ def input_group_block_end() -> rx.Component:
                         align="block-end",
                     ),
                     class_name="h-auto",
-                ),
+                )
             ),
             field.description("Footer positioned below the input."),
             orientation="vertical",
@@ -625,7 +620,7 @@ def input_group_block_end() -> rx.Component:
                         ),
                         align="block-end",
                     ),
-                ),
+                )
             ),
             field.description("Footer positioned below the textarea."),
             orientation="vertical",
@@ -760,7 +755,7 @@ def input_group_button() -> rx.Component:
                         rx.set_clipboard("https://ui.buridan.dev/"),
                     ],
                     on_mouse_down=rx.call_function(
-                        _input_copy.set_value(False),
+                        _input_copy.set_value(False)
                     ).debounce(1500),
                 ),
                 align="inline-end",

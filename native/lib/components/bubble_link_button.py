@@ -16,7 +16,7 @@ def bubble_link_button_demo():
                         "I forgot my password",
                         on_click=rx.toast("You clicked forgot password"),
                         class_name="w-full text-left",
-                    ),
+                    )
                 ),
                 variant="tinted",
                 align="end",
@@ -27,7 +27,7 @@ def bubble_link_button_demo():
                         "I need help with my subscription",
                         on_click=rx.toast("You clicked help with subscription"),
                         class_name="w-full text-left",
-                    ),
+                    )
                 ),
                 variant="tinted",
                 align="end",
@@ -37,10 +37,10 @@ def bubble_link_button_demo():
                     rx.el.button(
                         "Something else. Talk to a human.",
                         on_click=rx.toast(
-                            "You clicked something else. Talk to a human.",
+                            "You clicked something else. Talk to a human."
                         ),
                         class_name="w-full text-left",
-                    ),
+                    )
                 ),
                 variant="tinted",
                 align="end",

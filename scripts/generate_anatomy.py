@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
-"""generate_anatomy.py.
+"""
+generate_anatomy.py
 
 Regenerates app/www/anatomy.py (the ANATOMY dict your parser reads) from
 real, hand-authored, importable source files in app/www/anatomy_src/.
@@ -77,8 +78,7 @@ def load_registry(repo_root: Path) -> dict:
 
 def extract_composition_source(path: Path) -> str:
     """Parse the file and return the exact source text of the
-    `COMPOSITION = ...` right-hand side, preserving original formatting.
-    """
+    `COMPOSITION = ...` right-hand side, preserving original formatting."""
     text = path.read_text(encoding="utf-8")
     tree = ast.parse(text, filename=str(path))
 
@@ -88,18 +88,15 @@ def extract_composition_source(path: Path) -> str:
         ):
             segment = ast.get_source_segment(text, node.value)
             if segment is None:
-                msg = f"Could not extract source for COMPOSITION in {path}"
-                raise ValueError(msg)
+                raise ValueError(f"Could not extract source for COMPOSITION in {path}")
             return segment
 
-    msg = f"No top-level `COMPOSITION = ...` assignment found in {path}"
-    raise ValueError(msg)
+    raise ValueError(f"No top-level `COMPOSITION = ...` assignment found in {path}")
 
 
 def validate_by_importing(path: Path, repo_root: Path) -> None:
     """Actually import the file so Python builds the real component tree.
-    Raises if a part doesn't exist / a call is malformed / etc.
-    """
+    Raises if a part doesn't exist / a call is malformed / etc."""
     module_name = f"_anatomy_validate_{path.stem}"
     spec = importlib.util.spec_from_file_location(module_name, path)
     module = importlib.util.module_from_spec(spec)
@@ -110,8 +107,7 @@ def validate_by_importing(path: Path, repo_root: Path) -> None:
         sys.path.pop(0)
 
     if not hasattr(module, "COMPOSITION"):
-        msg = f"{path} has no COMPOSITION after import"
-        raise ValueError(msg)
+        raise ValueError(f"{path} has no COMPOSITION after import")
 
 
 def discover_files(src_dir: Path) -> list[Path]:
@@ -138,8 +134,7 @@ def render_anatomy(entries: dict[str, str]) -> str:
 
 def main() -> None:
     parser = argparse.ArgumentParser(
-        description=__doc__,
-        formatter_class=argparse.RawDescriptionHelpFormatter,
+        description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter
     )
     parser.add_argument(
         "--src",

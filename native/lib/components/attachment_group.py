@@ -33,9 +33,8 @@ def attachment_group_demo():
                     ),
                     attachment.actions(
                         attachment.action(
-                            hi("Cancel01Icon"),
-                            aria_label=f"Remove {item['name']}",
-                        ),
+                            hi("Cancel01Icon"), aria_label=f"Remove {item['name']}"
+                        )
                     ),
                     class_name="w-64",
                 )

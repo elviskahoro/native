@@ -150,11 +150,9 @@ class FieldSeparator(elements.Div):
             inner_elements.append(
                 elements.Span(
                     *children,
-                    **{
-                        "data-slot": "field-separator-content",
-                        "class_name": "relative mx-auto block w-fit bg-background px-2 text-muted-foreground",
-                    },
-                ),
+                    data_slot="field-separator-content",
+                    class_name="relative mx-auto block w-fit bg-background px-2 text-muted-foreground",
+                )
             )
         return super().create(*inner_elements, **props)
 

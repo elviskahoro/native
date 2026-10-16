@@ -56,7 +56,7 @@ def card_05() -> rx.Component:
             rx.el.div(
                 *[menu_item(i) for i in items],
                 class_name="w-full flex flex-col gap-y-2",
-            ),
+            )
         ),
         class_name="mx-auto w-full max-w-sm",
     )

@@ -36,9 +36,7 @@ class CoreComponent(Component):
 
     @classmethod
     def set_class_name(
-        cls,
-        default_class_name: str | Var[str],
-        props: dict[str, Any],
+        cls, default_class_name: str | Var[str], props: dict[str, Any]
     ) -> None:
 
         if "render_" in props:
@@ -307,7 +305,7 @@ def frame_no_border():
         frame.header(
             frame.title("No Outer Border"),
             frame.description(
-                "This frame uses variant='ghost' to remove the outer border.",
+                "This frame uses variant='ghost' to remove the outer border."
             ),
         ),
         frame.panel(

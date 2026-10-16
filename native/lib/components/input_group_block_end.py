@@ -19,7 +19,7 @@ def input_group_block_end() -> rx.Component:
                         align="block-end",
                     ),
                     class_name="h-auto",
-                ),
+                )
             ),
             field.description("Footer positioned below the input."),
             orientation="vertical",
@@ -42,7 +42,7 @@ def input_group_block_end() -> rx.Component:
                         ),
                         align="block-end",
                     ),
-                ),
+                )
             ),
             field.description("Footer positioned below the textarea."),
             orientation="vertical",

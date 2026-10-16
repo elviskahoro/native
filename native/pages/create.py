@@ -46,7 +46,8 @@ def _theme_select(
     icon: rx.Component | None = None,
     swatch: bool = False,
 ) -> rx.Component:
-    """swatch=True: a single live color dot next to the label (id=f"{id_}-swatch"),
+    """
+    swatch=True: a single live color dot next to the label (id=f"{id_}-swatch"),
       kept in sync by theme-preview.js. Which CSS token it reflects is
       decided per-select in the JS layer, not here — base-theme-select
       shows --accent, color-theme-select shows the effective --primary,
@@ -102,7 +103,7 @@ def _theme_select(
 def open_preset() -> rx.Component:
     return dialog.root(
         dialog.trigger(
-            button("Open Preset", variant="outline", class_name="justify-center"),
+            button("Open Preset", variant="outline", class_name="justify-center")
         ),
         dialog.popup(
             dialog.header(
@@ -143,13 +144,13 @@ def open_preset() -> rx.Component:
 def reset_confirm() -> rx.Component:
     return dialog.root(
         dialog.trigger(
-            button("Reset", type="button", class_name="w-full", variant="destructive"),
+            button("Reset", type="button", class_name="w-full", variant="destructive")
         ),
         dialog.popup(
             dialog.header(
                 dialog.title("Reset Theme"),
                 dialog.description(
-                    "This will discard your current customizations and return to the default preset.",
+                    "This will discard your current customizations and return to the default preset."
                 ),
             ),
             dialog.footer(
@@ -191,7 +192,7 @@ def _sidebar_desktop():
                 class_name="w-full",
                 on_click=rx.call_script(
                     'const el = document.getElementById("toggle-wrapper"); '
-                    'el.dataset.show = el.dataset.show === "true" ? "false" : "true";',
+                    'el.dataset.show = el.dataset.show === "true" ? "false" : "true";'
                 ),
             ),
             class_name="p-3 bg-card/20",
@@ -216,20 +217,16 @@ def _sidebar_desktop():
                 _theme_select(
                     "color-theme-select",
                     "Color theme",
-                    [
-                        {"id": "__match_base__", "label": BASE_THEMES[0]["label"]},
-                        *COLOR_THEMES,
-                    ],
+                    [{"id": "__match_base__", "label": BASE_THEMES[0]["label"]}]
+                    + COLOR_THEMES,
                     "__match_base__",
                     swatch=True,
                 ),
                 _theme_select(
                     "chart-color-select",
                     "Chart colors",
-                    [
-                        {"id": "__match_base__", "label": BASE_THEMES[0]["label"]},
-                        *COLOR_THEMES,
-                    ],
+                    [{"id": "__match_base__", "label": BASE_THEMES[0]["label"]}]
+                    + COLOR_THEMES,
                     "__match_base__",
                     swatch=True,
                 ),
@@ -237,7 +234,7 @@ def _sidebar_desktop():
             _theme_select(
                 "radius-select",
                 "Radius",
-                [{"id": "__default__", "label": "Default"}, *RADII_OPTIONS],
+                [{"id": "__default__", "label": "Default"}] + RADII_OPTIONS,
                 "__default__",
                 icon=hi("SquareRoundCornerIcon"),
             ),
@@ -300,7 +297,7 @@ def preview_space():
                             lambda: card.root(
                                 card.content(area_chart_with_gradient()),
                                 class_name="mx-auto w-full max-w-sm",
-                            ),
+                            )
                         )(),
                         card_01(),
                         card_02(),
@@ -313,7 +310,7 @@ def preview_space():
                             lambda: card.root(
                                 card.content(bar_chart_multiple()),
                                 class_name="mx-auto w-full max-w-sm",
-                            ),
+                            )
                         )(),
                         card_08(),
                         card_09(),
@@ -326,10 +323,21 @@ def preview_space():
                             lambda: card.root(
                                 card.content(line_chart_footer_legend()),
                                 class_name="mx-auto w-full max-w-sm",
-                            ),
+                            )
                         )(),
                         card_15(),
-                        class_name="preview-theme mx-auto columns-1 sm:columns-3 md:columns-3 lg:columns-4 gap-10 space-y-10",
+                        class_name=" ".join(
+                            [
+                                "preview-theme",
+                                "mx-auto",
+                                "columns-1",
+                                "sm:columns-3",
+                                "md:columns-3",
+                                "lg:columns-4",
+                                "gap-10",
+                                "space-y-10",
+                            ]
+                        ),
                     ),
                     class_name="sm:min-w-[1600px] w-full",
                 ),
@@ -399,14 +407,14 @@ def create_page():
             }};
             // if (window.preview) window.preview.applyAll();
             if (window.preview) window.preview.syncAll();
-            """,
+            """
             ),
             rx.call_script(
                 """
             requestAnimationFrame(() => {
                 Prism.highlightAll();
             });
-            """,
+            """
             ),
         ],
     )

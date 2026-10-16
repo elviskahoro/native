@@ -58,7 +58,7 @@ Semantic tokens allow:
 
 The styling stack:
 
-```text
+```
 CSS Variables
       ↓
 Theme Tokens

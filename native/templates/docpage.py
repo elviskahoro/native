@@ -77,14 +77,14 @@ def docpage(main_content, toc_content):
                         console.error("Failed to initialize command selector:", err);
                     }
                 })();
-                """,
+                """
             ),
             rx.call_script(
                 """
                 requestAnimationFrame(() => {
                     Prism.highlightAll();
                 });
-                """,
+                """
             ),
         ],
     )

@@ -24,10 +24,7 @@ from native.templates.navbar import navbar
 
 
 def _typeset_select(
-    id_: str,
-    label: str,
-    options: list[dict],
-    default_id: str,
+    id_: str, label: str, options: list[dict], default_id: str
 ) -> rx.Component:
     return rx.el.div(
         rx.el.div(
@@ -57,30 +54,18 @@ def _sidebar_desktop():
     return rx.el.aside(
         rx.el.div(
             _typeset_select(
-                "measure-select",
-                "Measure",
-                MEASURE_OPTIONS,
-                DEFAULT_MEASURE_ID,
+                "measure-select", "Measure", MEASURE_OPTIONS, DEFAULT_MEASURE_ID
             ),
             _typeset_select(
-                "heading-select",
-                "Heading",
-                HEADING_BODY_FONTS,
-                DEFAULT_HEADING_FONT_ID,
+                "heading-select", "Heading", HEADING_BODY_FONTS, DEFAULT_HEADING_FONT_ID
             ),
             _typeset_select(
-                "body-select",
-                "Body",
-                HEADING_BODY_FONTS,
-                DEFAULT_BODY_FONT_ID,
+                "body-select", "Body", HEADING_BODY_FONTS, DEFAULT_BODY_FONT_ID
             ),
             _typeset_select("mono-select", "Mono", MONO_FONTS, DEFAULT_MONO_FONT_ID),
             _typeset_select("size-select", "Size", SIZE_OPTIONS, DEFAULT_SIZE_ID),
             _typeset_select(
-                "leading-select",
-                "Leading",
-                LEADING_OPTIONS,
-                DEFAULT_LEADING_ID,
+                "leading-select", "Leading", LEADING_OPTIONS, DEFAULT_LEADING_ID
             ),
             _typeset_select("flow-select", "Flow", FLOW_OPTIONS, DEFAULT_FLOW_ID),
             class_name=(
@@ -110,7 +95,7 @@ def _sidebar_desktop():
                     """
                     const el = document.getElementById("typeset-toggle-wrapper");
                     el.dataset.show = el.dataset.show === "true" ? "false" : "true";
-                    """,
+                    """
                 ),
                 id="typeset-code-button",
                 type="button",
@@ -179,7 +164,7 @@ def _sample_content() -> rx.Component:
                         type="button",
                         variant="ghost",
                         on_click=rx.call_script(
-                            f'document.getElementById("typeset-preview-wrapper").dataset.active = "{i}";',
+                            f'document.getElementById("typeset-preview-wrapper").dataset.active = "{i}";'
                         ),
                         class_name=(
                             "inline-flex shrink-0 items-center justify-center whitespace-nowrap outline-none "
@@ -261,14 +246,14 @@ def typeset_page():
                     window.typesetPreview.applyAll();
                     window.typesetPreview.renderCodeBlocks();
                 }}
-                """,
+                """
             ),
             rx.call_script(
                 """
                 requestAnimationFrame(() => {
                     if (window.Prism) Prism.highlightAll();
                 });
-                """,
+                """
             ),
         ],
     )

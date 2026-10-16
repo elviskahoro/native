@@ -22,9 +22,7 @@ def checkbox_group() -> rx.Component:
                     default_checked=True,
                 ),
                 field.label(
-                    "Hard disks",
-                    html_for="hard-disks",
-                    class_name="font-normal",
+                    "Hard disks", html_for="hard-disks", class_name="font-normal"
                 ),
                 orientation="horizontal",
             ),
@@ -35,9 +33,7 @@ def checkbox_group() -> rx.Component:
                     default_checked=True,
                 ),
                 field.label(
-                    "External disks",
-                    html_for="ext-disks",
-                    class_name="font-normal",
+                    "External disks", html_for="ext-disks", class_name="font-normal"
                 ),
                 orientation="horizontal",
             ),
@@ -59,9 +55,7 @@ def checkbox_group() -> rx.Component:
                     id="servers",
                 ),
                 field.label(
-                    "Connected servers",
-                    html_for="servers",
-                    class_name="font-normal",
+                    "Connected servers", html_for="servers", class_name="font-normal"
                 ),
                 orientation="horizontal",
             ),

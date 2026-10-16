@@ -7,8 +7,7 @@ from components.ui.menu import menu
 def menu_shortcuts() -> rx.Component:
     return menu.root(
         menu.trigger(
-            "Workspace Actions Menu",
-            class_name=button_variants(variant="outline"),
+            "Workspace Actions Menu", class_name=button_variants(variant="outline")
         ),
         menu.content(
             menu.item("New Tab", menu.shortcut("⌘T")),

@@ -1,5 +1,6 @@
 from reflex_components_core.el import Section, a, div, img, section
 
+from components.core.hugeicon import hi
 from components.ui.avatar import avatar
 from components.ui.button import button
 from native.lib.examples.card_01 import card_01
@@ -50,7 +51,7 @@ from native.templates.layout import layout_decorator
                 ),
                 avatar.fallback("RD"),
             ),
-        ),
+        )
     ],
 )
 def landing_page() -> Section:
@@ -69,7 +70,19 @@ def landing_page() -> Section:
         card_11(),
         card_12(),
         card_13(),
-        class_name="mx-auto max-w-[96rem] columns-[320px] px-7 gap-8 space-y-8 sm:mask-[linear-gradient(to_bottom,black_65%,transparent_100%)] sm:mask-size-[100%_100%] sm:mask-repeat-no-repeat",
+        class_name=" ".join(
+            [
+                "mx-auto",
+                "max-w-[96rem]",
+                "columns-[320px]",
+                "px-7",
+                "gap-8",
+                "space-y-8",
+                "sm:mask-[linear-gradient(to_bottom,black_65%,transparent_100%)]",
+                "sm:mask-size-[100%_100%]",
+                "sm:mask-repeat-no-repeat",
+            ]
+        ),
     )
 
     landing_mobile = div(

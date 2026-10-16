@@ -153,20 +153,18 @@ def main_kpi_section():
 
 def main_chart_section():
     return rx.el.div(
-        bar_chart_02(),
-        class_name="w-full border border-input/90 rounded-2xl p-4",
+        bar_chart_02(), class_name="w-full border border-input/90 rounded-2xl p-4"
     )
 
 
 def render_status_badge(status: str) -> rx.Component:
     config = STATUS_CONFIG.get(
-        status,
-        {"variant": "default", "dot": "bg-muted-foreground"},
+        status, {"variant": "default", "dot": "bg-muted-foreground"}
     )
 
     return badge(
         rx.el.span(
-            class_name=f"inline-block size-1.5 shrink-0 rounded-lg {config['dot']}",
+            class_name=f"inline-block size-1.5 shrink-0 rounded-lg {config['dot']}"
         ),
         status,
         variant=config["variant"],
@@ -190,7 +188,7 @@ def render_row(inv: dict) -> rx.Component:
             rx.el.span(
                 inv["id"],
                 class_name="font-mono text-xs text-muted-foreground py-2",
-            ),
+            )
         ),
         table.cell(
             rx.el.div(
@@ -273,7 +271,7 @@ def main_table_section():
                         sort_key="amount",
                         class_name="text-right",
                     ),
-                ),
+                )
             ),
             table.body(*[render_row(inv) for inv in INVOICES]),
             id="invoices-table",
@@ -325,8 +323,7 @@ def sidebar_footer():
         ),
         rx.el.div(
             rx.el.p(
-                "Avery Cole",
-                class_name="text-sm font-medium leading-tight truncate",
+                "Avery Cole", class_name="text-sm font-medium leading-tight truncate"
             ),
             rx.el.p(
                 "avery@acme.com",

@@ -614,7 +614,7 @@ def bar_chart_multiple_tracks():
                 *[
                     rx.el.div(
                         rx.el.div(
-                            class_name=f"h-3 w-3 rounded-sm bg-chart-{index + 1}",
+                            class_name=f"h-3 w-3 rounded-sm bg-chart-{index + 1}"
                         ),
                         rx.el.p(device, class_name="text-xs text-foreground"),
                         class_name="flex flex-row items-center gap-x-2",
@@ -665,8 +665,8 @@ rx.recharts.bar_chart(
 | Prop | Type | Default |
 | --- | --- | --- |
 | `data` | `list[dict]` |  |
-| `width` | `str \| int` |  |
-| `height` | `str \| int` |  |
+| `width` | `str | int` |  |
+| `height` | `str | int` |  |
 | `margin` | `dict` |  |
 | `layout` | `str` | `"horizontal"` |
 
@@ -689,7 +689,7 @@ rx.recharts.bar(
 | `fill` | `str` |  |
 | `stroke` | `str` |  |
 | `stroke_width` | `int` |  |
-| `radius` | `int \| list` |  |
+| `radius` | `int | list` |  |
 | `stack_id` | `str` |  |
 | `is_animation_active` | `bool` | `True` |
 
@@ -736,7 +736,7 @@ rx.recharts.x_axis(
 | `tick_line` | `bool` | `True` |
 | `tick_size` | `int` |  |
 | `tick` | `dict` |  |
-| `interval` | `str \| int` |  |
+| `interval` | `str | int` |  |
 
 ## y_axis
 

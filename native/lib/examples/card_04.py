@@ -77,7 +77,7 @@ def card_04() -> rx.Component:
             rx.el.div(
                 *[goal_item(g) for g in savings_goals],
                 class_name="w-full flex flex-col gap-y-3",
-            ),
+            )
         ),
         card.footer(
             rx.el.p(

@@ -5,11 +5,11 @@ COMPOSITION = table.root(
     table.header(
         table.row(
             table.head(),
-        ),
+        )
     ),
     table.body(
         table.row(
             table.cell(),
-        ),
+        )
     ),
 )

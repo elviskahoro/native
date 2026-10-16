@@ -36,9 +36,7 @@ class CoreComponent(Component):
 
     @classmethod
     def set_class_name(
-        cls,
-        default_class_name: str | Var[str],
-        props: dict[str, Any],
+        cls, default_class_name: str | Var[str], props: dict[str, Any]
     ) -> None:
 
         if "render_" in props:
@@ -113,7 +111,7 @@ class HugeIcon(CoreComponent):
                 props[prop] = Var(
                     value,
                     _var_data=VarData(
-                        imports={CORE_ICONS_LIBRARY: [ImportVar(tag=value)]},
+                        imports={CORE_ICONS_LIBRARY: [ImportVar(tag=value)]}
                     ),
                 )
 
@@ -187,8 +185,11 @@ class CheckboxRoot(CoreComponent):
 
         input_props = {}
         for key in list(props.keys()):
-            if key in ClassNames._KNOWN_INPUT_PROPS or key.startswith(
-                ("on_", "data-", "aria-"),
+            if (
+                key in ClassNames._KNOWN_INPUT_PROPS
+                or key.startswith("on_")
+                or key.startswith("data-")
+                or key.startswith("aria-")
             ):
                 input_props[key] = props.pop(key)
 
@@ -272,7 +273,7 @@ def checkbox_description() -> rx.Component:
                     html_for="terms-checkbox-desc",
                 ),
                 field.description(
-                    "By clicking this checkbox, you agree to the terms and conditions.",
+                    "By clicking this checkbox, you agree to the terms and conditions."
                 ),
             ),
             orientation="horizontal",
@@ -333,9 +334,7 @@ def checkbox_group() -> rx.Component:
                     default_checked=True,
                 ),
                 field.label(
-                    "Hard disks",
-                    html_for="hard-disks",
-                    class_name="font-normal",
+                    "Hard disks", html_for="hard-disks", class_name="font-normal"
                 ),
                 orientation="horizontal",
             ),
@@ -346,9 +345,7 @@ def checkbox_group() -> rx.Component:
                     default_checked=True,
                 ),
                 field.label(
-                    "External disks",
-                    html_for="ext-disks",
-                    class_name="font-normal",
+                    "External disks", html_for="ext-disks", class_name="font-normal"
                 ),
                 orientation="horizontal",
             ),
@@ -370,9 +367,7 @@ def checkbox_group() -> rx.Component:
                     id="servers",
                 ),
                 field.label(
-                    "Connected servers",
-                    html_for="servers",
-                    class_name="font-normal",
+                    "Connected servers", html_for="servers", class_name="font-normal"
                 ),
                 orientation="horizontal",
             ),

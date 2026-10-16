@@ -16,7 +16,7 @@ def bubble_with_variants():
         ),
         bubble.root(
             bubble.content(
-                "This one is muted. It uses a lower emphasis color for the chat bubble.",
+                "This one is muted. It uses a lower emphasis color for the chat bubble."
             ),
             bubble.reactions(
                 rx.el.span("👍"),
@@ -27,7 +27,7 @@ def bubble_with_variants():
         ),
         bubble.root(
             bubble.content(
-                "This one is tinted. The tint is a softer color derived from the primary color.",
+                "This one is tinted. The tint is a softer color derived from the primary color."
             ),
             variant="tinted",
             align="end",

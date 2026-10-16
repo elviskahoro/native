@@ -36,9 +36,7 @@ class CoreComponent(Component):
 
     @classmethod
     def set_class_name(
-        cls,
-        default_class_name: str | Var[str],
-        props: dict[str, Any],
+        cls, default_class_name: str | Var[str], props: dict[str, Any]
     ) -> None:
 
         if "render_" in props:
@@ -113,7 +111,7 @@ class HugeIcon(CoreComponent):
                 props[prop] = Var(
                     value,
                     _var_data=VarData(
-                        imports={CORE_ICONS_LIBRARY: [ImportVar(tag=value)]},
+                        imports={CORE_ICONS_LIBRARY: [ImportVar(tag=value)]}
                     ),
                 )
 
@@ -269,7 +267,7 @@ def accordion_basic():
                     rx.el.p("- Saturn's rings have fascinated scientists for years."),
                     rx.el.p("- The Mars Rover is studying the planet's surface."),
                     rx.el.p(
-                        "- NASA's Artemis program aims to return humans to the Moon.",
+                        "- NASA's Artemis program aims to return humans to the Moon."
                     ),
                     rx.el.p("- Solar missions help us understand space weather."),
                 ),

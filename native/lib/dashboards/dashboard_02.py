@@ -89,8 +89,7 @@ def sidebar_footer():
         ),
         rx.el.div(
             rx.el.p(
-                "Avery Cole",
-                class_name="text-sm font-medium leading-tight truncate",
+                "Avery Cole", class_name="text-sm font-medium leading-tight truncate"
             ),
             rx.el.p(
                 "avery@acme.com",
@@ -249,8 +248,7 @@ def main():
             rx.el.div(
                 rx.el.div(
                     rx.el.h1(
-                        "Overview",
-                        class_name="text-2xl font-semibold tracking-tight",
+                        "Overview", class_name="text-2xl font-semibold tracking-tight"
                     ),
                     rx.el.p(
                         "Here is what is happening across Acme today.",

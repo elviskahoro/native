@@ -1,4 +1,5 @@
-"""Preset codec — ported directly from theme-preview.js (the actual, tested
+"""
+Preset codec — ported directly from theme-preview.js (the actual, tested
 encoder your web theme builder uses), NOT reconstructed from scratch. The
 CLI has to decode exactly what the browser tool produces, so this needs to
 match bit-for-bit, not just be "a reasonable scheme." Verified against real
@@ -39,8 +40,7 @@ def _compute_shifts(bits: dict, order: list[str]) -> dict:
 
 SHIFT_V1 = _compute_shifts(BITS_V1, ["font", "color", "base", "radius", "style"])
 SHIFT_V2 = _compute_shifts(
-    BITS_V2,
-    ["font", "color", "chart", "base", "radius", "style"],
+    BITS_V2, ["font", "color", "chart", "base", "radius", "style"]
 )
 
 
@@ -66,11 +66,12 @@ def decode_seed(
     radii_options: list[dict],
     font_registry: list[dict],
 ) -> dict | None:
-    """Returns: baseId, colorId, chartId, styleId, fontId, radius.
+    """
+    Returns: baseId, colorId, chartId, styleId, fontId, radius.
     colorId/chartId are None when inheriting. radius is None when
     inheriting from the active style's own --radius — NOT a hardcoded
     literal — since "b0" means "everything default, including the style's
-    own native radius," not "override radius to some fixed value.".
+    own native radius," not "override radius to some fixed value."
     """
     if not seed:
         return None

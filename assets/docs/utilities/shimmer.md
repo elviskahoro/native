@@ -170,12 +170,10 @@ Use `shimmer-color-<color>` to set the highlight color explicitly. It accepts th
 def shimmer_color():
     return rx.el.div(
         rx.el.p(
-            "Generating response",
-            class_name="shimmer shimmer-color-blue-500/60 w-fit",
+            "Generating response", class_name="shimmer shimmer-color-blue-500/60 w-fit"
         ),
         rx.el.p(
-            "Generating response",
-            class_name="shimmer shimmer-color-[#378ADD] w-fit",
+            "Generating response", class_name="shimmer shimmer-color-[#378ADD] w-fit"
         ),
         class_name="flex flex-col items-center gap-2 text-sm text-muted-foreground",
     )
@@ -195,8 +193,7 @@ def shimmer_duration():
         ),
         rx.el.div(
             rx.el.p(
-                "Generating response...",
-                class_name="shimmer shimmer-duration-1000",
+                "Generating response...", class_name="shimmer shimmer-duration-1000"
             ),
             rx.el.p("shimmer-duration-1000", class_name="font-mono text-xs"),
             class_name="flex flex-col gap-3",

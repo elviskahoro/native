@@ -10,6 +10,7 @@ COMPONENT_REGISTRY = {
         "files": ["components/chart/chart_tooltip.py"],
         "dependencies": [],
     },
+
     # --- components/core ---
     "core": {
         "files": ["components/core/core.py"],
@@ -19,6 +20,7 @@ COMPONENT_REGISTRY = {
         "files": ["components/core/hugeicon.py"],
         "dependencies": ["core"],
     },
+
     # --- components/ui ---
     "accordion": {
         "files": ["components/ui/accordion.py"],
@@ -124,6 +126,7 @@ COMPONENT_REGISTRY = {
         "files": ["components/ui/textarea.py"],
         "dependencies": ["core"],
     },
+
     # --- native/lib/blocks ---
     "area_chart_01": {
         "files": ["native/lib/blocks/area_chart_01.py"],

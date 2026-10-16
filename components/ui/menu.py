@@ -67,7 +67,7 @@ class MenuRoot(CoreComponent):
                         });
                 });
             }
-            """,
+            """
         )
 
         return rx.el.details(*children, **props)
@@ -117,7 +117,8 @@ class MenuContent(CoreComponent):
 
 
 class MenuItem(CoreComponent):
-    """Note: if rendered inside rx.foreach, the auto-generated sequential ID is baked in
+    """
+    Note: if rendered inside rx.foreach, the auto-generated sequential ID is baked in
     once at template-build time and shared across all rendered items. Pass
     an explicit `id` derived from your loop data in that case, e.g.
     id=f"menu-item-{item.id}".
@@ -149,7 +150,7 @@ class MenuItem(CoreComponent):
                 const item = document.getElementById('{item_id}');
                 const root = item ? item.closest('[data-slot="menu"]') : null;
                 if (root) root.open = false;
-                """,
+                """
             )
             click_events.append(close_script)
 
@@ -173,7 +174,7 @@ class MenuClose(CoreComponent):
             const btn = document.getElementById('{close_id}');
             const root = btn ? btn.closest('[data-slot="menu"]') : null;
             if (root) root.open = false;
-            """,
+            """
         )
 
         cls.set_class_name(ClassNames.ITEM, props)

@@ -8,7 +8,7 @@ def frame_no_border():
         frame.header(
             frame.title("No Outer Border"),
             frame.description(
-                "This frame uses variant='ghost' to remove the outer border.",
+                "This frame uses variant='ghost' to remove the outer border."
             ),
         ),
         frame.panel(

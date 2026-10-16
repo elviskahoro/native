@@ -36,9 +36,7 @@ class CoreComponent(Component):
 
     @classmethod
     def set_class_name(
-        cls,
-        default_class_name: str | Var[str],
-        props: dict[str, Any],
+        cls, default_class_name: str | Var[str], props: dict[str, Any]
     ) -> None:
 
         if "render_" in props:
@@ -72,13 +70,7 @@ from reflex.components.component import ComponentNamespace
 from ..core.core import CoreComponent, cn
 
 BubbleVariant = Literal[
-    "default",
-    "secondary",
-    "muted",
-    "tinted",
-    "outline",
-    "ghost",
-    "destructive",
+    "default", "secondary", "muted", "tinted", "outline", "ghost", "destructive"
 ]
 BubbleAlign = Literal["start", "end"]
 BubbleSide = Literal["top", "bottom"]
@@ -254,7 +246,7 @@ def bubble_with_variants():
         ),
         bubble.root(
             bubble.content(
-                "This one is muted. It uses a lower emphasis color for the chat bubble.",
+                "This one is muted. It uses a lower emphasis color for the chat bubble."
             ),
             bubble.reactions(
                 rx.el.span("👍"),
@@ -265,7 +257,7 @@ def bubble_with_variants():
         ),
         bubble.root(
             bubble.content(
-                "This one is tinted. The tint is a softer color derived from the primary color.",
+                "This one is tinted. The tint is a softer color derived from the primary color."
             ),
             variant="tinted",
             align="end",
@@ -327,14 +319,14 @@ def bubble_alignment_demo():
     return rx.el.div(
         bubble.root(
             bubble.content(
-                "This bubble is aligned to the start. This is the default alignment.",
+                "This bubble is aligned to the start. This is the default alignment."
             ),
             variant="muted",
             align="start",
         ),
         bubble.root(
             bubble.content(
-                "This bubble is aligned to the end. Use this for user messages.",
+                "This bubble is aligned to the end. Use this for user messages."
             ),
             align="end",
         ),
@@ -392,7 +384,7 @@ def bubble_group_demo():
         bubble.root(
             bubble.content(
                 "Want me to diff yesterday's you against today's you? "
-                "It's a bit embarrassing.",
+                "It's a bit embarrassing."
             ),
             variant="muted",
         ),
@@ -420,7 +412,7 @@ def bubble_link_button_demo():
                         "I forgot my password",
                         on_click=rx.toast("You clicked forgot password"),
                         class_name="w-full text-left",
-                    ),
+                    )
                 ),
                 variant="tinted",
                 align="end",
@@ -431,7 +423,7 @@ def bubble_link_button_demo():
                         "I need help with my subscription",
                         on_click=rx.toast("You clicked help with subscription"),
                         class_name="w-full text-left",
-                    ),
+                    )
                 ),
                 variant="tinted",
                 align="end",
@@ -441,10 +433,10 @@ def bubble_link_button_demo():
                     rx.el.button(
                         "Something else. Talk to a human.",
                         on_click=rx.toast(
-                            "You clicked something else. Talk to a human.",
+                            "You clicked something else. Talk to a human."
                         ),
                         class_name="w-full text-left",
-                    ),
+                    )
                 ),
                 variant="tinted",
                 align="end",
@@ -477,7 +469,7 @@ def bubble_reactions_demo():
         ),
         bubble.root(
             bubble.content(
-                "Bold. Fine I'll add some tests. I'll let you know when they're done.",
+                "Bold. Fine I'll add some tests. I'll let you know when they're done."
             ),
             bubble.reactions(
                 rx.el.span("👀"),
@@ -490,7 +482,7 @@ def bubble_reactions_demo():
         ),
         bubble.root(
             bubble.content(
-                "Tests passed on the first try. All 142 of them. Looking good!",
+                "Tests passed on the first try. All 142 of them. Looking good!"
             ),
             bubble.reactions(
                 rx.el.span("🎉"),

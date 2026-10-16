@@ -379,7 +379,7 @@ def area_chart_dynamic():
                 *[
                     rx.el.div(
                         rx.el.div(
-                            class_name=f"h-2 w-2 shrink-0 rounded-[2px] bg-chart-{index + 1}",
+                            class_name=f"h-2 w-2 shrink-0 rounded-[2px] bg-chart-{index + 1}"
                         ),
                         rx.el.p(
                             device,

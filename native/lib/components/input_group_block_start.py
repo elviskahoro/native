@@ -20,7 +20,7 @@ def input_group_block_start() -> rx.Component:
                         align="block-start",
                     ),
                     class_name="h-auto",
-                ),
+                )
             ),
             field.description("Header positioned above the input."),
             orientation="vertical",
@@ -45,7 +45,7 @@ def input_group_block_start() -> rx.Component:
                         ),
                         align="block-start",
                     ),
-                ),
+                )
             ),
             field.description("Header positioned above the textarea."),
             orientation="vertical",

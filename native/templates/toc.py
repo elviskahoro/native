@@ -2,6 +2,8 @@ import reflex as rx
 from reflex.experimental import ClientStateVar
 
 from components.core.hugeicon import hi
+from components.ui.field import field
+from components.ui.radio_group import radio_group
 from native.templates._copy_btn import generate_component_id
 
 _selected_env = ClientStateVar.create("_selected_env", "uv")
@@ -34,7 +36,7 @@ def create_copy_button(url: str) -> rx.Component:
                 setTimeout(() => {{
                     icon.innerHTML = `{copy_icon_svg}`;
                 }}, 1500);
-            """,
+            """
         ),
     )
 
@@ -68,6 +70,7 @@ def _create_markdown_toc_links(url: str, toc_data: list[dict]) -> rx.Component:
 
 def _create_external_tool_links(url: str):
     """Create links for viewing documentation in external tools."""
+
     fmt_url = "https://native.buridan.dev/" + url
     prompt = f"""I'm looking at this buridan/native documentation: {fmt_url}.
     Help me understand how to use it. Be ready to explain concepts, give examples, or help debug based on it.
@@ -127,7 +130,8 @@ def _create_external_tool_links(url: str):
 
 
 def table_of_content(url: str, toc_data: list[dict]):
-    """Render table of contents.
+    """
+    Render table of contents.
 
     Args:
         toc_data: List of dicts with 'text', 'id', 'level' keys
@@ -135,6 +139,7 @@ def table_of_content(url: str, toc_data: list[dict]):
     return rx.el.div(
         rx.el.div(
             rx.el.div(
+                #
                 rx.el.div(
                     rx.el.p(
                         "External Tools",
@@ -225,6 +230,6 @@ def table_of_content(url: str, toc_data: list[dict]):
                     domWatcher.observe(document.body, { childList: true, subtree: true });
                     initScrollspy();
                 })();
-            """,
+            """
         ),
     )

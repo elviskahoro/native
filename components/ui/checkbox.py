@@ -54,8 +54,11 @@ class CheckboxRoot(CoreComponent):
 
         input_props = {}
         for key in list(props.keys()):
-            if key in ClassNames._KNOWN_INPUT_PROPS or key.startswith(
-                ("on_", "data-", "aria-"),
+            if (
+                key in ClassNames._KNOWN_INPUT_PROPS
+                or key.startswith("on_")
+                or key.startswith("data-")
+                or key.startswith("aria-")
             ):
                 input_props[key] = props.pop(key)
 

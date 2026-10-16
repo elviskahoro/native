@@ -7,14 +7,14 @@ def bubble_alignment_demo():
     return rx.el.div(
         bubble.root(
             bubble.content(
-                "This bubble is aligned to the start. This is the default alignment.",
+                "This bubble is aligned to the start. This is the default alignment."
             ),
             variant="muted",
             align="start",
         ),
         bubble.root(
             bubble.content(
-                "This bubble is aligned to the end. Use this for user messages.",
+                "This bubble is aligned to the end. Use this for user messages."
             ),
             align="end",
         ),

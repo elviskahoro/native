@@ -13,16 +13,16 @@ def card_edge_to_edge() -> rx.Component:
         card.content(
             rx.el.div(
                 rx.el.p(
-                    "These terms govern your use of the workspace, including access to shared documents, project files, and collaboration tools.",
+                    "These terms govern your use of the workspace, including access to shared documents, project files, and collaboration tools."
                 ),
                 rx.el.p(
-                    "You are responsible for the content you upload and for ensuring that your team has the appropriate permissions to view or edit it.",
+                    "You are responsible for the content you upload and for ensuring that your team has the appropriate permissions to view or edit it."
                 ),
                 rx.el.p(
-                    "We may update features or limits as the service evolves. When those changes materially affect your workflow, we will notify your workspace administrators.",
+                    "We may update features or limits as the service evolves. When those changes materially affect your workflow, we will notify your workspace administrators."
                 ),
                 rx.el.p(
-                    "By continuing, you agree to keep your account credentials secure and to follow your organization's acceptable use policies.",
+                    "By continuing, you agree to keep your account credentials secure and to follow your organization's acceptable use policies."
                 ),
                 class_name="-mx-(--card-padding) max-h-48 space-y-4 overflow-y-scroll border-input border-t bg-muted/50 px-(--card-padding) py-4 text-sm leading-relaxed",
             ),

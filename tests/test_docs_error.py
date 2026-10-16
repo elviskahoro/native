@@ -1,6 +1,5 @@
-"""Scans every markdown file under assets/docs/ for component-resolution errors.
-
-Those errors indicate a doc's embedded demo/code reference (e.g. a
+"""Scans every markdown file under assets/docs/ for component-resolution
+errors that indicate a doc's embedded demo/code reference (e.g. a
 --DEMO(...)-- block) failed to resolve to a real component, such as:
 
     Component `button_group_select` not found
@@ -27,8 +26,7 @@ COMPONENT_NOT_FOUND_RE = re.compile(r"Component `([^`]+)` not found")
 def _find_docs_dir() -> Path:
     """Locate assets/docs/, searching upward from this file if the current
     working directory isn't the repo root (e.g. running pytest from a
-    subdirectory, or from an IDE's own cwd).
-    """
+    subdirectory, or from an IDE's own cwd)."""
     candidate = Path.cwd() / "assets" / "docs"
     if candidate.is_dir():
         return candidate
@@ -38,11 +36,11 @@ def _find_docs_dir() -> Path:
         if candidate.is_dir():
             return candidate
 
-    msg = (
+    raise FileNotFoundError(
         "Could not locate an 'assets/docs' directory from the current "
         "working directory or any parent of this test file. If your docs "
+        "live somewhere else, update _find_docs_dir()."
     )
-    raise FileNotFoundError(msg)
 
 
 def _iter_markdown_files(docs_dir: Path) -> list[Path]:
@@ -53,7 +51,7 @@ DOCS_DIR = _find_docs_dir()
 MARKDOWN_FILES = _iter_markdown_files(DOCS_DIR)
 
 
-def test_docs_dir_is_not_empty() -> None:
+def test_docs_dir_is_not_empty():
     """Sanity check for the parametrized test below.
 
     If MARKDOWN_FILES is empty, pytest.mark.parametrize silently generates
@@ -70,7 +68,7 @@ def test_docs_dir_is_not_empty() -> None:
     MARKDOWN_FILES,
     ids=[str(p.relative_to(DOCS_DIR)) for p in MARKDOWN_FILES],
 )
-def test_no_unresolved_components(md_file: Path) -> None:
+def test_no_unresolved_components(md_file: Path):
     content = md_file.read_text(encoding="utf-8")
     matches = COMPONENT_NOT_FOUND_RE.findall(content)
 

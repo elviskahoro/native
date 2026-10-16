@@ -143,13 +143,12 @@ STATUS_CONFIG = {
 
 def render_status_badge(status: str) -> rx.Component:
     config = STATUS_CONFIG.get(
-        status,
-        {"variant": "default", "dot": "bg-muted-foreground"},
+        status, {"variant": "default", "dot": "bg-muted-foreground"}
     )
 
     return badge(
         rx.el.span(
-            class_name=f"inline-block size-1.5 shrink-0 rounded-lg {config['dot']}",
+            class_name=f"inline-block size-1.5 shrink-0 rounded-lg {config['dot']}"
         ),
         status,
         variant=config["variant"],
@@ -173,7 +172,7 @@ def render_row(inv: dict) -> rx.Component:
             rx.el.span(
                 inv["id"],
                 class_name="font-mono text-xs text-muted-foreground py-2",
-            ),
+            )
         ),
         table.cell(
             rx.el.div(
@@ -277,22 +276,18 @@ def table_demo_two() -> rx.Component:
                         table.head("Project", class_name="hidden sm:table-cell"),
                         table.head("Method", class_name="hidden md:table-cell"),
                         table.head(
-                            "Due",
-                            sort_key="due",
-                            class_name="hidden md:table-cell",
+                            "Due", sort_key="due", class_name="hidden md:table-cell"
                         ),
                         table.head("Status"),
                         table.head(
-                            "Amount",
-                            sort_key="amount",
-                            class_name="text-right",
+                            "Amount", sort_key="amount", class_name="text-right"
                         ),
                         table.head(
                             rx.el.span("Actions", class_name="sr-only"),
                             class_name="w-10 pr-4",
                         ),
                         class_name="whitespace-nowrap",
-                    ),
+                    )
                 ),
                 table.body(*[render_row(inv) for inv in INVOICES]),
                 id="invoices-table",
