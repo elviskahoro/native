@@ -15,8 +15,9 @@ def attachment_states_demo():
             ),
             attachment.actions(
                 attachment.action(
-                    hi("Cancel01Icon"), aria_label="Remove selected-file.pdf"
-                )
+                    hi("Cancel01Icon"),
+                    aria_label="Remove selected-file.pdf",
+                ),
             ),
             state="idle",
         ),
@@ -30,7 +31,7 @@ def attachment_states_demo():
                 attachment.description("Uploading · 64%"),
             ),
             attachment.actions(
-                attachment.action(hi("Cancel01Icon"), aria_label="Cancel upload")
+                attachment.action(hi("Cancel01Icon"), aria_label="Cancel upload"),
             ),
             state="uploading",
         ),
@@ -42,8 +43,9 @@ def attachment_states_demo():
             ),
             attachment.actions(
                 attachment.action(
-                    hi("Cancel01Icon"), aria_label="Remove market-research.pdf"
-                )
+                    hi("Cancel01Icon"),
+                    aria_label="Remove market-research.pdf",
+                ),
             ),
             state="processing",
         ),
@@ -56,7 +58,8 @@ def attachment_states_demo():
             attachment.actions(
                 attachment.action(hi("RefreshIcon"), aria_label="Retry upload"),
                 attachment.action(
-                    hi("Cancel01Icon"), aria_label="Remove financial-model.xlsx"
+                    hi("Cancel01Icon"),
+                    aria_label="Remove financial-model.xlsx",
                 ),
             ),
             state="error",
@@ -69,8 +72,9 @@ def attachment_states_demo():
             ),
             attachment.actions(
                 attachment.action(
-                    hi("Cancel01Icon"), aria_label="Remove uploaded-report.pdf"
-                )
+                    hi("Cancel01Icon"),
+                    aria_label="Remove uploaded-report.pdf",
+                ),
             ),
             state="done",
         ),

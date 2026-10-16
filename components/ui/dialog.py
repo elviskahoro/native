@@ -61,7 +61,7 @@ class DialogTrigger(CoreComponent):
                     if (dlg) dlg.showModal();
                 }}, true);
             }})()
-            """
+            """,
         )
         return rx.el.div(*children, **props)
 
@@ -101,7 +101,7 @@ class DialogPopup(Div, CoreComponent):
                         if (e.target === dlg) dlg.close();
                     }});
                 }})()
-                """
+                """,
             )
             if existing_on_mount is not None:
                 events = (
@@ -141,7 +141,7 @@ class DialogClose(CoreComponent):
                     if (dlg) dlg.close();
                 }}, true);
             }})()
-            """
+            """,
         )
         return rx.el.div(*children, **props)
 

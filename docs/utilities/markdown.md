@@ -156,7 +156,7 @@ You can use **bold text**, _italic text_, or `inline code`.
 
 ## Links
 
-[Links](#) inherit Typography's default underline-on-hover treatment. Restyle with `prose-a:*`.
+[Links](#how-it-works) inherit Typography's default underline-on-hover treatment. Restyle with `prose-a:*`.
 
 ## Code blocks
 

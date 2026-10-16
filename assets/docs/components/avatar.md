@@ -36,7 +36,9 @@ class CoreComponent(Component):
 
     @classmethod
     def set_class_name(
-        cls, default_class_name: str | Var[str], props: dict[str, Any]
+        cls,
+        default_class_name: str | Var[str],
+        props: dict[str, Any],
     ) -> None:
 
         if "render_" in props:
@@ -113,7 +115,9 @@ class AvatarRoot(Div, CoreComponent):
         props["data-slot"] = "avatar"
         props["data-size"] = size
         return super().create(
-            *children, class_name=cn(ClassNames.ROOT, custom_classes), **props
+            *children,
+            class_name=cn(ClassNames.ROOT, custom_classes),
+            **props,
         )
 
 
@@ -160,7 +164,9 @@ class AvatarFallback(Span, CoreComponent):
         props["data-slot"] = "avatar-fallback"
         props["style"] = {"display": "none", **props.get("style", {})}
         return super().create(
-            *children, class_name=cn(ClassNames.FALLBACK, custom_classes), **props
+            *children,
+            class_name=cn(ClassNames.FALLBACK, custom_classes),
+            **props,
         )
 
 
@@ -170,7 +176,9 @@ class AvatarBadge(Span, CoreComponent):
         custom_classes = props.pop("class_name", "")
         props["data-slot"] = "avatar-badge"
         return super().create(
-            *children, class_name=cn(ClassNames.BADGE, custom_classes), **props
+            *children,
+            class_name=cn(ClassNames.BADGE, custom_classes),
+            **props,
         )
 
 
@@ -180,7 +188,9 @@ class AvatarGroup(Div, CoreComponent):
         custom_classes = props.pop("class_name", "")
         props["data-slot"] = "avatar-group"
         return super().create(
-            *children, class_name=cn(ClassNames.GROUP, custom_classes), **props
+            *children,
+            class_name=cn(ClassNames.GROUP, custom_classes),
+            **props,
         )
 
 
@@ -190,7 +200,9 @@ class AvatarGroupCount(Div, CoreComponent):
         custom_classes = props.pop("class_name", "")
         props["data-slot"] = "avatar-group-count"
         return super().create(
-            *children, class_name=cn(ClassNames.GROUP_COUNT, custom_classes), **props
+            *children,
+            class_name=cn(ClassNames.GROUP_COUNT, custom_classes),
+            **props,
         )
 
 

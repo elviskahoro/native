@@ -36,7 +36,9 @@ class CoreComponent(Component):
 
     @classmethod
     def set_class_name(
-        cls, default_class_name: str | Var[str], props: dict[str, Any]
+        cls,
+        default_class_name: str | Var[str],
+        props: dict[str, Any],
     ) -> None:
 
         if "render_" in props:
@@ -164,7 +166,7 @@ def switch_basic() -> rx.Component:
         field.content(
             field.title("Strict Mode"),
             field.description(
-                "Enable strict validation protocols across all incoming API payloads."
+                "Enable strict validation protocols across all incoming API payloads.",
             ),
         ),
         switch.root(id="strict-mode"),
@@ -187,7 +189,7 @@ def switch_with_label() -> rx.Component:
             field.content(
                 field.title("Enterprise Pipeline"),
                 field.description(
-                    "Deploy dedicated runners, isolated networks, and unlimited concurrency."
+                    "Deploy dedicated runners, isolated networks, and unlimited concurrency.",
                 ),
             ),
             switch.root(id="enterprise-plan"),

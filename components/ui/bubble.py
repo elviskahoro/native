@@ -6,7 +6,13 @@ from reflex.components.component import ComponentNamespace
 from ..core.core import CoreComponent, cn
 
 BubbleVariant = Literal[
-    "default", "secondary", "muted", "tinted", "outline", "ghost", "destructive"
+    "default",
+    "secondary",
+    "muted",
+    "tinted",
+    "outline",
+    "ghost",
+    "destructive",
 ]
 BubbleAlign = Literal["start", "end"]
 BubbleSide = Literal["top", "bottom"]

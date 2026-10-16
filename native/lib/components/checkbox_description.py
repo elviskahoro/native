@@ -19,7 +19,7 @@ def checkbox_description() -> rx.Component:
                     html_for="terms-checkbox-desc",
                 ),
                 field.description(
-                    "By clicking this checkbox, you agree to the terms and conditions."
+                    "By clicking this checkbox, you agree to the terms and conditions.",
                 ),
             ),
             orientation="horizontal",

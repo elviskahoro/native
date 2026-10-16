@@ -47,7 +47,7 @@ class HugeIcon(CoreComponent):
                 props[prop] = Var(
                     value,
                     _var_data=VarData(
-                        imports={CORE_ICONS_LIBRARY: [ImportVar(tag=value)]}
+                        imports={CORE_ICONS_LIBRARY: [ImportVar(tag=value)]},
                     ),
                 )
 

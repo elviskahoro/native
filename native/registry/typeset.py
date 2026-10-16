@@ -1,5 +1,4 @@
-"""
-Registries for the Typeset builder. Measure/Size/Leading/Flow are new here.
+"""Registries for the Typeset builder. Measure/Size/Leading/Flow are new here.
 Heading/Body/Mono reuse the EXISTING FONT_REGISTRY (same source as the
 theme builder's Font select) filtered by category, rather than duplicating
 font data in a second place where it could drift out of sync.

@@ -10,7 +10,8 @@ def shimmer_duration():
         ),
         rx.el.div(
             rx.el.p(
-                "Generating response...", class_name="shimmer shimmer-duration-1000"
+                "Generating response...",
+                class_name="shimmer shimmer-duration-1000",
             ),
             rx.el.p("shimmer-duration-1000", class_name="font-mono text-xs"),
             class_name="flex flex-col gap-3",

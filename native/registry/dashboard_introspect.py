@@ -23,7 +23,7 @@ def _extract_dependencies(source: str) -> dict[str, list[str]]:
     names (not the module path) by what X starts with. So:
         from components.ui.avatar import avatar   -> components: ["avatar"]
         from native.lib.blocks.kpi_card_01 import kpi_card_01
-                                                    -> blocks: ["kpi_card_01"]
+                                                    -> blocks: ["kpi_card_01"].
     """
     tree = ast.parse(source)
     deps: dict[str, list[str]] = {"components": [], "blocks": []}
@@ -47,7 +47,8 @@ def list_dashboard_ids() -> list[str]:
 def load_dashboard_example(dashboard_id: str) -> dict:
     """dashboard_id="dashboard_01" -> reads
     native/lib/dashboards/dashboard_01.py, imports it, and grabs the
-    top-level dashboard_01() function (same-name convention you're using)."""
+    top-level dashboard_01() function (same-name convention you're using).
+    """
     file_path = DASHBOARDS_DIR / f"{dashboard_id}.py"
     source = file_path.read_text()
 
