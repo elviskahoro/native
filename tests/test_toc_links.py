@@ -19,7 +19,7 @@ import html
 import re
 from pathlib import Path
 
-import pytest
+import pytest  # pyrefly: ignore[missing-import]
 
 from native.engine.parser import extract_toc_data, parse_and_render
 
@@ -38,12 +38,13 @@ def _doc_files() -> list[Path]:
     return sorted(DOCS_DIR.rglob("*.md"))
 
 
-def _served_headings(md_path: Path) -> list[dict]:
+def _served_headings(md_path: Path) -> list[dict[str, str]]:
     """Heading ids the browser actually receives: run the production chunked
     parse_and_render pipeline and read <h1>/<h2 id="..."> from each
-    dangerouslySetInnerHTML payload (verbatim, matching the served DOM)."""
+    dangerouslySetInnerHTML payload (verbatim, matching the served DOM).
+    """
     body = _strip_frontmatter(md_path.read_text(encoding="utf-8"))
-    out: list[dict] = []
+    out: list[dict[str, str]] = []
     for piece in parse_and_render(body):
         if type(piece).__name__ != "Html":
             continue
@@ -56,12 +57,13 @@ def _served_headings(md_path: Path) -> list[dict]:
     return out
 
 
-def _is_expected_noop(entry_id: str, served: list[dict]) -> bool:
+def _is_expected_noop(entry_id: str, served: list[dict[str, str]]) -> bool:
     """An out-of-scope cross-chunk duplicate-id no-op: the entry id is a
     dedup-suffixed variant (`<base>_<N>`) whose base id appears more than once
     in the served DOM. Such suffixed ids are absent from the served DOM
     because parse_and_render renders per-chunk (no cross-chunk dedup); fixing
-    that is a separate parser.py-side defect, tracked as out of scope."""
+    that is a separate parser.py-side defect, tracked as out of scope.
+    """
     m = re.match(r"^(.*)_(\d+)$", entry_id)
     if not m:
         return False
@@ -122,25 +124,28 @@ _TOC_CASES = [
 ]
 
 
-@pytest.mark.parametrize("body, expected", _TOC_CASES)
-def test_extract_toc_data_ids_match_python_markdown_slugify(body, expected):
+@pytest.mark.parametrize(("body", "expected"), _TOC_CASES)  # type: ignore[reportUntypedFunctionDecorator]
+def test_extract_toc_data_ids_match_python_markdown_slugify(
+    body: str,
+    expected: list[tuple[int, str, str]],
+) -> None:
     toc = extract_toc_data(body)
     assert [(e["level"], e["id"], e["text"]) for e in toc] == expected
 
 
-def test_extract_toc_data_unescapes_html_entities_in_text():
+def test_extract_toc_data_unescapes_html_entities_in_text() -> None:
     toc = extract_toc_data("# A & B > C")
     assert toc[0]["text"] == "A & B > C"
     assert toc[0]["id"] == "a-b-c"
 
 
-def test_extract_toc_data_strips_inline_formatting_from_text():
+def test_extract_toc_data_strips_inline_formatting_from_text() -> None:
     toc = extract_toc_data("## Use `code` here")
     assert toc[0]["text"] == "Use code here"
     assert toc[0]["id"] == "use-code-here"
 
 
-def test_extract_toc_data_skips_fenced_code_phantom_headings():
+def test_extract_toc_data_skips_fenced_code_phantom_headings() -> None:
     body = (
         "# Real Heading\n\n"
         "```python\n"
@@ -154,14 +159,14 @@ def test_extract_toc_data_skips_fenced_code_phantom_headings():
     assert [e["id"] for e in toc] == ["real-heading", "also-real"]
 
 
-def test_extract_toc_data_dedups_duplicate_headings_within_document():
+def test_extract_toc_data_dedups_duplicate_headings_within_document() -> None:
     body = "## Dev\n\nfirst\n\n## Dev\n\nsecond\n"
     toc = extract_toc_data(body)
     assert [e["id"] for e in toc] == ["dev", "dev_1"]
     assert [e["text"] for e in toc] == ["Dev", "Dev"]
 
 
-def test_extract_toc_data_preserves_heading_order_and_levels():
+def test_extract_toc_data_preserves_heading_order_and_levels() -> None:
     body = "# One\n\n## Two\n\n# Three\n\n## Four\n"
     toc = extract_toc_data(body)
     assert [(e["level"], e["id"]) for e in toc] == [
@@ -172,7 +177,7 @@ def test_extract_toc_data_preserves_heading_order_and_levels():
     ]
 
 
-def test_extract_toc_data_returns_empty_for_no_headings():
+def test_extract_toc_data_returns_empty_for_no_headings() -> None:
     assert extract_toc_data("Just a paragraph.\n\nNo headings here.") == []
 
 
@@ -182,14 +187,20 @@ def test_extract_toc_data_returns_empty_for_no_headings():
 # ---------------------------------------------------------------------------
 
 
-def test_doc_dir_is_not_empty():
+def test_doc_dir_is_not_empty() -> None:
     assert _doc_files(), f"No markdown files found under {DOCS_DIR}"
 
 
-@pytest.mark.parametrize(
-    "md_file", _doc_files(), ids=lambda p: str(p.relative_to(DOCS_DIR))
+def _md_file_id(md_file: Path) -> str:
+    return str(md_file.relative_to(DOCS_DIR))
+
+
+@pytest.mark.parametrize(  # type: ignore[reportUntypedFunctionDecorator]
+    "md_file",
+    _doc_files(),
+    ids=_md_file_id,
 )
-def test_every_sidebar_href_resolves_in_served_dom(md_file):
+def test_every_sidebar_href_resolves_in_served_dom(md_file: Path) -> None:
     served = _served_headings(md_file)
     # getElementById returns the FIRST element with a given id; setdefault
     # keeps the first occurrence's text (a plain dict comprehension would keep
@@ -199,8 +210,8 @@ def test_every_sidebar_href_resolves_in_served_dom(md_file):
         served_first_text.setdefault(s["id"], s["text"])
     toc = extract_toc_data(_strip_frontmatter(md_file.read_text(encoding="utf-8")))
 
-    unexpected_noops: list[tuple] = []
-    misdirects: list[tuple] = []
+    unexpected_noops: list[tuple[str, str]] = []
+    misdirects: list[tuple[str, str, str]] = []
 
     for entry in toc:
         eid = entry["id"]
@@ -221,10 +232,11 @@ def test_every_sidebar_href_resolves_in_served_dom(md_file):
     )
 
 
-def test_accordion_dotted_subsections_resolve():
+def test_accordion_dotted_subsections_resolve() -> None:
     """The headline symptom: dotted `## accordion.<part>` subsections under a
     component's API Reference must resolve to rendered heading ids, and the
-    dot must NOT be retained in the id (the original bug)."""
+    dot must NOT be retained in the id (the original bug).
+    """
     body = _strip_frontmatter(ACCORDION_DOC.read_text(encoding="utf-8"))
     toc = extract_toc_data(body)
     served_ids = {s["id"] for s in _served_headings(ACCORDION_DOC)}
@@ -245,10 +257,10 @@ def test_accordion_dotted_subsections_resolve():
 # ---------------------------------------------------------------------------
 
 
-def _rendered_hrefs(component) -> list[str]:
+def _rendered_hrefs(component: object) -> list[str]:
     hrefs: list[str] = []
 
-    def walk(node):
+    def walk(node: object) -> None:
         if type(node).__name__ == "ReactRouterLink":
             to = node.__dict__.get("to")
             value = getattr(to, "_var_value", None)
@@ -261,11 +273,14 @@ def _rendered_hrefs(component) -> list[str]:
     return hrefs
 
 
-def test_toc_links_use_id_verbatim_no_reslugging():
+def test_toc_links_use_id_verbatim_no_reslugging() -> None:
     """The href must be `f"#{entry['id']}"` with no slug transform. A synthetic
     id with mixed case, a space and a dot is preserved verbatim; the old
-    `.lower().replace(' ', '-')` transform would have slugified it."""
-    from native.templates.toc import _create_markdown_toc_links
+    `.lower().replace(' ', '-')` transform would have slugified it.
+    """
+    from native.templates.toc import (
+        _create_markdown_toc_links,  # type: ignore[reportPrivateUsage]
+    )
 
     entries = [
         {"text": "accordion.item", "id": "accordionitem", "level": 2},
@@ -280,10 +295,13 @@ def test_toc_links_use_id_verbatim_no_reslugging():
     assert "#Mixed CASE With Space.dot" in hrefs
 
 
-def test_toc_links_integral_with_extract_toc_data():
+def test_toc_links_integral_with_extract_toc_data() -> None:
     """End-to-end at the template layer: the href for a real punctuated
-    heading, piped through toc.py, equals #<rendered-id>."""
-    from native.templates.toc import _create_markdown_toc_links
+    heading, piped through toc.py, equals #<rendered-id>.
+    """
+    from native.templates.toc import (
+        _create_markdown_toc_links,  # type: ignore[reportPrivateUsage]
+    )
 
     toc = extract_toc_data("# Async Handlers & Yielding\n\n## accordion.root\n")
     hrefs = _rendered_hrefs(_create_markdown_toc_links("doc", toc))

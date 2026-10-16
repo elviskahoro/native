@@ -22,6 +22,7 @@ import inspect
 import pathlib
 import re
 from pathlib import Path
+from typing import TypedDict
 
 import markdown  # noqa: E402
 import reflex as rx
@@ -215,10 +216,16 @@ def parse_and_render(content: str) -> list[rx.Component]:
 _HEADING_RE = re.compile(r'<h([12])\s+id="([^"]+)"[^>]*>(.*?)</h\1>', re.DOTALL)
 
 
-def extract_toc_data(body: str) -> list[dict]:
+class TocEntry(TypedDict):
+    level: int
+    text: str
+    id: str
+
+
+def extract_toc_data(body: str) -> list[TocEntry]:
     """Build TOC entries from python-markdown's whole-body rendered heading ids."""
     rendered = markdown.markdown(body, extensions=_MD_EXTENSIONS)
-    toc_data: list[dict] = []
+    toc_data: list[TocEntry] = []
     for match in _HEADING_RE.finditer(rendered):
         level = int(match.group(1))
         heading_id = match.group(2)
