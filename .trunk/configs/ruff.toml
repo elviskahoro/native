@@ -72,6 +72,11 @@ ignore = [
   "ANN101",
   "B008",
   "C901",
+  # Ruff's formatter and add-trailing-comma both manage trailing commas;
+  # COM812 makes them repeatedly undo each other's edits.
+  "COM812",
+  # This repository uses relative imports for sibling modules in components.
+  "TID252",
   "D100",
   "D101",
   "D102",
@@ -110,4 +115,16 @@ order-by-type = true
 convention = "google"
 
 [lint.per-file-ignores]
-"tests/**" = ["S101"]
+"tests/**" = ["S101", "INP001", "ANN001", "ANN201", "PT018", "D212", "D415"]
+# Library examples are loaded as standalone source snippets, rather than
+# imported as Python packages. Their demo functions are public to the example
+# registry but are not a typed application API.
+"native/lib/**" = [
+  "INP001",
+  "ANN001",
+  "ANN002",
+  "ANN003",
+  "ANN201",
+  "ANN202",
+  "ANN206",
+]

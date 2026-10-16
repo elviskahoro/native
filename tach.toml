@@ -1,9 +1,8 @@
-# Tach module boundary enforcement -- seeded empty.
-# Structure adapted from the gtm-sdk reference setup (tach.toml there maps
-# its full module graph with root_module = "forbid"). No modules are declared
-# here yet, so `tach check` is trivially green; declare modules and their
-# depends_on edges over time to start enforcing architecture boundaries.
+# Tach module boundary enforcement for the repository's Python packages.
+# Application code may live in these modules; imports between them follow the
+# dependency direction below.
 source_roots = ["."]
+root_module = "forbid"
 exclude = [
   "tests/**",
   "docs/**",
@@ -16,4 +15,18 @@ exclude = [
   ".venv/**",
   "ai/**",
 ]
-modules = []
+
+[[modules]]
+path = "components"
+
+[[modules]]
+path = "native"
+depends_on = ["components"]
+
+[[modules]]
+path = "cli"
+depends_on = ["native", "components"]
+
+[[modules]]
+path = "scripts"
+depends_on = ["native"]
