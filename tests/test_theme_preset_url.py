@@ -1,5 +1,5 @@
-"""
-Regression tests for the /create theme-customizer's first-load ``?preset=<code>``
+# ruff: noqa: INP001
+"""Regression tests for the /create theme-customizer's first-load ``?preset=<code>``
 URL round-trip.
 
 Bug (introduced in a7c0cdb): ``create_page``'s ``on_mount`` unconditionally called
@@ -32,8 +32,9 @@ What is covered, and why this is the best available coverage:
 
 import pathlib
 import re
+from typing import Any
 
-import pytest
+import pytest  # pyrefly: ignore
 
 import native.pages.create as create_module
 from cli.preset_codec import DEFAULT_PRESET_CODE, decode_seed
@@ -54,8 +55,10 @@ _REGISTRY = {
     "font": FONT_REGISTRY,
 }
 
+_MIN_ON_MOUNT_SCRIPTS = 2
 
-def _decode(code):
+
+def _decode(code: str) -> dict | None:
     return decode_seed(
         code,
         _REGISTRY["base"],
@@ -66,16 +69,16 @@ def _decode(code):
     )
 
 
-def _on_mount_scripts(component):
+def _on_mount_scripts(component: Any) -> list[str]:  # noqa: ANN401
     assert "on_mount" in component.event_triggers, (
         "create_page() must wire an on_mount lifecycle hook"
     )
     chain = component.event_triggers["on_mount"]
-    scripts = []
+    scripts: list[str] = []
     for event in chain.events:
         for name_var, val_var in event.args:
             if getattr(name_var, "_js_expr", None) == "javascript_code":
-                scripts.append(val_var._var_value)
+                scripts.append(val_var._var_value)  # noqa: SLF001
                 break
     return scripts
 
@@ -86,34 +89,34 @@ _JS = THEME_PREVIEW_JS.read_text(encoding="utf-8")
 
 
 class TestCreatePageOnMountScript:
-    def test_registries_are_populated_before_url_read(self):
+    def test_registries_are_populated_before_url_read(self) -> None:
         assert "__THEME_REGISTRIES__" in _INIT_SCRIPT
         for key in ("base:", "color:", "radius:", "style:", "font:"):
             assert key in _INIT_SCRIPT, f"registry key {key!r} missing from on_mount"
         assert "URLSearchParams" in _INIT_SCRIPT
         assert _INIT_SCRIPT.index("__THEME_REGISTRIES__") < _INIT_SCRIPT.index(
-            "URLSearchParams"
+            "URLSearchParams",
         ), "registries must be populated before reading ?preset="
 
-    def test_reads_preset_from_url_search_params(self):
+    def test_reads_preset_from_url_search_params(self) -> None:
         assert re.search(
             r'URLSearchParams\s*\(\s*window\.location\.search\s*\)\.get\s*\(\s*"preset"\s*\)',
             _INIT_SCRIPT,
         ), 'on_mount must read ?preset= via URLSearchParams(...).get("preset")'
 
-    def test_routes_valid_url_code_through_apply_preset_code(self):
+    def test_routes_valid_url_code_through_apply_preset_code(self) -> None:
         assert "applyPresetCode" in _INIT_SCRIPT
         assert re.search(
             r"applyPresetCode\s*\(\s*code\s*\)",
             _INIT_SCRIPT,
         ), "on_mount must apply the URL code via window.preview.applyPresetCode(code)"
 
-    def test_falls_back_to_sync_all_for_missing_or_invalid(self):
+    def test_falls_back_to_sync_all_for_missing_or_invalid(self) -> None:
         assert re.search(r"syncAll\s*\(\s*\)", _INIT_SCRIPT), (
             "on_mount must call window.preview.syncAll() when no valid URL code present"
         )
 
-    def test_no_top_level_return_after_apply_preset_code(self):
+    def test_no_top_level_return_after_apply_preset_code(self) -> None:
         # rx.call_script runs the body via top-level eval (no IIFE wrap), so a
         # bare `return;` is a SyntaxError silently swallowed by Reflex's
         # try/catch and the rest of the script never runs. The
@@ -124,7 +127,7 @@ class TestCreatePageOnMountScript:
             _INIT_SCRIPT,
         ), "on_mount must use if/else, not a top-level `return` after applyPresetCode"
 
-    def test_does_not_unconditionally_sync_all_ignoring_url(self):
+    def test_does_not_unconditionally_sync_all_ignoring_url(self) -> None:
         bad = re.search(
             r"__THEME_REGISTRIES__\s*=\s*\{[\s\S]*?\};\s*"
             r"if\s*\(window\.preview\)\s*window\.preview\.syncAll\s*\(\s*\)\s*;",
@@ -134,15 +137,15 @@ class TestCreatePageOnMountScript:
             "on_mount must not clobber incoming ?preset= via an unconditional syncAll()"
         )
 
-    def test_prism_highlight_remains_wired(self):
-        assert len(_CREATE_SCRIPTS) >= 2, (
+    def test_prism_highlight_remains_wired(self) -> None:
+        assert len(_CREATE_SCRIPTS) >= _MIN_ON_MOUNT_SCRIPTS, (
             "second on_mount script (Prism.highlightAll) was dropped"
         )
         assert "Prism.highlightAll" in _CREATE_SCRIPTS[1]
 
 
 class TestThemePreviewSurface:
-    def test_apply_preset_code_defined_with_boolean_contract(self):
+    def test_apply_preset_code_defined_with_boolean_contract(self) -> None:
         m = re.search(
             r"applyPresetCode:\s*function\s*\(\s*code\s*\)\s*\{([\s\S]*?)return\s+true\s*;",
             _JS,
@@ -159,24 +162,24 @@ class TestThemePreviewSurface:
             "applyPresetCode must return false on an invalid code"
         )
 
-    def test_read_preset_from_url_uses_search_params(self):
+    def test_read_preset_from_url_uses_search_params(self) -> None:
         assert re.search(
             r'function\s+readPresetFromUrl\s*\([^)]*\)\s*\{[\s\S]*?searchParams\.get\s*\(\s*"preset"\s*\)',
             _JS,
         ), "readPresetFromUrl must read ?preset= via searchParams.get"
 
-    def test_update_url_writes_preset_param(self):
+    def test_update_url_writes_preset_param(self) -> None:
         assert re.search(
             r'function\s+updateUrl\s*\([^)]*\)\s*\{[\s\S]*?searchParams\.set\s*\(\s*"preset"\s*,',
             _JS,
         ), "updateUrl must mirror state into ?preset= via searchParams.set"
 
-    def test_default_preset_code_is_b0(self):
+    def test_default_preset_code_is_b0(self) -> None:
         assert re.search(r'DEFAULT_PRESET_CODE\s*=\s*"b0"', _JS)
         assert "return DEFAULT_PRESET_CODE" in _JS
 
 
-def _encode_base62(num):
+def _encode_base62(num: int) -> str:
     alphabet = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz"
     assert num >= 0
     if num == 0:
@@ -188,7 +191,15 @@ def _encode_base62(num):
     return out
 
 
-def _encode_v2(*, font=0, color=0, chart=0, base=0, radius=0, style=0):
+def _encode_v2(
+    *,
+    font: int = 0,
+    color: int = 0,
+    chart: int = 0,
+    base: int = 0,
+    radius: int = 0,
+    style: int = 0,
+) -> str:
     # Mirrors theme-preview.js comboToCode() bit packing (version 2) so these
     # tests encode independently of the JS encoder and verify the decoder.
     # SHIFT_V2 (JS and Python share it): font=0, color=5, chart=10, base=15,
@@ -208,7 +219,7 @@ def _encode_v2(*, font=0, color=0, chart=0, base=0, radius=0, style=0):
 
 
 class TestPresetCodecInterop:
-    def test_non_default_url_example_decodes_to_stone_base(self):
+    def test_non_default_url_example_decodes_to_stone_base(self) -> None:
         result = _decode("aKnAm")
         assert result is not None
         assert result["baseId"] == "stone"
@@ -217,7 +228,7 @@ class TestPresetCodecInterop:
         assert result["chartId"] is None
         assert result["radius"] is None
 
-    def test_default_preset_code_decodes_to_all_defaults(self):
+    def test_default_preset_code_decodes_to_all_defaults(self) -> None:
         result = _decode(DEFAULT_PRESET_CODE)
         assert result is not None
         assert result["baseId"] == BASE_THEMES[0]["id"] == "neutral"
@@ -227,14 +238,15 @@ class TestPresetCodecInterop:
         assert result["styleId"] == STYLE_REGISTRY[0]["id"]
         assert result["fontId"] == FONT_REGISTRY[0]["id"]
 
-    @pytest.mark.parametrize(
-        "code", ["ZZZZZ", "", None, "!!!", "gibberish", "none-ish"]
+    @pytest.mark.parametrize(  # pyright: ignore[reportUntypedFunctionDecorator]
+        "code",
+        ["ZZZZZ", "", None, "!!!", "gibberish", "none-ish"],
     )
-    def test_invalid_or_empty_codes_rejected(self, code):
+    def test_invalid_or_empty_codes_rejected(self, code: str) -> None:
         assert _decode(code) is None
 
-    @pytest.mark.parametrize(
-        "combo, expected",
+    @pytest.mark.parametrize(  # pyright: ignore[reportUntypedFunctionDecorator]
+        ("combo", "expected"),
         [
             ({"base": 1}, {"baseId": BASE_THEMES[1]["id"]}),
             ({"font": 1}, {"fontId": FONT_REGISTRY[1]["id"]}),
@@ -245,7 +257,11 @@ class TestPresetCodecInterop:
         ],
         ids=["base-stone", "font", "color", "chart", "radius", "style"],
     )
-    def test_round_trip_each_index_dimension(self, combo, expected):
+    def test_round_trip_each_index_dimension(
+        self,
+        combo: dict[str, int],
+        expected: dict[str, object],
+    ) -> None:
         code = _encode_v2(**combo)
         result = _decode(code)
         assert result is not None, f"decode failed for code {code!r} (combo {combo})"
@@ -254,7 +270,7 @@ class TestPresetCodecInterop:
                 f"combo {combo}: expected {key}={val!r}, got {result[key]!r}"
             )
 
-    def test_multi_dimension_round_trip(self):
+    def test_multi_dimension_round_trip(self) -> None:
         code = _encode_v2(base=3, color=2, chart=2, font=1, style=1, radius=2)
         r = _decode(code)
         assert r is not None
@@ -265,7 +281,7 @@ class TestPresetCodecInterop:
         assert r["styleId"] == STYLE_REGISTRY[1]["id"]
         assert r["radius"] == RADII_OPTIONS[1]["value"]
 
-    def test_default_combo_short_circuit_equivalence(self):
+    def test_default_combo_short_circuit_equivalence(self) -> None:
         # The JS encoder short-circuits an all-defaults combo to the literal
         # "b0". The decoder must accept both "b0" and the non-short-circuited
         # packed form of the same combo and return identical state.

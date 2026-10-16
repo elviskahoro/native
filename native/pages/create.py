@@ -403,7 +403,7 @@ def create_page():
                     window.preview.syncAll();
                 }}
             }}
-            """
+            """,
             ),
             rx.call_script(
                 """
