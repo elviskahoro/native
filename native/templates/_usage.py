@@ -26,7 +26,7 @@ def _usage_demo(component_name: str):
                         on_click=rx.call_script(
                             f"""
                             document.getElementById("demo-{demo_id}").dataset.view = "usage";
-                            """
+                            """,
                         ),
                     ),
                     button(
@@ -40,7 +40,7 @@ def _usage_demo(component_name: str):
                         on_click=rx.call_script(
                             f"""
                             document.getElementById("demo-{demo_id}").dataset.view = "anatomy";
-                            """
+                            """,
                         ),
                     ),
                     class_name="flex items-center gap-1",

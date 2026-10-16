@@ -104,7 +104,8 @@ def area_chart_02():
         ),
         rx.el.div(
             rx.el.div(
-                _chart(show_y_axis=False, start_end_only=True), class_name="sm:hidden"
+                _chart(show_y_axis=False, start_end_only=True),
+                class_name="sm:hidden",
             ),
             rx.el.div(
                 _chart(show_y_axis=True, start_end_only=False),

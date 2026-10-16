@@ -11,7 +11,7 @@ def card_08() -> rx.Component:
         card.header(
             card.title("404 - Not Found"),
             card.description(
-                "The page you're looking for doesn't exist. Try searching for what you need below."
+                "The page you're looking for doesn't exist. Try searching for what you need below.",
             ),
             class_name="flex flex-col items-center text-center",
         ),
@@ -24,7 +24,7 @@ def card_08() -> rx.Component:
                     ),
                 ),
                 class_name="w-full max-w-md mx-auto",
-            )
+            ),
         ),
         card.footer(
             rx.el.button(

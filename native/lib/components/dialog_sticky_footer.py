@@ -12,7 +12,7 @@ def dialog_sticky_footer() -> rx.Component:
             dialog.header(
                 dialog.title("Sticky Footer"),
                 dialog.description(
-                    "This dialog has a sticky footer that stays visible while the content scrolls."
+                    "This dialog has a sticky footer that stays visible while the content scrolls.",
                 ),
             ),
             rx.el.div(
@@ -40,7 +40,7 @@ def dialog_sticky_footer() -> rx.Component:
                     variant="ghost",
                     size="icon-sm",
                     class_name=dialog.class_names.CLOSE_ICON,
-                )
+                ),
             ),
         ),
     )

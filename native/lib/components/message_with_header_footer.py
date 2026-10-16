@@ -19,7 +19,7 @@ def message_header_footer():
             message.content(
                 bubble.root(
                     bubble.content(
-                        "Send the report to the team. Ping @lineindent if you need help."
+                        "Send the report to the team. Ping @lineindent if you need help.",
                     ),
                 ),
                 message.footer(

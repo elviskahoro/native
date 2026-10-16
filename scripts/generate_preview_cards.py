@@ -113,7 +113,7 @@ def extract_frontmatter(path: Path) -> tuple[str, str]:
     )
 
 
-def draw_border(draw, width, height):
+def draw_border(draw, width, height) -> None:
     color = (200, 200, 200)  # Light gray
     stroke = 2
     margin = 80  # Distance from the edge for your "safe area"
@@ -123,7 +123,9 @@ def draw_border(draw, width, height):
 
     # Bottom horizontal line (Full width)
     draw.line(
-        [(0, height - margin), (width, height - margin)], fill=color, width=stroke
+        [(0, height - margin), (width, height - margin)],
+        fill=color,
+        width=stroke,
     )
 
     # Left vertical line (Full height)
@@ -137,7 +139,7 @@ def create_social_card(
     title: str,
     description: str,
     output_path: Path,
-):
+) -> None:
     img = Image.new(
         "RGB",
         (WIDTH, HEIGHT),
@@ -232,7 +234,7 @@ def create_social_card(
     )
 
 
-def generate_social_cards():
+def generate_social_cards() -> None:
     docs_root = Path("docs")
 
     for page in PAGES_CONFIG:

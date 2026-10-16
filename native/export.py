@@ -14,7 +14,7 @@ from native.templates.docpage import docpage
 from native.templates.toc import table_of_content
 
 
-def export(app: App):
+def export(app: App) -> None:
 
     app.add_page(
         component=dashboard_page(),

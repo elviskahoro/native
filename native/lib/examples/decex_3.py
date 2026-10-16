@@ -14,7 +14,9 @@ def chart_example_with_x_axis():
 
     return rx.recharts.bar_chart(
         rx.recharts.cartesian_grid(
-            horizontal=True, vertical=False, class_name="opacity-30"
+            horizontal=True,
+            vertical=False,
+            class_name="opacity-30",
         ),
         rx.recharts.bar(
             data_key="desktop",

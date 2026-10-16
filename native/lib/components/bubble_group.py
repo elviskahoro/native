@@ -31,7 +31,7 @@ def bubble_group_demo():
         bubble.root(
             bubble.content(
                 "Want me to diff yesterday's you against today's you? "
-                "It's a bit embarrassing."
+                "It's a bit embarrassing.",
             ),
             variant="muted",
         ),

@@ -15,7 +15,7 @@ def separator_horizontal() -> rx.Component:
         ),
         separator(class_name="bg-zinc-200 dark:bg-zinc-800"),
         rx.el.div(
-            "A set of beautifully designed components that you can customize, extend, and build on."
+            "A set of beautifully designed components that you can customize, extend, and build on.",
         ),
         class_name="flex max-w-sm flex-col gap-4 text-sm",
     )

@@ -126,7 +126,7 @@ def clean_arg(value: str | None) -> str:
 def get_dependencies(name: str):
     ordered = []
 
-    def resolve(component):
+    def resolve(component) -> None:
         # Normalize key so button-group matches button_group in COMPONENT_REGISTRY
         comp_key = component.lower().replace("-", "_")
         data = COMPONENT_REGISTRY.get(comp_key)
@@ -217,7 +217,7 @@ def convert_to_markdown(content: str):
 
             if cmd == "usage":
                 entry = LIVE_REGISTRY.get(name) or LIVE_REGISTRY.get(
-                    name.replace("-", "_")
+                    name.replace("-", "_"),
                 )
 
                 if not entry:
@@ -282,7 +282,7 @@ def convert_to_markdown(content: str):
 # ---------------------------------------------------------
 
 
-def main():
+def main() -> None:
 
     print("Generating markdown docs...")
 

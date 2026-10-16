@@ -3,10 +3,10 @@ from dataclasses import dataclass
 from reflex.event import call_script
 from reflex_components_core.el import Div, Header, a, div, header, p
 
-import native.registry.routes as routes
 from components.core.hugeicon import hi
 from components.ui.button import button, button_variants
 from components.ui.menu import menu
+from native.registry import routes
 from native.templates.github import github
 from native.templates.theme import theme_toggle_button
 
@@ -56,7 +56,7 @@ def _mobile_navigation():
                     route["title"],
                     id=f"mob-nav-{s_idx}-{r_idx}",
                     on_click=call_script(f"window.location.href = '{target_url}';"),
-                )
+                ),
             )
 
         if s_idx < len(MENU_SECTIONS) - 1:
