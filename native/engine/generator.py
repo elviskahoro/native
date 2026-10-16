@@ -61,7 +61,7 @@ def generate_docs_library() -> list[constants.DocDataStruct]:
             url=url_path,
             description=md_data.get("description", ""),
             component=parse_and_render(md_content),
-            table_of_content=toc_data,
+            table_of_content=toc_data,  # type: ignore[reportArgumentType]
         )
 
         docs.append(doc)
