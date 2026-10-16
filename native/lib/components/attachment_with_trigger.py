@@ -17,7 +17,8 @@ def attachment_trigger_dialog_demo():
                 attachment.actions(
                     attachment.action(hi("Copy01Icon"), aria_label="Copy link"),
                     attachment.action(
-                        hi("Cancel01Icon"), aria_label="Remove research-summary.pdf"
+                        hi("Cancel01Icon"),
+                        aria_label="Remove research-summary.pdf",
                     ),
                 ),
                 dialog.trigger(attachment.trigger(link=False)),
@@ -27,7 +28,7 @@ def attachment_trigger_dialog_demo():
                 dialog.title("research-summary.pdf"),
                 dialog.description(
                     "The attachment trigger fills the card and opens the dialog, "
-                    "while the actions stay independently clickable above it."
+                    "while the actions stay independently clickable above it.",
                 ),
                 class_name="max-w-md rounded-2xl",
             ),

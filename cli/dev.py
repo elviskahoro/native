@@ -11,12 +11,11 @@ DOCS_DIR = Path("docs")
 
 
 def build_index():
-    """
-    Builds:
+    """Builds:
     {
         "getting-started": ["introduction", "installation"],
         "components": ["button", "input"]
-    }
+    }.
     """
     sections = {}
 
@@ -77,8 +76,7 @@ def build_arg_parser():
 
 
 def resolve_pages(names, section_names, sections):
-    """
-    Resolves bare page names ('button'), full paths ('components/button'),
+    """Resolves bare page names ('button'), full paths ('components/button'),
     and --section names into a deduped list of full 'section/page' paths.
 
     Returns None (and prints errors) if anything couldn't be resolved.
@@ -108,7 +106,7 @@ def resolve_pages(names, section_names, sections):
             if len(matches) > 1:
                 errors.append(
                     f"'{name}' is ambiguous (matches: {', '.join(matches)}) "
-                    f"— use the full path, e.g. '{matches[0]}'"
+                    f"— use the full path, e.g. '{matches[0]}'",
                 )
                 continue
             path = matches[0]
@@ -151,8 +149,7 @@ def select_env():
 
 
 def select_pages_fuzzy(sections):
-    """
-    Fuzzy search + multi-select over all pages, plus a virtual
+    """Fuzzy search + multi-select over all pages, plus a virtual
     "whole section" entry so you can grab an entire section without
     tabbing through every page in it individually.
     """
@@ -193,18 +190,15 @@ def select_pages_fuzzy(sections):
                 if path not in seen:
                     seen.add(path)
                     pages.append(path)
-        else:
-            if item not in seen:
-                seen.add(item)
-                pages.append(item)
+        elif item not in seen:
+            seen.add(item)
+            pages.append(item)
 
     return pages
 
 
 def run_reflex(env, pages):
-    """
-    Runs Reflex and prints correct URLs ONLY after the actual port is known.
-    """
+    """Runs Reflex and prints correct URLs ONLY after the actual port is known."""
     if env == "dev":
         os.environ["BURIDAN_DEV_MODE"] = "true"
 
@@ -249,7 +243,7 @@ def run_reflex(env, pages):
     return port
 
 
-def main():
+def main() -> None:
     sections = build_index()
 
     parser = build_arg_parser()
@@ -297,7 +291,7 @@ def main():
         return
 
     confirm = questionary.confirm(
-        f"Run reflex in {env} with {len(selected_pages)} pages?"
+        f"Run reflex in {env} with {len(selected_pages)} pages?",
     ).ask()
 
     if not confirm:

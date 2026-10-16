@@ -96,7 +96,12 @@ def format_css(config: dict) -> str:
 
 def generate_theme_css(seed: str) -> str:
     decoded = decode_seed(
-        seed, BASE_THEMES, COLOR_THEMES, STYLE_REGISTRY, RADII_OPTIONS, FONT_REGISTRY
+        seed,
+        BASE_THEMES,
+        COLOR_THEMES,
+        STYLE_REGISTRY,
+        RADII_OPTIONS,
+        FONT_REGISTRY,
     )
     if not decoded:
         return ""
@@ -155,7 +160,8 @@ def get_latest_version(component_name: str, registry: dict) -> str | None:
 
 
 def resolve_dependencies(
-    component_names: list[str], registry: dict
+    component_names: list[str],
+    registry: dict,
 ) -> tuple[list[str], dict[str, str]]:
     """Resolve a list of top-level component specs (with optional @version)
     plus their transitive dependencies into a file list and a name->version
@@ -182,7 +188,8 @@ def resolve_dependencies(
 
     def claim(name: str, key: str) -> bool:
         """Register `name` as resolved to `key`. Returns True if this call
-        actually claimed it (False if already claimed by something else)."""
+        actually claimed it (False if already claimed by something else).
+        """
         if name in resolved:
             if resolved[name] != key and name not in warned:
                 _, existing_version = parse_component_spec(resolved[name])
@@ -190,7 +197,7 @@ def resolve_dependencies(
                 print(
                     f"Warning: '{name}' requested at both "
                     f"{existing_version or 'latest'} and {new_version or 'latest'}; "
-                    f"keeping {existing_version or 'latest'}."
+                    f"keeping {existing_version or 'latest'}.",
                 )
                 warned.add(name)
             return False
@@ -198,14 +205,14 @@ def resolve_dependencies(
         order.append(name)
         return True
 
-    def add_files_and_deps(name: str, key: str):
+    def add_files_and_deps(name: str, key: str) -> None:
         entry = registry[key]
         for f in entry["files"]:
             required_files.add(f)
         for dep in entry.get("dependencies", []):
             add(dep)
 
-    def add(spec: str):
+    def add(spec: str) -> None:
         key = resolve_key(spec)
         if not key:
             print(f"Warning: Component '{spec}' not found in registry.")
@@ -254,7 +261,7 @@ def load_manifest(target_root: Path) -> dict:
                 manifest = loaded
             else:
                 print(
-                    "Warning: components.json content was not a JSON object; recreating it."
+                    "Warning: components.json content was not a JSON object; recreating it.",
                 )
         except Exception:
             print("Warning: components.json was unreadable; recreating it.")
@@ -271,7 +278,8 @@ def save_manifest(target_root: Path, manifest: dict) -> None:
 
 def update_manifest(target_root: Path, installed_map: dict[str, str]) -> None:
     """Merge newly installed components into components.json without
-    touching the theme section."""
+    touching the theme section.
+    """
     manifest = load_manifest(target_root)
     manifest["components"].update(installed_map)
     save_manifest(target_root, manifest)
@@ -280,7 +288,8 @@ def update_manifest(target_root: Path, installed_map: dict[str, str]) -> None:
 
 def update_manifest_theme(target_root: Path, preset: str, config: dict) -> None:
     """Record the currently-applied theme preset in components.json without
-    touching the components section."""
+    touching the components section.
+    """
     manifest = load_manifest(target_root)
 
     theme_data = {
@@ -324,14 +333,15 @@ def remap_dest(rel: str) -> str:
 
 
 def add_components_to_project(
-    component_names: list[str], target_root: Path = None
+    component_names: list[str],
+    target_root: Path | None = None,
 ) -> bool:
     if target_root is None:
         target_root = Path.cwd()
 
     if not (target_root / "rxconfig.py").exists():
         print(
-            "Error: rxconfig.py not found. Please run this command in a Reflex project root."
+            "Error: rxconfig.py not found. Please run this command in a Reflex project root.",
         )
         return False
 
@@ -403,7 +413,8 @@ def patch_rxconfig(config_path: Path) -> None:
                 for i in range(call.lineno - 1, call.end_lineno):
                     if "plugins=" in lines[i]:
                         lines[i] = lines[i].replace(
-                            "plugins=[", f"plugins=[\n{snippet},"
+                            "plugins=[",
+                            f"plugins=[\n{snippet},",
                         )
                         modified = True
                         break
@@ -412,7 +423,8 @@ def patch_rxconfig(config_path: Path) -> None:
                     if "Config(" in lines[i] or "config(" in lines[i]:
                         indent = " " * (len(lines[i]) - len(lines[i].lstrip()))
                         lines[i] = lines[i].replace(
-                            "(", f"(\n{indent}    plugins=[\n{snippet}\n{indent}    ],"
+                            "(",
+                            f"(\n{indent}    plugins=[\n{snippet}\n{indent}    ],",
                         )
                         modified = True
                         break
@@ -427,12 +439,14 @@ def patch_rxconfig(config_path: Path) -> None:
         if not modified:
             if "rx.Config(" in content:
                 content = content.replace(
-                    "rx.Config(", f"rx.Config(\n    plugins=[\n{snippet}\n    ],"
+                    "rx.Config(",
+                    f"rx.Config(\n    plugins=[\n{snippet}\n    ],",
                 )
                 modified = True
             elif "rx.config(" in content:
                 content = content.replace(
-                    "rx.config(", f"rx.config(\n    plugins=[\n{snippet}\n    ],"
+                    "rx.config(",
+                    f"rx.config(\n    plugins=[\n{snippet}\n    ],",
                 )
                 modified = True
 
@@ -444,7 +458,7 @@ def patch_rxconfig(config_path: Path) -> None:
             print("✓ Updated rxconfig.py with Buridan UI Tailwind config.")
         else:
             print(
-                "Warning: Could not automatically update rxconfig.py. Please configure manually."
+                "Warning: Could not automatically update rxconfig.py. Please configure manually.",
             )
 
     except Exception as e:
@@ -454,12 +468,12 @@ def patch_rxconfig(config_path: Path) -> None:
 # ── commands ──────────────────────────────────────────────────────────────────
 
 
-def cmd_init():
+def cmd_init() -> None:
     root = Path.cwd()
 
     if not (root / "rxconfig.py").exists():
         print(
-            "Error: rxconfig.py not found. Please run this command in a Reflex project root."
+            "Error: rxconfig.py not found. Please run this command in a Reflex project root.",
         )
         sys.exit(1)
 
@@ -501,7 +515,7 @@ def cmd_init():
     print("     buridan add button")
 
 
-def cmd_apply(preset: str):
+def cmd_apply(preset: str) -> None:
     root = Path.cwd()
 
     if not (root / "rxconfig.py").exists():
@@ -509,11 +523,16 @@ def cmd_apply(preset: str):
         sys.exit(1)
 
     config = decode_seed(
-        preset, BASE_THEMES, COLOR_THEMES, STYLE_REGISTRY, RADII_OPTIONS, FONT_REGISTRY
+        preset,
+        BASE_THEMES,
+        COLOR_THEMES,
+        STYLE_REGISTRY,
+        RADII_OPTIONS,
+        FONT_REGISTRY,
     )
     if not config:
         print(
-            f"Error: Invalid preset ID '{preset}'. Get a valid preset from https://buridan-ui.com/create"
+            f"Error: Invalid preset ID '{preset}'. Get a valid preset from https://buridan-ui.com/create",
         )
         sys.exit(1)
 
@@ -547,7 +566,8 @@ def cmd_apply(preset: str):
                             if l.strip().startswith(".dark {"):
                                 bd = 0
                                 for k, dl in enumerate(
-                                    lines[end_line + 1 + j :], end_line + 1 + j
+                                    lines[end_line + 1 + j :],
+                                    end_line + 1 + j,
                                 ):
                                     bd += dl.count("{") - dl.count("}")
                                     if bd == 0 and k > end_line + 1 + j:
@@ -575,7 +595,7 @@ def cmd_apply(preset: str):
     print('  app = rx.App(stylesheets=["globals.css"])')
 
 
-def cmd_create():
+def cmd_create() -> None:
     """Open the Buridan UI theme builder in the browser."""
     import webbrowser
 
@@ -584,13 +604,13 @@ def cmd_create():
     webbrowser.open(url)
 
 
-def cmd_add(component_names: list[str]):
+def cmd_add(component_names: list[str]) -> None:
     """Add one or more components and their dependencies to the project."""
     css_path = Path.cwd() / "assets" / "globals.css"
     if not css_path.exists() or ":root {" not in css_path.read_text():
         print("⚠  Warning: No theme detected in assets/globals.css.")
         print(
-            "   Components use CSS variables that require a theme to render correctly."
+            "   Components use CSS variables that require a theme to render correctly.",
         )
         print("   Run 'buridan apply --preset b0' to apply a default theme.\n")
 
@@ -598,7 +618,7 @@ def cmd_add(component_names: list[str]):
         sys.exit(1)
 
 
-def cmd_list():
+def cmd_list() -> None:
     """List all available components."""
     skip = {"core", "hugeicon"}
     names = sorted(n for n in COMPONENT_REGISTRY if n not in skip)
@@ -610,7 +630,7 @@ def cmd_list():
 # ── entry point ───────────────────────────────────────────────────────────────
 
 
-def main():
+def main() -> None:
     parser = argparse.ArgumentParser(
         prog="buridan",
         description="Buridan UI — CLI for Reflex component library",
@@ -621,10 +641,13 @@ def main():
     sub.add_parser("create", help="Open the Buridan UI theme builder in your browser")
 
     apply_p = sub.add_parser(
-        "apply", help="Apply a theme preset (from buridan-ui.com/create)"
+        "apply",
+        help="Apply a theme preset (from buridan-ui.com/create)",
     )
     apply_p.add_argument(
-        "--preset", required=True, help="Preset ID e.g. b0 or b2D0wqNxT"
+        "--preset",
+        required=True,
+        help="Preset ID e.g. b0 or b2D0wqNxT",
     )
 
     add_p = sub.add_parser("add", help="Add components to your project")

@@ -51,7 +51,7 @@ def message_with_avatar():
                     bubble.root(
                         bubble.content(
                             "Something went wrong with the build. The libraries are not "
-                            "installed correctly. Try running the build again."
+                            "installed correctly. Try running the build again.",
                         ),
                         variant="muted",
                     ),

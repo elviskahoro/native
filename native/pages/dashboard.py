@@ -34,6 +34,6 @@ def dashboard_page():
             requestAnimationFrame(() => {
                 Prism.highlightAll();
             });
-            """
+            """,
         ),
     )

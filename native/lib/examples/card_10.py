@@ -40,7 +40,8 @@ def card_10() -> rx.Component:
             ),
             rx.el.div(
                 rx.el.p(
-                    item["label"], class_name="text-sm font-semibold text-foreground"
+                    item["label"],
+                    class_name="text-sm font-semibold text-foreground",
                 ),
                 rx.el.p(
                     item["description"],
@@ -63,7 +64,7 @@ def card_10() -> rx.Component:
                     class_name="w-full flex flex-col gap-y-4",
                 ),
                 class_name="flex flex-col",
-            )
+            ),
         ),
         card.footer(
             button("Save Preferences", variant="default", class_name="w-full"),
