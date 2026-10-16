@@ -56,9 +56,11 @@ def card_03() -> rx.Component:
                             ),
                             class_name="w-full flex flex-row items-center justify-between py-2.5",
                         ),
-                        rx.el.div(class_name="w-full h-px bg-input")
-                        if row["divider"]
-                        else rx.fragment(),
+                        (
+                            rx.el.div(class_name="w-full h-px bg-input")
+                            if row["divider"]
+                            else rx.fragment()
+                        ),
                         class_name="w-full flex flex-col",
                     )
                     for row in summary_rows

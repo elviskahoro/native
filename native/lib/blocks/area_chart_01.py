@@ -106,11 +106,13 @@ def area_chart_01():
                 *[
                     rx.el.li(
                         rx.el.div(
-                            rx.el.span(
-                                class_name=f"w-1 h-6 shrink-0 rounded-sm bg-{color}",
-                            )
-                            if color
-                            else None,
+                            (
+                                rx.el.span(
+                                    class_name=f"w-1 h-6 shrink-0 rounded-sm bg-{color}",
+                                )
+                                if color
+                                else None
+                            ),
                             rx.el.p(total, class_name="text-lg font-semibold"),
                             class_name="flex items-center gap-2",
                         ),

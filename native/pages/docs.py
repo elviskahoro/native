@@ -57,15 +57,17 @@ def link_card(name: str, href: str, description: str = ""):
                 class_name="flex min-w-0 items-center gap-1.5",
             ),
             # Description Block (only renders if description exists)
-            div(
-                p(
-                    description,
-                    class_name="text-xs text-muted-foreground line-clamp-2 leading-relaxed",
-                ),
-                class_name="mt-1",
-            )
-            if description
-            else div(),
+            (
+                div(
+                    p(
+                        description,
+                        class_name="text-xs text-muted-foreground line-clamp-2 leading-relaxed",
+                    ),
+                    class_name="mt-1",
+                )
+                if description
+                else div()
+            ),
             class_name="flex flex-col gap-1",
         ),
         href=href,
