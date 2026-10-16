@@ -65,13 +65,17 @@ lint:
       regexes:
         - ^docs/.+\.(md|mdx)$
   enabled:
-    - actionlint@1.14.0
+    - actionlint@1.17.0
     - add-trailing-comma@4.0.0
     - bandit@1.9.4
-    - buildifier@8.2.0
+    # jupyter formatter; ruff format excludes *.ipynb.
+    - black@24.10.0
+    - buildifier@8.2.1
     - checkov@3.3.19
+    - codespell@2.4.1
     - markdown-link-check@3.15.0
     - markdownlint-cli2@0.23.3
+    - mypy@1.14.1
     - osv-scanner@2.6.0
     - oxipng@10.1.1
     - pinact@4.0.0
@@ -95,7 +99,6 @@ lint:
     - ansible-lint
     - autopep8
     - biome
-    - black
     - brakeman
     - buf-breaking
     - buf-format
@@ -106,7 +109,6 @@ lint:
     - clang-tidy
     - clippy
     - cmake-format
-    - codespell
     - cspell
     - cue-fmt
     - dart
@@ -140,7 +142,6 @@ lint:
     - ls-lint
     - markdown-table-prettify
     - markdownlint
-    - mypy
     - nancy
     - nbstripout
     - nixpkgs-fmt
@@ -193,11 +194,15 @@ lint:
     # frontend/ and assets/external/ are this repo's build products).
     - linters: [ALL]
       paths:
+        # Scratch dirs (safe to clean -- gitignore candidate).
         - tmp/**
         - worktrees/**
+        # Build outputs (will regrow from compile steps).
         - .web/**
         - frontend/**
         - assets/external/**
+    # ruff lint is the only Python linter that processes jupyter files;
+    # black IS the only formatter that does, and is intentionally not excluded.
     - linters: [ruff]
       paths:
         - "*.ipynb"
@@ -206,13 +211,10 @@ lint:
     - linters: [markdownlint, markdownlint-cli2]
       paths:
         - docs/**/*.mdx
-    # Same rationale as the gtm-sdk reference: semgrep is slow and noisy on
-    # non-source file types.
+    # semgrep and checkov: ignore non-source file types to reduce noise.
     - linters: [checkov, semgrep]
       paths:
-        - "**/*.py"
-        - "**/*.sh"
-        - "**/*.md"
+        - "**/*.parquet"
         - "**/*.png"
         - "**/*.jpg"
         - "**/*.jpeg"
@@ -227,10 +229,13 @@ lint:
         - "**/*.7z"
         - "**/*.csv"
         - "**/*.xml"
-        - "**/*.proto"
     - linters: [trivy]
       paths:
         - .trunk/**
+    # trufflehog: parquet is a data format, not code.
+    - linters: [trufflehog]
+      paths:
+        - "**/*.parquet"
   exported_configs:
     - plugin_id: oss-linter-trunk
       configs:
