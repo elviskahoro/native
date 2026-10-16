@@ -58,7 +58,7 @@ _REGISTRY = {
 _MIN_ON_MOUNT_SCRIPTS = 2
 
 
-def _decode(code: str) -> dict | None:
+def _decode(code: str) -> dict[str, object] | None:
     return decode_seed(
         code,
         _REGISTRY["base"],
