@@ -13,29 +13,34 @@ from __future__ import annotations
 
 import pathlib
 
-import markdown
-import pytest
-from bs4 import BeautifulSoup
+import markdown  # pyright: ignore[reportMissingModuleSource]
+import pytest  # pyrefly: ignore[missing-import]
+from bs4 import BeautifulSoup  # pyrefly: ignore[missing-import]
 
 from native.engine.generator import generate_docs_library
-from native.engine.parser import _MD_EXTENSIONS, extract_toc
+from native.engine.parser import (  # pyright: ignore[reportPrivateUsage]
+    _MD_EXTENSIONS,
+    extract_toc,
+)
 from native.engine.utils import parse_frontmatter
 
 ROOT_DIR = pathlib.Path(__file__).parent.parent
 DOCS_DIR = ROOT_DIR / "docs"
 
 
-def test_only_code_block_with_hashes_returns_empty():
+def test_only_code_block_with_hashes_returns_empty() -> None:
     """The core bug: a fenced code block with '#'/'##' lines yields no TOC
-    entries — fenced code is never treated as headings."""
+    entries — fenced code is never treated as headings.
+    """
     body = "```python\n# Not a heading one\n## Not a heading two\nx = 1\n```\n"
     assert extract_toc(body) == []
 
 
-def test_ids_are_python_markdown_slugs():
+def test_ids_are_python_markdown_slugs() -> None:
     """TOC ids are python-markdown's toc-extension slugs (punctuation stripped),
     so the sidebar href resolves to the rendered heading's id — not the raw
-    heading text that toc.py would otherwise re-slugify naively."""
+    heading text that toc.py would otherwise re-slugify naively.
+    """
     body = "# Basic Table\n## `table.root`\n## Row selection (opt-in convention)\n"
     toc = extract_toc(body)
     assert [e["id"] for e in toc] == [
@@ -45,19 +50,21 @@ def test_ids_are_python_markdown_slugs():
     ]
 
 
-def test_chunked_duplicate_across_token_keeps_page_id():
-    """A heading duplicated across a --TOKEN-- boundary keeps the SAME unsuffixed
-    id in the TOC as on the chunked-rendered page. parse_and_render renders per
+def test_chunked_duplicate_across_token_keeps_page_id() -> None:
+    """A heading duplicated across a --TOKEN-- boundary keeps the same unsuffixed id.
+
+    The TOC matches the chunked-rendered page's id. parse_and_render renders per
     chunk, so python-markdown disambiguates duplicates only within a chunk; a
     single full-document TOC pass would wrongly suffix the second copy and
-    diverge from the page. (The docs/components/field.md case.)"""
+    diverge from the page. (The docs/components/field.md case.)
+    """
     body = "## field.root\n\nintro\n\n--DEMO(field_demo)--\n\n## field.root\n"
     toc = extract_toc(body)
     assert [e["id"] for e in toc] == ["fieldroot", "fieldroot"]
 
 
-@pytest.mark.parametrize(
-    "slug,spurious_substrings",
+@pytest.mark.parametrize(  # pyright: ignore[reportUntypedFunctionDecorator]
+    ("slug", "spurious_substrings"),
     [
         (
             "components/table",
@@ -68,11 +75,14 @@ def test_chunked_duplicate_across_token_keeps_page_id():
     ],
 )
 def test_generate_docs_library_toc_has_no_spurious_entries(
-    monkeypatch, slug, spurious_substrings
-):
+    monkeypatch: pytest.MonkeyPatch,
+    slug: str,
+    spurious_substrings: list[str],
+) -> None:
     """The app-boot entry point (called by native/export.py), in dev mode for
     each affected page, emits a table_of_content with no code-block-capture
-    entries — guards the extract_toc wiring in generate_docs_library."""
+    entries — guards the extract_toc wiring in generate_docs_library.
+    """
     monkeypatch.setenv("BURIDAN_DEV_MODE", "true")
     monkeypatch.setenv("BURIDAN_DEV_PAGES", slug)
 
@@ -102,12 +112,17 @@ def _full_doc_render_headings(body: str) -> list[tuple[str, int]]:
     return [(h.get_text().strip(), int(h.name[1])) for h in soup.find_all(["h1", "h2"])]
 
 
-@pytest.mark.parametrize("md_file", _DOCS, ids=lambda f: str(f.relative_to(DOCS_DIR)))
-def test_toc_matches_rendered_headings(md_file):
+@pytest.mark.parametrize(  # pyright: ignore[reportUntypedFunctionDecorator]
+    "md_file",
+    _DOCS,
+    ids=[str(p.relative_to(DOCS_DIR)) for p in _DOCS],
+)
+def test_toc_matches_rendered_headings(md_file: pathlib.Path) -> None:
     """Every docs file's extract_toc (text, level) list equals the heading list
     of an independent full-document python-markdown render (a different code
     path than extract_toc's chunked render). Catches any code-block capture,
-    missed/extra/out-of-order heading, or level mismatch across all docs."""
+    missed/extra/out-of-order heading, or level mismatch across all docs.
+    """
     body = parse_frontmatter(md_file.read_text(encoding="utf-8"))[1]
     expected = _full_doc_render_headings(body)
     actual = [(e["text"], e["level"]) for e in extract_toc(body)]
@@ -118,6 +133,6 @@ def test_toc_matches_rendered_headings(md_file):
     )
 
 
-def test_docs_dir_is_non_empty_guard():
+def test_docs_dir_is_non_empty_guard() -> None:
     """If _DOCS is empty the parametrized guard above silently runs 0 cases."""
     assert _DOCS, f"No markdown files found under {DOCS_DIR}"

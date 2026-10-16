@@ -214,7 +214,7 @@ def parse_and_render(content: str) -> list[rx.Component]:
     return pieces
 
 
-def _collect_headings(html: str, toc_data: list[dict]) -> None:
+def _collect_headings(html: str, toc_data: list[dict[str, str | int]]) -> None:
     soup = BeautifulSoup(html, "html.parser")
     for heading in soup.find_all(["h1", "h2"]):
         text = heading.get_text().strip()
@@ -223,11 +223,11 @@ def _collect_headings(html: str, toc_data: list[dict]) -> None:
                 "text": text,
                 "id": heading.get("id") or text,
                 "level": int(heading.name[1]),
-            }
+            },
         )
 
 
-def extract_toc(content: str) -> list[dict]:
+def extract_toc(content: str) -> list[dict[str, str | int]]:
     """Build the in-page table of contents for a docs markdown body.
 
     Headings are collected by rendering each markdown chunk between
@@ -240,7 +240,7 @@ def extract_toc(content: str) -> list[dict]:
     page. fenced_code ensures '#' lines inside code blocks are never treated
     as headings.
     """
-    toc_data: list[dict] = []
+    toc_data: list[dict[str, str | int]] = []
     cursor = 0
 
     for match in _TOKEN_MATCH_RE.finditer(content):
@@ -249,7 +249,8 @@ def extract_toc(content: str) -> list[dict]:
             chunk = content[cursor:start]
             if chunk.strip():
                 _collect_headings(
-                    markdown.markdown(chunk, extensions=_MD_EXTENSIONS), toc_data
+                    markdown.markdown(chunk, extensions=_MD_EXTENSIONS),
+                    toc_data,
                 )
         cursor = end
 
@@ -257,7 +258,8 @@ def extract_toc(content: str) -> list[dict]:
         chunk = content[cursor:]
         if chunk.strip():
             _collect_headings(
-                markdown.markdown(chunk, extensions=_MD_EXTENSIONS), toc_data
+                markdown.markdown(chunk, extensions=_MD_EXTENSIONS),
+                toc_data,
             )
 
     return toc_data
