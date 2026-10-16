@@ -23,7 +23,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-import reflex as rx
+import reflex as rx  # pyrefly: ignore
 
 from native.templates._copy_btn import create_copy_button
 from native.templates._dashboard import dashboard_demo
@@ -38,7 +38,7 @@ if TYPE_CHECKING:
 # ---------------------------------------------------------------------------
 
 
-def _event_triggers(comp: object) -> dict:
+def _event_triggers(comp: object) -> dict[str, object]:
     return getattr(comp, "event_triggers", {}) or {}
 
 
@@ -78,7 +78,9 @@ def has_on_click(comp: object) -> bool:
 
 def stops_propagation(comp: object) -> bool:
     spec = _first_spec(_on_click_chain(comp))
-    return bool(spec is not None and spec.event_actions.get("stopPropagation"))
+    return bool(
+        spec is not None and getattr(spec, "event_actions", {}).get("stopPropagation"),
+    )
 
 
 def walk(comp: object) -> Iterator[object]:
