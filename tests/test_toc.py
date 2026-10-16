@@ -18,8 +18,8 @@ import pytest  # pyrefly: ignore[missing-import]
 from bs4 import BeautifulSoup  # pyrefly: ignore[missing-import]
 
 from native.engine.generator import generate_docs_library
-from native.engine.parser import (  # pyright: ignore[reportPrivateUsage]
-    _MD_EXTENSIONS,
+from native.engine.parser import (
+    _MD_EXTENSIONS,  # pyright: ignore[reportPrivateUsage]
     extract_toc,
 )
 from native.engine.utils import parse_frontmatter
