@@ -65,7 +65,7 @@ lint:
       regexes:
         - ^docs/.+\.(md|mdx)$
   enabled:
-    - actionlint@1.17.0
+    - actionlint@1.14.0
     - add-trailing-comma@4.0.0
     - bandit@1.9.4
     - buildifier@8.2.0
