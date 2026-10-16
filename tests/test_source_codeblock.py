@@ -21,8 +21,7 @@ These tests pin the contract of the fix so the same footgun is not reintroduced:
 
 from __future__ import annotations
 
-from collections.abc import Iterator
-from typing import Any
+from typing import TYPE_CHECKING
 
 import reflex as rx
 
@@ -31,27 +30,30 @@ from native.templates._dashboard import dashboard_demo
 from native.templates._demo import demo
 from native.templates._source import file_codeblock
 
+if TYPE_CHECKING:
+    from collections.abc import Iterator
+
 # ---------------------------------------------------------------------------
 # Introspection helpers
 # ---------------------------------------------------------------------------
 
 
-def _event_triggers(comp: Any) -> dict:
+def _event_triggers(comp: object) -> dict:
     return getattr(comp, "event_triggers", {}) or {}
 
 
-def _on_click_chain(comp: Any):
+def _on_click_chain(comp: object) -> object | None:
     return _event_triggers(comp).get("on_click")
 
 
-def _first_spec(chain: Any):
+def _first_spec(chain: object) -> object | None:
     events = getattr(chain, "events", None)
     if not events:
         return None
     return events[0]
 
 
-def _string_value(value: Any) -> str | None:
+def _string_value(value: object) -> str | None:
     """Coerce a Reflex ``Var``/literal into its raw Python string."""
     if isinstance(value, str):
         return value
@@ -59,7 +61,7 @@ def _string_value(value: Any) -> str | None:
     return raw if isinstance(raw, str) else None
 
 
-def on_click_js(comp: Any) -> str | None:
+def on_click_js(comp: object) -> str | None:
     """JavaScript emitted for ``comp``'s ``on_click`` (``call_script`` handlers)."""
     chain = _on_click_chain(comp)
     if chain is None:
@@ -70,16 +72,16 @@ def on_click_js(comp: Any) -> str | None:
     return None
 
 
-def has_on_click(comp: Any) -> bool:
+def has_on_click(comp: object) -> bool:
     return _on_click_chain(comp) is not None
 
 
-def stops_propagation(comp: Any) -> bool:
+def stops_propagation(comp: object) -> bool:
     spec = _first_spec(_on_click_chain(comp))
     return bool(spec is not None and spec.event_actions.get("stopPropagation"))
 
 
-def walk(comp: Any) -> Iterator[Any]:
+def walk(comp: object) -> Iterator[object]:
     yield comp
     for child in getattr(comp, "children", None) or []:
         yield from walk(child)
@@ -94,7 +96,7 @@ def is_click_delegation(js: str | None) -> bool:
     return js is not None and ".click(" in js
 
 
-def find_copy_buttons(root: Any) -> list[Any]:
+def find_copy_buttons(root: object) -> list[object]:
     """Copy buttons: carry the clipboard copy script AND stop propagation."""
     return [
         c
@@ -108,7 +110,7 @@ def find_copy_buttons(root: Any) -> list[Any]:
 # ---------------------------------------------------------------------------
 
 
-def test_file_codeblock_card_does_not_delegate_via_click():
+def test_file_codeblock_card_does_not_delegate_via_click() -> None:
     """The recursion/double-fire root: the card's on_click must NOT call `.click()`."""
     card = file_codeblock("components/ui/button.py", "print(1)")
 
@@ -119,14 +121,14 @@ def test_file_codeblock_card_does_not_delegate_via_click():
     )
 
 
-def test_file_codeblock_card_copies_directly():
+def test_file_codeblock_card_copies_directly() -> None:
     """Clicking anywhere on the card must copy (click-anywhere preserved)."""
     card = file_codeblock("components/ui/button.py", "print(1)")
 
     assert is_copy_handler(on_click_js(card))
 
 
-def test_file_codeblock_nested_button_stops_propagation():
+def test_file_codeblock_nested_button_stops_propagation() -> None:
     """A button click must not bubble up and double-fire the card handler."""
     card = file_codeblock("components/ui/button.py", "print(1)")
     button = card.children[0].children[1]
@@ -139,7 +141,7 @@ def test_file_codeblock_nested_button_stops_propagation():
 # ---------------------------------------------------------------------------
 
 
-def test_copy_button_handler_stops_propagation():
+def test_copy_button_handler_stops_propagation() -> None:
     button, _ = create_copy_button(content="x")
 
     assert stops_propagation(button), (
@@ -148,9 +150,10 @@ def test_copy_button_handler_stops_propagation():
     )
 
 
-def test_copy_script_safely_escapes_content():
+def test_copy_script_safely_escapes_content() -> None:
     """The copied content is embedded via ``json.dumps`` so quotes, newlines,
-    backticks and ``${...}`` are safely escaped — never injected as raw JS."""
+    backticks and ``${...}`` are safely escaped — never injected as raw JS.
+    """
     import json
 
     payload = 'he said "hi"\nimport os # evil'
@@ -166,7 +169,7 @@ def test_copy_script_safely_escapes_content():
 # ---------------------------------------------------------------------------
 
 
-def test_demo_builds_and_copy_button_is_intact():
+def test_demo_builds_and_copy_button_is_intact() -> None:
     component = rx.el.div("preview")
     root = demo(component, "print('demo')")
 
@@ -179,7 +182,7 @@ def test_demo_builds_and_copy_button_is_intact():
     assert [c for c in walk(root) if is_click_delegation(on_click_js(c))] == []
 
 
-def test_dashboard_demo_builds_and_copy_button_is_intact():
+def test_dashboard_demo_builds_and_copy_button_is_intact() -> None:
     component = rx.el.div("preview")
     root = dashboard_demo(component, "print('dash')")
 
