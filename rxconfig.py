@@ -8,7 +8,7 @@ config = rx.Config(
     plugins=[
         rx.plugins.SitemapPlugin(),
         rx.plugins.TailwindV4Plugin(
-            config=TailwindConfig(plugins=["@tailwindcss/typography"])
+            config=TailwindConfig(plugins=["@tailwindcss/typography"]),
         ),
     ],
 )

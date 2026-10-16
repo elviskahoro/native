@@ -27,7 +27,7 @@ def message_with_group():
                 message.content(
                     bubble.root(
                         bubble.content(
-                            "The component and example JSON now live under the UI registry."
+                            "The component and example JSON now live under the UI registry.",
                         ),
                         variant="muted",
                     ),

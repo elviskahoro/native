@@ -36,7 +36,9 @@ class CoreComponent(Component):
 
     @classmethod
     def set_class_name(
-        cls, default_class_name: str | Var[str], props: dict[str, Any]
+        cls,
+        default_class_name: str | Var[str],
+        props: dict[str, Any],
     ) -> None:
 
         if "render_" in props:
@@ -257,7 +259,7 @@ class FieldSeparator(elements.Div):
                     *children,
                     data_slot="field-separator-content",
                     class_name="relative mx-auto block w-fit bg-background px-2 text-muted-foreground",
-                )
+                ),
             )
         return super().create(*inner_elements, **props)
 
@@ -457,7 +459,7 @@ def field_demo() -> rx.Component:
                 field.set(
                     field.legend("Billing Address"),
                     field.description(
-                        "The billing address associated with your payment method"
+                        "The billing address associated with your payment method",
                     ),
                     field.group(
                         field.root(
@@ -472,7 +474,7 @@ def field_demo() -> rx.Component:
                                 class_name="font-normal",
                             ),
                             orientation="horizontal",
-                        )
+                        ),
                     ),
                 ),
                 field.set(
@@ -484,15 +486,15 @@ def field_demo() -> rx.Component:
                                 placeholder="Add any additional comments",
                                 class_name="resize-none",
                             ),
-                        )
-                    )
+                        ),
+                    ),
                 ),
                 field.root(
                     button("Submit", type="submit"),
                     button("Cancel", variant="outline", type="button"),
                     orientation="horizontal",
                 ),
-            )
+            ),
         ),
         class_name="w-full max-w-md my-10",
     )

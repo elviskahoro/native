@@ -1,5 +1,4 @@
-"""
-Turns a --TOKEN(name)-- delimited markdown file into a list of rx.Component.
+"""Turns a --TOKEN(name)-- delimited markdown file into a list of rx.Component.
 
 Two registries do two different jobs, and neither should be confused for
 the other:
@@ -51,7 +50,7 @@ def _build_live_registry(dirs: list[str]) -> dict[str, tuple[object, str]]:
                 continue
 
             module_name = ".".join(
-                py_file.relative_to(_PROJECT_ROOT).with_suffix("").parts
+                py_file.relative_to(_PROJECT_ROOT).with_suffix("").parts,
             )
             module = importlib.import_module(module_name)
 
@@ -129,11 +128,9 @@ def render_token(cmd: str, raw_arg: str) -> rx.Component:
         from native.templates._source import source
 
         name, files = _render_install(raw_arg)
-
         return source(files)
 
     entry = _LIVE_REGISTRY.get(name)
-
     if not entry:
         # Placeholder for render_parse_error
         return rx.el.div(
@@ -141,12 +138,12 @@ def render_token(cmd: str, raw_arg: str) -> rx.Component:
             class_name="text-destructive font-mono text-sm my-2 p-2 border border-destructive/20 bg-destructive/5 rounded",
         )
 
-    obj, preferred_name = entry
-
+    obj, _preferred_name = entry
+    result = None
     if "demo" in cmd:
         source = Path(inspect.getsourcefile(obj)).read_text().strip()
-
-        return demo(obj(), source)
+        result = demo(obj(), source)
+    return result
 
 
 # --------------------------------------------------------------------------

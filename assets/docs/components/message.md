@@ -36,7 +36,9 @@ class CoreComponent(Component):
 
     @classmethod
     def set_class_name(
-        cls, default_class_name: str | Var[str], props: dict[str, Any]
+        cls,
+        default_class_name: str | Var[str],
+        props: dict[str, Any],
     ) -> None:
 
         if "render_" in props:
@@ -228,7 +230,7 @@ def message_with_avatar():
                     bubble.root(
                         bubble.content(
                             "Something went wrong with the build. The libraries are not "
-                            "installed correctly. Try running the build again."
+                            "installed correctly. Try running the build again.",
                         ),
                         variant="muted",
                     ),
@@ -273,7 +275,7 @@ def message_with_group():
                 message.content(
                     bubble.root(
                         bubble.content(
-                            "The component and example JSON now live under the UI registry."
+                            "The component and example JSON now live under the UI registry.",
                         ),
                         variant="muted",
                     ),
@@ -306,7 +308,7 @@ def message_header_footer():
             message.content(
                 bubble.root(
                     bubble.content(
-                        "Send the report to the team. Ping @lineindent if you need help."
+                        "Send the report to the team. Ping @lineindent if you need help.",
                     ),
                 ),
                 message.footer(
@@ -335,7 +337,7 @@ def message_with_actions():
             message.content(
                 bubble.root(
                     bubble.content(
-                        "The install failure is coming from the workspace package."
+                        "The install failure is coming from the workspace package.",
                     ),
                     variant="muted",
                 ),
@@ -414,7 +416,7 @@ def message_with_attachment():
                 bubble.root(
                     bubble.content(
                         "Here's the image. Can you add it to the PDF? "
-                        "Use it for the cover page."
+                        "Use it for the cover page.",
                     ),
                 ),
             ),
@@ -424,7 +426,7 @@ def message_with_attachment():
             message.content(
                 bubble.root(
                     bubble.content(
-                        "Done. Here's the PDF with the image added as the cover page."
+                        "Done. Here's the PDF with the image added as the cover page.",
                     ),
                     variant="muted",
                 ),

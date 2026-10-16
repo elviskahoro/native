@@ -36,7 +36,9 @@ class CoreComponent(Component):
 
     @classmethod
     def set_class_name(
-        cls, default_class_name: str | Var[str], props: dict[str, Any]
+        cls,
+        default_class_name: str | Var[str],
+        props: dict[str, Any],
     ) -> None:
 
         if "render_" in props:
@@ -109,7 +111,9 @@ class TabsRoot(Div, CoreComponent):
         props["data-value"] = default_value
 
         return super().create(
-            *children, class_name=cn(ClassNames.ROOT, custom_classes), **props
+            *children,
+            class_name=cn(ClassNames.ROOT, custom_classes),
+            **props,
         )
 
 
@@ -123,7 +127,9 @@ class TabsList(Div, CoreComponent):
         props["data-variant"] = variant
 
         return super().create(
-            *children, class_name=cn(ClassNames.LIST, custom_classes), **props
+            *children,
+            class_name=cn(ClassNames.LIST, custom_classes),
+            **props,
         )
 
 
@@ -237,7 +243,7 @@ def tabs_basic() -> rx.Component:
                     card.title("Overview"),
                     card.description(
                         "View your key metrics and recent project activity. Track progress "
-                        "across all your active projects."
+                        "across all your active projects.",
                     ),
                 ),
                 card.content(
@@ -253,7 +259,7 @@ def tabs_basic() -> rx.Component:
                     card.title("Analytics"),
                     card.description(
                         "Track performance and user engagement metrics. Monitor trends and "
-                        "identify growth opportunities."
+                        "identify growth opportunities.",
                     ),
                 ),
                 card.content(
@@ -269,7 +275,7 @@ def tabs_basic() -> rx.Component:
                     card.title("Reports"),
                     card.description(
                         "Generate and download your detailed reports. Export data in "
-                        "multiple formats for analysis."
+                        "multiple formats for analysis.",
                     ),
                 ),
                 card.content(
@@ -285,7 +291,7 @@ def tabs_basic() -> rx.Component:
                     card.title("Settings"),
                     card.description(
                         "Manage your account preferences and options. Customize your "
-                        "experience to fit your needs."
+                        "experience to fit your needs.",
                     ),
                 ),
                 card.content(

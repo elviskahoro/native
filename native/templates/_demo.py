@@ -25,7 +25,7 @@ def demo(component: rx.Component, source: str):
                         on_click=rx.call_script(
                             f"""
                             document.getElementById("demo-{demo_id}").dataset.view = "preview";
-                            """
+                            """,
                         ),
                     ),
                     button(
@@ -40,7 +40,7 @@ def demo(component: rx.Component, source: str):
                         on_click=rx.call_script(
                             f"""
                             document.getElementById("demo-{demo_id}").dataset.view = "code";
-                            """
+                            """,
                         ),
                     ),
                     class_name="flex items-center gap-1 radius-lg",

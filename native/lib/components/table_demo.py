@@ -61,7 +61,9 @@ def summary_label(text: str, extra_classes: str = "") -> list:
     return [
         table.cell(text, col_span=3, class_name=f"{base_class} sm:hidden"),
         table.cell(
-            text, col_span=4, class_name=f"hidden {base_class} sm:table-cell md:hidden"
+            text,
+            col_span=4,
+            class_name=f"hidden {base_class} sm:table-cell md:hidden",
         ),
         table.cell(text, col_span=5, class_name=f"hidden {base_class} md:table-cell"),
     ]
@@ -117,26 +119,30 @@ def table_block() -> rx.Component:
                     table.header(
                         table.row(
                             table.head(
-                                "Description", class_name="pl-3 whitespace-nowrap"
+                                "Description",
+                                class_name="pl-3 whitespace-nowrap",
                             ),
                             table.head(
                                 "Category",
                                 class_name="hidden sm:table-cell whitespace-nowrap",
                             ),
                             table.head(
-                                "Qty", class_name="text-right whitespace-nowrap"
+                                "Qty",
+                                class_name="text-right whitespace-nowrap",
                             ),
                             table.head(
                                 "Unit",
                                 class_name="hidden text-right md:table-cell whitespace-nowrap",
                             ),
                             table.head(
-                                "Unit Price", class_name="text-right whitespace-nowrap"
+                                "Unit Price",
+                                class_name="text-right whitespace-nowrap",
                             ),
                             table.head(
-                                "Amount", class_name="pr-3 text-right whitespace-nowrap"
+                                "Amount",
+                                class_name="pr-3 text-right whitespace-nowrap",
                             ),
-                        )
+                        ),
                     ),
                     table.body(
                         *[
@@ -167,7 +173,7 @@ def table_block() -> rx.Component:
                                 ),
                             )
                             for item in LINE_ITEMS
-                        ]
+                        ],
                     ),
                     table.footer(
                         table.row(
@@ -188,7 +194,8 @@ def table_block() -> rx.Component:
                         ),
                         table.row(
                             *summary_label(
-                                "Total Due", "font-semibold text-foreground"
+                                "Total Due",
+                                "font-semibold text-foreground",
                             ),
                             table.cell(
                                 fmt(total),

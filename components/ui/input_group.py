@@ -1,8 +1,10 @@
 from typing import Literal
 
 from reflex.components.component import ComponentNamespace
-from reflex_components_core.el import Div as ElDiv
-from reflex_components_core.el import Span as ElSpan
+from reflex_components_core.el import (
+    Div as ElDiv,
+    Span as ElSpan,
+)
 
 from ..core.core import CoreComponent, cn
 from .button import button
@@ -165,7 +167,8 @@ class InputGroupTextarea(CoreComponent):
     def create(cls, *children, **props):
         props["data_slot"] = "input-group-control"
         props["class_name"] = cn(
-            ClassNames.CONTROL_TEXTAREA, props.get("class_name", "")
+            ClassNames.CONTROL_TEXTAREA,
+            props.get("class_name", ""),
         )
 
         return textarea(*children, **props)

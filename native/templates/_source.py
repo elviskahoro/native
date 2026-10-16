@@ -43,7 +43,7 @@ def source(files):
             ),
             p(
                 span(
-                    "For manual installation, copy each of the source codes below in their respective locations."
+                    "For manual installation, copy each of the source codes below in their respective locations.",
                 ),
                 class_name="text-sm text-muted-foreground",
             ),

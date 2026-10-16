@@ -93,7 +93,7 @@ def table_list():
                         class_name="border border-input px-4 py-2 text-left font-bold [&[align=center]]:text-center [&[align=right]]:text-right",
                     ),
                     class_name="m-0 border-t border-input p-0 even:bg-muted",
-                )
+                ),
             ),
             rx.el.tbody(
                 rx.el.tr(

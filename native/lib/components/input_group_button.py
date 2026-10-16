@@ -30,7 +30,7 @@ def input_group_button() -> rx.Component:
                         rx.set_clipboard("https://ui.buridan.dev/"),
                     ],
                     on_mouse_down=rx.call_function(
-                        _input_copy.set_value(False)
+                        _input_copy.set_value(False),
                     ).debounce(1500),
                 ),
                 align="inline-end",

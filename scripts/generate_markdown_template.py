@@ -31,7 +31,7 @@ order:
 """
 
 
-def main():
+def main() -> None:
     name = input("Component name: ").strip()
 
     if not name:

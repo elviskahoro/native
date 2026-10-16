@@ -2,8 +2,8 @@ from dataclasses import dataclass
 
 import reflex as rx
 
-import native.registry.routes as routes
 from components.ui.button import button
+from native.registry import routes
 
 HIGHLIGHT_SCRIPT = """
     const currentPath = window.location.pathname.substring(1);
@@ -47,7 +47,6 @@ SIDEBAR_SECTIONS = [
 
 def create_menu_item(data: dict):
     """Create a single menu item."""
-
     if data["title"].startswith("pypi"):
         link = rx.el.a(
             rx.el.p(data["title"], class_name="cursor-pointer"),

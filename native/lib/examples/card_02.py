@@ -41,7 +41,7 @@ def card_02():
                     class_name="flex gap-2",
                 ),
                 class_name="grid gap-2 py-2 text-sm",
-            )
+            ),
         ),
         card.footer(
             button(
