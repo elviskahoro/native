@@ -1,0 +1,5 @@
+# Commits to ignore in git blame
+# Usage: git config blame.ignoreRevsFile .git-blame-ignore-revs
+
+# Fix render_token return statement count and regenerate docs
+f3df1bff6b4f82674c7086dc08d77dc5ea8a65aa
