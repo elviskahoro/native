@@ -68,6 +68,7 @@ lint:
     - actionlint@1.17.0
     - add-trailing-comma@4.0.0
     - bandit@1.9.4
+    # jupyter formatter; ruff format excludes *.ipynb.
     - black@24.10.0
     - buildifier@8.2.1
     - checkov@3.3.19
@@ -189,16 +190,20 @@ lint:
     - txtpbfmt
     - yapf
   ignore:
-    # Generated code and scratch directories.
+    # Scratch/build outputs (tmp/worktrees from the reference; .web/,
+    # frontend/ and assets/external/ are this repo's build products).
     - linters: [ALL]
       paths:
+        # Scratch dirs (safe to clean -- gitignore candidate).
         - tmp/**
         - worktrees/**
+        # Build outputs (will regrow from compile steps).
         - .web/**
         - frontend/**
         - assets/external/**
-    # Jupyter notebooks: ruff, mypy, bandit would be noisy; black/isort not applicable.
-    - linters: [ruff, mypy, bandit]
+    # ruff lint is the only Python linter that processes jupyter files;
+    # black IS the only formatter that does, and is intentionally not excluded.
+    - linters: [ruff]
       paths:
         - "*.ipynb"
     # Documentation MDX mixes JSX components with fenced code blocks, which
