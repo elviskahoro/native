@@ -16,8 +16,8 @@ the type, so any failure path crashed the build.
 
 from __future__ import annotations
 
-import pytest
-import reflex as rx
+import pytest  # pyrefly: ignore[missing-import]
+import reflex as rx  # pyrefly: ignore[missing-import]
 
 from native.engine.parser import render_token
 
@@ -25,7 +25,7 @@ UNKNOWN_COMPONENT = "definitely_not_a_real_component_xyz"
 KNOWN_COMPONENT = "button"
 
 
-@pytest.mark.parametrize("bad_name", [UNKNOWN_COMPONENT, "buton"])
+@pytest.mark.parametrize("bad_name", [UNKNOWN_COMPONENT, "buton"])  # pyright: ignore[reportUntypedFunctionDecorator]
 def test_source_token_unknown_component_does_not_raise(bad_name: str) -> None:
     """A SOURCE token for a name not in COMPONENT_REGISTRY (a typo or
     genuinely missing component) must return a renderable error Component
