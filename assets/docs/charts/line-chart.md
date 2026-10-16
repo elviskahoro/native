@@ -592,8 +592,8 @@ rx.recharts.line_chart(
 | Prop | Type | Default |
 | --- | --- | --- |
 | `data` | `list[dict]` |  |
-| `width` | `str | int` |  |
-| `height` | `str | int` |  |
+| `width` | `str \| int` |  |
+| `height` | `str \| int` |  |
 | `margin` | `dict` |  |
 
 ## line
@@ -617,7 +617,7 @@ rx.recharts.line(
 | `stroke` | `str` |  |
 | `stroke_width` | `int` |  |
 | `type_` | `str` | `"text"` |
-| `dot` | `bool | dict` | `True` |
+| `dot` | `bool \| dict` | `True` |
 | `active_dot` | `dict` |  |
 | `is_animation_active` | `bool` | `True` |
 
@@ -664,7 +664,7 @@ rx.recharts.x_axis(
 | `tick_size` | `int` |  |
 | `tick` | `dict` |  |
 | `min_tick_gap` | `int` |  |
-| `interval` | `str | int` |  |
+| `interval` | `str \| int` |  |
 
 ## y_axis
 

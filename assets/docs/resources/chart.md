@@ -339,7 +339,7 @@ rx.recharts.bar(data_key="mobile", fill="#2563eb")
 rx.recharts.bar(data_key="mobile", fill="oklch(0.5 0.2 240)")
 ```
 
-You can also include colors in your data structure and utlize `rx.foreach` for more concise codebase.
+You can also include colors in your data structure and utilize `rx.foreach` for a more concise codebase.
 
 ```python
 data = [
@@ -367,7 +367,7 @@ You can turn on/off any of these using the `display` prop and customize the indi
 
 Use the following props to customize the tooltip.
 
-**chart_tooltip()**
+### chart_tooltip()
 
 | Prop                  | Type               | Default  | Description                                          |
 | :-------------------- | :----------------- | :------- | :--------------------------------------------------- |
@@ -379,7 +379,7 @@ Use the following props to customize the tooltip.
 | `label_style`         | `dict`             | `{}`     | Style overrides merged onto the label element.       |
 | `content_style`       | `dict`             | `{}`     | Style overrides merged onto the tooltip container.   |
 
-**chart_tooltip_content()**
+### chart_tooltip_content()
 
 | Prop           | Type                             | Default    | Description                                                                                                                            |
 | :------------- | :------------------------------- | :--------- | :------------------------------------------------------------------------------------------------------------------------------------- |

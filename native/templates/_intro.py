@@ -96,7 +96,8 @@ def intro(raw_arg):
     intro = raw_arg.strip("[]").strip()
 
     if "," not in intro:
-        raise ValueError(f"Invalid INTRO format: {raw_arg!r}")
+        msg = f"Invalid INTRO format: {raw_arg!r}"
+        raise ValueError(msg)
 
     title, description = intro.split(",", 1)
     slug = title.strip().lower().replace(" ", "_")
