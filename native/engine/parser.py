@@ -112,7 +112,7 @@ def _render_install(name: str):
     return name, files_data
 
 
-def render_token(cmd: str, raw_arg: str) -> rx.Component | None:  # noqa: PLR0911
+def render_token(cmd: str, raw_arg: str) -> rx.Component:
     name = _clean_arg(raw_arg)
 
     if cmd == "install":
@@ -128,11 +128,9 @@ def render_token(cmd: str, raw_arg: str) -> rx.Component | None:  # noqa: PLR091
         from native.templates._source import source
 
         name, files = _render_install(raw_arg)
-
         return source(files)
 
     entry = _LIVE_REGISTRY.get(name)
-
     if not entry:
         # Placeholder for render_parse_error
         return rx.el.div(
@@ -141,12 +139,11 @@ def render_token(cmd: str, raw_arg: str) -> rx.Component | None:  # noqa: PLR091
         )
 
     obj, _preferred_name = entry
-
+    result = None
     if "demo" in cmd:
         source = Path(inspect.getsourcefile(obj)).read_text().strip()
-
-        return demo(obj(), source)
-    return None
+        result = demo(obj(), source)
+    return result
 
 
 # --------------------------------------------------------------------------

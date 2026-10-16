@@ -65,7 +65,7 @@ lint:
       regexes:
         - ^docs/.+\.(md|mdx)$
   enabled:
-    - actionlint@1.17.0
+    - actionlint@1.14.0
     - add-trailing-comma@4.0.0
     - bandit@1.9.4
     - buildifier@8.2.0
@@ -206,17 +206,6 @@ lint:
     - linters: [markdownlint, markdownlint-cli2]
       paths:
         - docs/**/*.mdx
-    # Generated copies are validated from their source docs; runtime typeset
-    # snippets are Markdown content, not authored documentation.
-    - linters: [markdownlint-cli2]
-      paths:
-        - assets/docs/**
-        - native/lib/typeset/**
-    # This test file has inline pytest parametrization lambdas where the
-    # trailing-comma autofixer conflicts with Ruff's formatter.
-    - linters: [add-trailing-comma]
-      paths:
-        - tests/test_generated_assets.py
     # Same rationale as the gtm-sdk reference: semgrep is slow and noisy on
     # non-source file types.
     - linters: [checkov, semgrep]
@@ -290,10 +279,16 @@ merge:
   # Re-verify after any pipeline rename:
   #   gh pr checks <pr-number> --json name --jq '.[].name'
   #
-  # All three are posted by GitHub Actions job names:
+  # The first three are GitHub Actions job names:
   #   - Trunk Check                             -> .github/workflows/trunk-check.yml
   #   - Unit tests                              -> .github/workflows/tests.yml
   #   - Generate & Verify Docs and Social Cards -> .github/workflows/validate-assets.yml
+  # The fourth is posted by the Pullfrog GitHub App, not by a workflow:
+  #   - pullfrog-approval -> passes when Pullfrog's review of that exact
+  #     commit has no outstanding feedback (no requested changes, no open
+  #     Pullfrog review threads). It only attaches to commits Pullfrog has
+  #     reviewed, so a new push stays blocked until Pullfrog re-reviews it
+  #     (console: review.re-review is on).
   #
   # Every workflow triggers on pull_request -> main AND on push to
   # main + trunk-merge/**, so the queue's predictive test branches get the
@@ -301,15 +296,43 @@ merge:
   # The queue itself is created in the Trunk web app (app.trunk.io), not here;
   # this block overrides which statuses queue testing waits on.
   #
-  # Do NOT add path-filtered workflows here (deploy.yml is push-to-main-only,
-  # pullfrog.yml is manual dispatch -- neither posts on PRs) -- path-filtered
-  # or workflow_run-triggered checks do not report on every PR and would
-  # deadlock the queue.
+  # pullfrog-approval reaches the queue's test branches because the queue's
+  # Draft-PR test PRs (draft, bot-opened) are reviewed too, which needs the
+  # console toggles review.drafts, review.own-prs and review.approval-check
+  # on (re-check any time with `pullfrog config list --repo
+  # elviskahoro/native`, the review.* keys).
+  # A bare push to trunk-merge/** gets no review and no check, so if the
+  # queue ever moves to Push-Triggered testing mode, drop pullfrog-approval
+  # from this list or the queue stalls on a status that never reports.
+  # Recovery if a queued PR stalls in Testing because pullfrog-approval
+  # never reports (Pullfrog down, or it skipped the queue's Draft PR):
+  # `trunk merge cancel <pr-number>`, request a review with an @pullfrog
+  # comment on the PR, then resubmit. During a Pullfrog outage, a repo
+  # admin can temporarily drop this entry and the ruleset context (the
+  # ruleset has no bypass actors) to let urgent fixes land; restore both
+  # afterwards.
+  #
+  # Do NOT add path-filtered workflows here (deploy.yml is push-to-main-only;
+  # pullfrog.yml is manual dispatch -- neither workflow posts on PRs) --
+  # path-filtered or workflow_run-triggered checks do not report on every PR
+  # and would deadlock the queue. pullfrog-approval is exempt because the
+  # app posts it on reviewed PR heads; it is not a workflow trigger.
+  #
+  # Keep the GitHub "main - PRs" ruleset's required_status_checks in sync
+  # with this list; the ruleset additionally requires "Entire Gates", which
+  # branch protection enforces but the queue deliberately does not wait on.
+  # The ruleset pins pullfrog-approval to the Pullfrog App (integration_id
+  # 1768019) so only the App's check satisfies it. Verify the two lists
+  # still match after any change here:
+  #   gh api repos/elviskahoro/native/rulesets --jq '.[] | select(.name=="main - PRs") | .rules[] | select(.type=="required_status_checks") | .parameters.required_status_checks[] | {context, integration_id}'
   #
   # Unlike the gtm-sdk reference (whose Bazel gate skips fork PRs because it
-  # needs registry secrets), all three gates here are secretless: fork PRs
-  # get the same coverage from GitHub Actions' read-only fork runs.
+  # needs registry secrets), the three Actions gates here are secretless:
+  # fork PRs get the same coverage from GitHub Actions' read-only fork runs,
+  # and pullfrog-approval covers fork PRs too (console:
+  # review.non-collaborators is on).
   required_statuses:
     - Trunk Check
     - Unit tests
     - Generate & Verify Docs and Social Cards
+    - pullfrog-approval

@@ -1,6 +1,5 @@
-"""Scans every markdown file under assets/docs/ for component-resolution errors.
-
-Those errors indicate a doc's embedded demo/code reference (e.g. a
+"""Scans every markdown file under assets/docs/ for component-resolution
+errors that indicate a doc's embedded demo/code reference (e.g. a
 --DEMO(...)-- block) failed to resolve to a real component, such as:
 
     Component `button_group_select` not found
@@ -38,11 +37,11 @@ def _find_docs_dir() -> Path:
         if candidate.is_dir():
             return candidate
 
-    msg = (
+    raise FileNotFoundError(
         "Could not locate an 'assets/docs' directory from the current "
         "working directory or any parent of this test file. If your docs "
+        "live somewhere else, update _find_docs_dir().",
     )
-    raise FileNotFoundError(msg)
 
 
 def _iter_markdown_files(docs_dir: Path) -> list[Path]:
