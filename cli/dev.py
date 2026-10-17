@@ -173,7 +173,9 @@ def select_pages_fuzzy(sections: dict[str, list[str]]) -> list[str] | None:
             choices.append(Choice(value=path, name=f"  {path}"))
 
     result = inquirer.fuzzy(
-        message="Search pages (type to filter, tab to select multiple, enter to confirm):",
+        message=(
+            "Search pages (type to filter, tab to select multiple, enter to confirm):"
+        ),
         choices=choices,
         multiselect=True,
         max_height="70%",
