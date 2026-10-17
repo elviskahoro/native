@@ -1,0 +1,7 @@
+<task-notification>
+<task-id>bbxbpg38z</task-id>
+<tool-use-id>toolu_01NECLBqGkoJcgdq2927ujFv</tool-use-id>
+<output-file>/tmp/claude-1000/-home-vercel-sandbox-native/d0c72aa2-59a4-4f8c-a233-5ea10c7b4252/tasks/bbxbpg38z.output</output-file>
+<status>failed</status>
+<summary>Background command "for i in $(seq 1 55); do gh pr checks 64 | grep -qi "pending\|queued\|in_progress" || break; sleep 5; done; gh pr checks 64" failed with exit code 8</summary>
+</task-notification>
