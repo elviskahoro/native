@@ -1,4 +1,4 @@
-from typing import Literal
+from typing import Any, Literal
 
 import reflex as rx
 from reflex.components.component import ComponentNamespace
@@ -51,7 +51,7 @@ def marker_root(
     )
 
 
-def marker_icon(*children, class_name: str = "", **props) -> rx.Component:
+def marker_icon(*children: Any, class_name: str = "", **props: Any) -> rx.Component:
 
     return rx.el.span(
         *children,
@@ -62,7 +62,7 @@ def marker_icon(*children, class_name: str = "", **props) -> rx.Component:
     )
 
 
-def marker_content(*children, class_name: str = "", **props) -> rx.Component:
+def marker_content(*children: Any, class_name: str = "", **props: Any) -> rx.Component:
 
     return rx.el.span(
         *children,

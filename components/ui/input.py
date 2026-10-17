@@ -1,3 +1,5 @@
+from typing import Any
+
 from reflex.components.component import ComponentNamespace
 from reflex_components_core.el import Input as BaseInput
 
@@ -22,7 +24,7 @@ class ClassNames:
 
 class InputComponent(BaseInput, CoreComponent):
     @classmethod
-    def create(cls, *children, **props) -> BaseInput:
+    def create(cls, *children: Any, **props: Any) -> BaseInput:
 
         existing_class = props.get("class_name", "")
 

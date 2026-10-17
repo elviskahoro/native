@@ -1,3 +1,5 @@
+from typing import Any
+
 from reflex_components_core.el import Textarea
 
 from ..core.core import CoreComponent
@@ -16,7 +18,7 @@ class ClassNames:
 
 class TextAreaComponent(Textarea, CoreComponent):
     @classmethod
-    def create(cls, *children, **props) -> Textarea:
+    def create(cls, *children: Any, **props: Any) -> Textarea:
         props.setdefault(
             "custom_attrs",
             {

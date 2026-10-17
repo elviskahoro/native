@@ -116,3 +116,7 @@ convention = "google"
 "native/registry/anatomy/**" = ["ANN", "D", "PLR0913"]
 # Standalone scripts are run directly, not imported as packages.
 "scripts/**" = ["INP001"]
+
+[lint.flake8-annotations]
+# `*args: Any` / `**kwargs: Any` is the correct annotation for genuinely variadic pass-through.
+allow-star-arg-any = true

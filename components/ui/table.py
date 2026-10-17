@@ -41,7 +41,7 @@ class ClassNames:
     PAGE_BUTTON = "h-8 rounded-md border border-input px-3 text-xs disabled:opacity-40 disabled:cursor-not-allowed"
 
 
-def _chevron_icon(path_d: str | list[str], **props) -> Component:
+def _chevron_icon(path_d: str | list[str], **props: Any) -> Component:
     paths = [path_d] if isinstance(path_d, str) else path_d
     return rx.el.svg(
         *[rx.el.path(d=p) for p in paths],
@@ -364,35 +364,37 @@ class TableSearch(CoreComponent):
 
 class TableHeader(Thead, CoreComponent):
     @classmethod
-    def create(cls, *children, **props) -> Component:
+    def create(cls, *children: Any, **props: Any) -> Component:
         cls.set_class_name(ClassNames.HEADER, props)
         return super().create(*children, **props)
 
 
 class TableBody(Tbody, CoreComponent):
     @classmethod
-    def create(cls, *children, **props) -> Component:
+    def create(cls, *children: Any, **props: Any) -> Component:
         cls.set_class_name(ClassNames.BODY, props)
         return super().create(*children, **props)
 
 
 class TableFooter(Tfoot, CoreComponent):
     @classmethod
-    def create(cls, *children, **props) -> Component:
+    def create(cls, *children: Any, **props: Any) -> Component:
         cls.set_class_name(ClassNames.FOOTER, props)
         return super().create(*children, **props)
 
 
 class TableRow(Tr, CoreComponent):
     @classmethod
-    def create(cls, *children, **props) -> Component:
+    def create(cls, *children: Any, **props: Any) -> Component:
         cls.set_class_name(ClassNames.ROW, props)
         return super().create(*children, **props)
 
 
 class TableHead(Th, CoreComponent):
     @classmethod
-    def create(cls, *children, sort_key: str | None = None, **props) -> Component:
+    def create(
+        cls, *children: Any, sort_key: str | None = None, **props: Any,
+    ) -> Component:
         cls.set_class_name(ClassNames.HEAD, props)
         if sort_key:
             children = (
@@ -408,7 +410,7 @@ class TableHead(Th, CoreComponent):
 
 class TableCell(Td, CoreComponent):
     @classmethod
-    def create(cls, *children, sort_value: Any = None, **props) -> Component:
+    def create(cls, *children: Any, sort_value: Any = None, **props: Any) -> Component:
         cls.set_class_name(ClassNames.CELL, props)
         if sort_value is not None:
             props["data-sort-value"] = str(sort_value)
@@ -417,7 +419,7 @@ class TableCell(Td, CoreComponent):
 
 class TableCaption(Caption, CoreComponent):
     @classmethod
-    def create(cls, *children, **props) -> Component:
+    def create(cls, *children: Any, **props: Any) -> Component:
         cls.set_class_name(ClassNames.CAPTION, props)
         return super().create(*children, **props)
 

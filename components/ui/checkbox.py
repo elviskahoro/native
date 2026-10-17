@@ -1,3 +1,5 @@
+from typing import Any
+
 import reflex as rx
 from reflex.components.component import ComponentNamespace
 
@@ -49,7 +51,7 @@ class ClassNames:
 
 class CheckboxRoot(CoreComponent):
     @classmethod
-    def create(cls, *children, **props) -> rx.Component:
+    def create(cls, *children: Any, **props: Any) -> rx.Component:
         custom_classes = props.pop("class_name", "")
 
         input_props = {}
@@ -74,7 +76,7 @@ class CheckboxRoot(CoreComponent):
 
 class CheckboxIndicator(CoreComponent):
     @classmethod
-    def create(cls, *children, **props) -> rx.Component:
+    def create(cls, *children: Any, **props: Any) -> rx.Component:
         if len(children) == 0:
             children = (hi("Tick02Icon"),)
         props["data-slot"] = "checkbox-indicator"

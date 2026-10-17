@@ -1,3 +1,5 @@
+from typing import Any
+
 import reflex as rx
 from reflex.components.component import ComponentNamespace
 
@@ -35,7 +37,7 @@ class ClassNames:
 
 class NativeSwitch(CoreComponent):
     @classmethod
-    def create(cls, label_text: str = "", **props) -> rx.Component:
+    def create(cls, label_text: str = "", **props: Any) -> rx.Component:
         props["data-slot"] = "switch"
 
         size = props.pop("size", "default")

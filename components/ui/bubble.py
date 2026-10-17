@@ -1,4 +1,4 @@
-from typing import Literal
+from typing import Any, Literal
 
 import reflex as rx
 from reflex.components.component import ComponentNamespace
@@ -84,7 +84,7 @@ class ClassNames:
 
 class NativeBubbleGroup(CoreComponent):
     @classmethod
-    def create(cls, *children, **props) -> rx.Component:
+    def create(cls, *children: Any, **props: Any) -> rx.Component:
         props["data-slot"] = "bubble-group"
         cls.set_class_name(ClassNames.GROUP, props)
         return rx.el.div(*children, **props)
@@ -92,7 +92,7 @@ class NativeBubbleGroup(CoreComponent):
 
 class NativeBubbleRoot(CoreComponent):
     @classmethod
-    def create(cls, *children, **props) -> rx.Component:
+    def create(cls, *children: Any, **props: Any) -> rx.Component:
         variant: BubbleVariant = props.pop("variant", "default")
         align: BubbleAlign = props.pop("align", "start")
 
@@ -112,7 +112,7 @@ class NativeBubbleRoot(CoreComponent):
 
 class NativeBubbleContent(CoreComponent):
     @classmethod
-    def create(cls, *children, **props) -> rx.Component:
+    def create(cls, *children: Any, **props: Any) -> rx.Component:
         props["data-slot"] = "bubble-content"
         cls.set_class_name(ClassNames.CONTENT, props)
         return rx.el.div(*children, **props)
@@ -120,7 +120,7 @@ class NativeBubbleContent(CoreComponent):
 
 class NativeBubbleReactions(CoreComponent):
     @classmethod
-    def create(cls, *children, **props) -> rx.Component:
+    def create(cls, *children: Any, **props: Any) -> rx.Component:
         side: BubbleSide = props.pop("side", "bottom")
         align: BubbleAlign = props.pop("align", "end")
 

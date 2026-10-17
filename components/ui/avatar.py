@@ -1,4 +1,5 @@
 import uuid
+from typing import Any
 
 import reflex as rx
 from reflex.components.component import ComponentNamespace
@@ -43,7 +44,7 @@ class ClassNames:
 
 class AvatarRoot(Div, CoreComponent):
     @classmethod
-    def create(cls, *children, **props) -> Div:
+    def create(cls, *children: Any, **props: Any) -> Div:
         custom_classes = props.pop("class_name", "")
         size = props.pop("size", "default")
         props["data-slot"] = "avatar"
@@ -57,7 +58,7 @@ class AvatarRoot(Div, CoreComponent):
 
 class AvatarImage(CoreComponent):
     @classmethod
-    def create(cls, **props) -> rx.Component:
+    def create(cls, **props: Any) -> rx.Component:
         custom_classes = props.pop("class_name", "")
         props["data-slot"] = "avatar-image"
 
@@ -93,7 +94,7 @@ class AvatarImage(CoreComponent):
 
 class AvatarFallback(Span, CoreComponent):
     @classmethod
-    def create(cls, *children, **props) -> Span:
+    def create(cls, *children: Any, **props: Any) -> Span:
         custom_classes = props.pop("class_name", "")
         props["data-slot"] = "avatar-fallback"
         props["style"] = {"display": "none", **props.get("style", {})}
@@ -106,7 +107,7 @@ class AvatarFallback(Span, CoreComponent):
 
 class AvatarBadge(Span, CoreComponent):
     @classmethod
-    def create(cls, *children, **props) -> Span:
+    def create(cls, *children: Any, **props: Any) -> Span:
         custom_classes = props.pop("class_name", "")
         props["data-slot"] = "avatar-badge"
         return super().create(
@@ -118,7 +119,7 @@ class AvatarBadge(Span, CoreComponent):
 
 class AvatarGroup(Div, CoreComponent):
     @classmethod
-    def create(cls, *children, **props) -> Div:
+    def create(cls, *children: Any, **props: Any) -> Div:
         custom_classes = props.pop("class_name", "")
         props["data-slot"] = "avatar-group"
         return super().create(
@@ -130,7 +131,7 @@ class AvatarGroup(Div, CoreComponent):
 
 class AvatarGroupCount(Div, CoreComponent):
     @classmethod
-    def create(cls, *children, **props) -> Div:
+    def create(cls, *children: Any, **props: Any) -> Div:
         custom_classes = props.pop("class_name", "")
         props["data-slot"] = "avatar-group-count"
         return super().create(

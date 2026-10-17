@@ -1,4 +1,4 @@
-from typing import Literal
+from typing import Any, Literal
 
 import reflex as rx
 
@@ -17,7 +17,7 @@ class ClassNames:
 
 class SeparatorComponent(CoreComponent):
     @classmethod
-    def create(cls, *children, **props) -> rx.Component:
+    def create(cls, *children: Any, **props: Any) -> rx.Component:
         orientation: str = props.pop("orientation", "horizontal")
         decorative = props.pop("decorative", True)
         data_slot = props.pop("data_slot", "separator")
