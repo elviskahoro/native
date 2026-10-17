@@ -124,6 +124,6 @@ def _kpi_mini_chart(
 
 def kpi_card_02() -> rx.Component:
     return rx.el.dl(
-        *[_kpi_mini_chart(**item) for item in categories],  # type: ignore
+        *[_kpi_mini_chart(**item) for item in categories],
         class_name="w-full grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3",
     )

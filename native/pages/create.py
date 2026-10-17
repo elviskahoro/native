@@ -201,7 +201,7 @@ def _sidebar_desktop() -> rx.Component:
                 "style-select",
                 "Style",
                 STYLE_REGISTRY,
-                STYLE_REGISTRY[0]["id"],  # type: ignore
+                STYLE_REGISTRY[0]["id"],
                 describe=True,
                 icon=hi("HexagonIcon"),
             ),

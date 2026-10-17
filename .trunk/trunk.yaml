@@ -1,29 +1,31 @@
-# This file controls the behavior of Trunk: https://docs.trunk.io/cli
-# To learn more about the format of this file, see https://docs.trunk.io/reference/trunk-yaml
-#
-# Adapted from the SanhedrinTech/gtm-sdk reference setup (full plugin set and
-# linter roster carried over; repo-specific deviations are commented inline).
+# This file controls the behavior of Trunk: https://docs.trunk.io/cli # To learn more about the format of this file, see https://docs.trunk.io/reference/trunk-yaml
 version: 0.1
 cli:
   version: 1.25.0
+
 # Trunk provides extensibility via plugins. (https://docs.trunk.io/plugins)
 plugins:
   sources:
     - id: trunk
       ref: v1.11.0
       uri: https://github.com/trunk-io/plugins
+
     - id: oss-linter-trunk
       ref: v0.2026.04.14.00.00
       uri: https://github.com/elviskahoro/oss-linter-trunk-config
+
     - id: add-trailing-comma-plugin
       ref: v0.1.0
       uri: https://github.com/elviskahoro/oss-linter-trunk-add-trailing-comma
+
     - id: pyrefly-plugin
       ref: v0.2.0
       uri: https://github.com/elviskahoro/oss-linter-trunk-pyrefly
+
     - id: tach-plugin
       ref: v0.1.0
       uri: https://github.com/elviskahoro/oss-linter-trunk-tach
+
 # actionlint switched from upstream rhysd/actionlint to the actively maintained
 # fork kjanat/actionlint (forked from upstream v1.7.12, independent releases from
 # v1.8.0, CLI-compatible). Trunk's plugin catalog still pins the rhysd download
@@ -44,6 +46,7 @@ downloads:
           x86_64: amd64
           arm_64: arm64
         url: https://github.com/kjanat/actionlint/releases/download/v${version}/actionlint_${version}_windows_${cpu}.zip
+
 # This is the section where you manage your linters. (https://docs.trunk.io/check/configuration)
 lint:
   definitions:
@@ -53,29 +56,29 @@ lint:
           enabled: true
         - name: lint
           enabled: true
+
     # Vale is scoped exclusively to docs/** (see .vale.ini). There's no
     # first-class "restrict this linter to a directory" field on `enabled`
     # entries, so introduce a custom file type matched by full relative
     # path -- `regexes` match against the path from the repo root, unlike
-    # `extensions`, which would also pick up markdown outside docs/.
+    # `extensions`, which would also pick up markdown outside docs/ (e.g.
+    # webhooks/README.md, CHANGELOG.md).
     - name: vale
       files: [docs-markdown]
+
   files:
     - name: docs-markdown
       regexes:
         - ^docs/.+\.(md|mdx)$
+
   enabled:
     - actionlint@1.17.0
     - add-trailing-comma@4.0.0
     - bandit@1.9.4
-    # jupyter formatter; ruff format excludes *.ipynb.
-    - black@24.10.0
     - buildifier@8.2.1
     - checkov@3.3.19
-    - codespell@2.4.1
     - markdown-link-check@3.15.0
     - markdownlint-cli2@0.23.3
-    - mypy@1.14.1
     - osv-scanner@2.6.0
     - oxipng@10.1.1
     - pinact@4.0.0
@@ -95,10 +98,12 @@ lint:
     - vale@3.14.1
     - yamlfmt@0.21.0
     - yamllint@1.38.0
+
   disabled:
     - ansible-lint
     - autopep8
     - biome
+    - black
     - brakeman
     - buf-breaking
     - buf-format
@@ -109,6 +114,7 @@ lint:
     - clang-tidy
     - clippy
     - cmake-format
+    - codespell
     - cspell
     - cue-fmt
     - dart
@@ -142,6 +148,7 @@ lint:
     - ls-lint
     - markdown-table-prettify
     - markdownlint
+    - mypy
     - nancy
     - nbstripout
     - nixpkgs-fmt
@@ -189,31 +196,36 @@ lint:
     - trunk-toolbox
     - txtpbfmt
     - yapf
+
   ignore:
-    # Scratch/build outputs (tmp/worktrees from the reference; .web/,
-    # frontend/ and assets/external/ are this repo's build products).
     - linters: [ALL]
       paths:
-        # Scratch dirs (safe to clean -- gitignore candidate).
+        - data/**
         - tmp/**
         - worktrees/**
-        # Build outputs (will regrow from compile steps).
-        - .web/**
-        - frontend/**
-        - assets/external/**
-    # ruff lint is the only Python linter that processes jupyter files;
-    # black IS the only formatter that does, and is intentionally not excluded.
+        - "**/*.openapi.json"
+        - "**/*.openapi.yaml"
+        - "**/*.openapi.yml"
+
     - linters: [ruff]
       paths:
         - "*.ipynb"
+
     # Documentation MDX mixes JSX components with fenced code blocks, which
     # markdownlint misreads as inconsistent code-block styles (MD046).
     - linters: [markdownlint, markdownlint-cli2]
       paths:
         - docs/**/*.mdx
-    # semgrep and checkov: ignore non-source file types to reduce noise.
+
+    - linters: [checkov]
+      paths:
+        - api/specs/caldotcom-*.json
+
     - linters: [checkov, semgrep]
       paths:
+        - "**/*.py"
+        - "**/*.sh"
+        - "**/*.md"
         - "**/*.parquet"
         - "**/*.png"
         - "**/*.jpg"
@@ -229,13 +241,23 @@ lint:
         - "**/*.7z"
         - "**/*.csv"
         - "**/*.xml"
+        - "**/*.proto"
+
     - linters: [trivy]
       paths:
         - .trunk/**
-    # trufflehog: parquet is a data format, not code.
+
+    # The rules_python Gazelle manifest updater writes a leading YAML document
+    # marker. Keep the generated bytes stable instead of making yamlfmt fight
+    # the update target on every regeneration.
+    - linters: [yamlfmt]
+      paths:
+        - gazelle_python.yaml
+
     - linters: [trufflehog]
       paths:
         - "**/*.parquet"
+
   exported_configs:
     - plugin_id: oss-linter-trunk
       configs:
@@ -265,79 +287,105 @@ lint:
         - configs/ruff.toml
         - configs/rustfmt.toml
         - configs/svgo.config.js
+
 actions:
   enabled:
     - trunk-cache-prune
     - trunk-upgrade-available
+
   disabled:
-    # git-hook-triggered actions disabled so trunk never touches
-    # core.hooksPath, which the shared git-hooks dispatcher (Entire
-    # checkpoints + AI co-author stripping) owns -- the same collision the
-    # gtm-sdk reference documents. trunk-check-pre-push is redundant with the
-    # merge queue's required "Trunk Check" status; git-lfs is unused.
+    # git-hook-triggered actions disabled so trunk releases core.hooksPath to
+    # Entire (checkpoints). trunk-check-pre-push is redundant with roborev + the
+    # merge queue's required "Lint and type check with Trunk"; git-lfs is unused.
     - trunk-fmt-pre-commit
     - git-lfs
     - trunk-announce
     - trunk-check-pre-push
+
 merge:
   # These must be live GitHub status names posted on every PR targeting main.
   # Re-verify after any pipeline rename:
   #   gh pr checks <pr-number> --json name --jq '.[].name'
   #
-  # The first three are GitHub Actions job names:
-  #   - Trunk Check                             -> .github/workflows/trunk-check.yml
-  #   - Unit tests                              -> .github/workflows/tests.yml
-  #   - Generate & Verify Docs and Social Cards -> .github/workflows/validate-assets.yml
-  # The fourth is posted by the Pullfrog GitHub App, not by a workflow:
-  #   - pullfrog-approval -> passes when Pullfrog's review of that exact
-  #     commit has no outstanding feedback (no requested changes, no open
-  #     Pullfrog review threads). It only attaches to commits Pullfrog has
-  #     reviewed, so a new push stays blocked until Pullfrog re-reviews it
-  #     (console: review.re-review is on).
+  # Per Trunk's docs, this list is one of three ways to define what the queue
+  # waits on while a queued PR is testing (GitHub branch protection
+  # required-checks are the default; a Trunk UI override is the third); it
+  # does not control which PRs are admitted to the queue. With branch
+  # protection plan-blocked here, this override is the queue's entire
+  # wait-set configuration.
   #
-  # Every workflow triggers on pull_request -> main AND on push to
-  # main + trunk-merge/**, so the queue's predictive test branches get the
-  # same checks in both Draft-PR (default) and Push-Triggered testing modes.
-  # The queue itself is created in the Trunk web app (app.trunk.io), not here;
-  # this block overrides which statuses queue testing waits on.
+  # The two RWX entries are posted by RWX (.rwx/trunk-check.yml and
+  # .rwx/tests-bazel.yml) as commit statuses, not check-runs -- verified via
+  # the statuses API on PR and trunk-merge/* draft heads, 2026-10-16 -- named
+  # "RWX: <file> (pull request)" for pull_request events and "RWX: <file>
+  # (push)" for push events, different names in different contexts. The
+  # names below are the pull_request status names, which is what the merge
+  # queue gates on when a PR is queued.
   #
-  # pullfrog-approval reaches the queue's test branches because the queue's
-  # Draft-PR test PRs (draft, bot-opened) are reviewed too, which needs the
-  # console toggles review.drafts, review.own-prs and review.approval-check
-  # on (re-check any time with `pullfrog config list --repo
-  # elviskahoro/native`, the review.* keys).
-  # A bare push to trunk-merge/** gets no review and no check, so if the
-  # queue ever moves to Push-Triggered testing mode, drop pullfrog-approval
-  # from this list or the queue stalls on a status that never reports.
-  # Recovery if a queued PR stalls in Testing because pullfrog-approval
-  # never reports (Pullfrog down, or it skipped the queue's Draft PR):
-  # `trunk merge cancel <pr-number>`, request a review with an @pullfrog
-  # comment on the PR, then resubmit. During a Pullfrog outage, a repo
-  # admin can temporarily drop this entry and the ruleset context (the
-  # ruleset has no bypass actors) to let urgent fixes land; restore both
-  # afterwards.
+  # pullfrog-approval is a check run posted by the pullfrog GitHub App when
+  # the Pullfrog review run it dispatches per PR finishes -- "Review #N" on
+  # PR open, "Review new commits on #N" on pushes -- distinct from the
+  # "pullfrog" job check of the run itself. Requiring it closes the
+  # fast-merge gap: #1113-#1116 merged seconds after creation, before the
+  # ~6-7 minute review finished, cancelling the run and leaving no verdict,
+  # and #991 merged over an explicit FAILURE posted on its test draft
+  # (#1090). The queue tests in Draft PR mode and the app reviews those
+  # trunk-merge/* drafts too, so every queued PR now holds for pullfrog's
+  # verdict on the merge.
   #
-  # Do NOT add path-filtered workflows here (deploy.yml is push-to-main-only;
-  # pullfrog.yml is manual dispatch -- neither workflow posts on PRs) --
-  # path-filtered or workflow_run-triggered checks do not report on every PR
-  # and would deadlock the queue. pullfrog-approval is exempt because the
-  # app posts it on reviewed PR heads; it is not a workflow trigger.
+  # Two Pullfrog console toggles are prerequisites for this gate to fire at
+  # all (console -> Automations -> Review PRs; both default Off, so a fresh
+  # app install starts with the gate inert): "Add Pullfrog's approval verdict
+  # as a Check on pull requests" -- without it the pullfrog-approval check
+  # never posts -- and "Include draft PRs" -- without it the app skips the
+  # queue's trunk-merge/* drafts, so no verdict posts on the merge and every
+  # queued PR stall-times out. PRs already in flight when a toggle is found
+  # Off stay stuck until timeout -- dequeue them and requeue after fixing the
+  # toggle, rather than waiting out the stall. Both toggles verified On
+  # empirically 2026-10-16: a verdict
+  # check posted on this PR's own head, and on queue drafts #1090/#1100 on
+  # 2026-10-15. The deprecated `status_checks: enabled` workflow input
+  # overrides both toggles; this repo's workflow_dispatch-only pullfrog.yml
+  # does not use it, so the console is the live config. Re-check the console
+  # alongside the name re-verification after any pullfrog app change.
   #
-  # Keep the GitHub "main - PRs" ruleset's required_status_checks in sync
-  # with this list; the ruleset additionally requires "Entire Gates", which
-  # branch protection enforces but the queue deliberately does not wait on.
-  # The ruleset pins pullfrog-approval to the Pullfrog App (integration_id
-  # 1768019) so only the App's check satisfies it. Verify the two lists
-  # still match after any change here:
-  #   gh api repos/elviskahoro/native/rulesets --jq '.[] | select(.name=="main - PRs") | .rules[] | select(.type=="required_status_checks") | .parameters.required_status_checks[] | {context, integration_id}'
+  # Known gaps, all fail-closed (the PR times out of the queue instead of
+  # merging unreviewed): the app does not review
+  # dependabot-authored PRs, so those cannot pass the queue and keep their
+  # existing direct-merge path (gating them too needs a pullfrog-app
+  # setting); a PR head is not re-reviewed after pullfrog's own "Fix CI"
+  # commits (#1108) -- that head keeps no verdict, so push any new commit
+  # (or re-trigger the review) before queueing or direct-merging, though a
+  # queued run still reviews the merge draft itself; and a pullfrog-side
+  # rename of the check fails silently (timeouts, no error) -- re-verify
+  # the name per the header rule after touching the app. A spurious FAILURE
+  # verdict on a draft ejects an otherwise-green PR -- requeue it
+  # (`trunk merge <pr>`) or use break-glass. The cost is latency: every
+  # queue run now waits out pullfrog's ~6-7 minute review of its draft, on
+  # top of CI. Break-glass for a pullfrog outage: remove this entry, or
+  # admin direct-merge past the queue. GitHub branch protection cannot
+  # backstop any of this: private repo on the free org plan,
+  # protection/rulesets APIs 403, so the queue is the only enforcement
+  # point (#1117).
   #
-  # Unlike the gtm-sdk reference (whose Bazel gate skips fork PRs because it
-  # needs registry secrets), the three Actions gates here are secretless:
-  # fork PRs get the same coverage from GitHub Actions' read-only fork runs,
-  # and pullfrog-approval covers fork PRs too (console:
-  # review.non-collaborators is on).
+  # "Entire Gates" comes from the Entire GitHub App and is the exact check-run name
+  # observed on queue PR #1100 and bot PR #1031; it depends on that app reporting.
+  # The docs job names were observed on docs PR #1110 and bot PR #1031.
+  # Docs checks reports its named job statuses on every PR and skips only its
+  # validation steps when none of its paths changed. Do NOT require a workflow
+  # filtered by `pull_request.paths`; it would deadlock the queue. Same for the
+  # workflow_run-triggered "Triage CI failure".
+  #
+  # Fork PRs get no Bazel coverage (tests-bazel skips them entirely via is-fork
+  # guard -- an accepted tradeoff, matching GHA's own degraded fork behavior).
   required_statuses:
-    - Trunk Check
-    - Unit tests
-    - Generate & Verify Docs and Social Cards
+    - "RWX: trunk-check.yml (pull request)"
+    - "RWX: tests-bazel.yml (pull request)"
+    - Entire Gates
+    - Docs validate + broken links
+    - CLI reference drift + page lint
+    # Re-verify this name after any pullfrog app change (header rule):
+    #   gh pr checks <pr-number> --json name --jq '.[].name'
+    # Unquoted on purpose: yamllint's quoted-strings rule (only-when-needed)
+    # rejects the quoted form -- nothing here needs escaping.
     - pullfrog-approval
