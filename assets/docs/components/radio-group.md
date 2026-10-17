@@ -361,7 +361,9 @@ Renders the visual selection state inside the radio item. Controlled purely via 
 ```python
 radio_group.indicator()
 
-radio_group.indicator(rx.el.span(class_name="size-2 rounded-full bg-accent"))
+radio_group.indicator(
+    rx.el.span(class_name="size-2 rounded-full bg-accent")
+)
 ```
 
 | Prop         | Type  | Default                        |

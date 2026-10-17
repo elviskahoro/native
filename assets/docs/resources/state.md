@@ -19,7 +19,6 @@ class ThemeState(rx.State):
     def toggle_mode(self):
         self.is_dark = not self.is_dark
 
-
 class AuthState(rx.State):
     user_id: str | None = None
 

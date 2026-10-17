@@ -72,7 +72,9 @@ Add an `attachment.trigger` to make the whole card open a link or dialog. It fil
 `attachment.action` is usually icon-only, so give each one an `aria-label` describing the action and its target.
 
 ```python
-attachment.action(hi("Cancel01Icon"), aria_label="Remove market-research.pdf")
+attachment.action(
+    hi("Cancel01Icon"), aria_label="Remove market-research.pdf"
+)
 ```
 
 ## Label the trigger

@@ -50,7 +50,10 @@ tabs.root(
         tabs.trigger("Overview", value="overview"),
         tabs.trigger("Analytics", value="analytics"),
     ),
-    tabs.content("Overview panel data", value="overview"),
+    tabs.content(
+        "Overview panel data",
+        value="overview"
+    ),
     default_value="overview",
 )
 ```
@@ -83,7 +86,11 @@ tabs.list(
 The clickable button elements used to switch active states. They safely merge internal client-side JS actions with optional user-supplied events.
 
 ```python
-tabs.trigger("Analytics", value="analytics", on_click=rx.console_log("Switched tabs!"))
+tabs.trigger(
+    "Analytics",
+    value="analytics",
+    on_click=rx.console_log("Switched tabs!")
+)
 ```
 
 | Prop         | Type                                      | Default               |

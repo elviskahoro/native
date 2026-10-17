@@ -52,8 +52,12 @@ You can trigger multiple events from a single interaction by passing a list to t
 
 ```python
 rx.el.button(
-    "Save",
-    on_click=[State.save_data, rx.toast("Data Saved!"), rx.redirect("/dashboard")],
+    "Save", 
+    on_click=[
+        State.save_data,
+        rx.toast("Data Saved!"),
+        rx.redirect("/dashboard")
+    ]
 )
 ```
 
