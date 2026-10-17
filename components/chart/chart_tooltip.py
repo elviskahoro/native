@@ -87,7 +87,8 @@ class _ChartTooltipContent:
         lines = []
         for i, color_idx in enumerate(chart_colors, 1):
             if swatch == "line":
-                lines.append(f"""
+                lines.append(
+                    f"""
                     [&_.recharts-tooltip-item:nth-child({i})]:before:!content-['']
                     [&_.recharts-tooltip-item:nth-child({i})]:before:!w-3
                     [&_.recharts-tooltip-item:nth-child({i})]:before:!h-0.5
@@ -95,9 +96,11 @@ class _ChartTooltipContent:
                     [&_.recharts-tooltip-item:nth-child({i})]:before:!flex-shrink-0
                     [&_.recharts-tooltip-item:nth-child({i})]:before:!bg-[var(--chart-{color_idx})]
                     [&_.recharts-tooltip-item:nth-child({i})]:before:!block
-                """)
+                """,
+                )
             else:
-                lines.append(f"""
+                lines.append(
+                    f"""
                     [&_.recharts-tooltip-item:nth-child({i})]:before:!content-['']
                     [&_.recharts-tooltip-item:nth-child({i})]:before:!w-3
                     [&_.recharts-tooltip-item:nth-child({i})]:before:!h-3
@@ -105,7 +108,8 @@ class _ChartTooltipContent:
                     [&_.recharts-tooltip-item:nth-child({i})]:before:!flex-shrink-0
                     [&_.recharts-tooltip-item:nth-child({i})]:before:!bg-[var(--chart-{color_idx})]
                     [&_.recharts-tooltip-item:nth-child({i})]:before:!block
-                """)
+                """,
+                )
 
         return base + "\n".join(lines)
 
