@@ -27,7 +27,7 @@ class ClassNames:
 
     ITEM_INDICATOR_DOT = "size-2 rounded-full bg-primary"
 
-    _KNOWN_INPUT_PROPS = (
+    KNOWN_INPUT_PROPS = (
         "checked",
         "default_checked",
         "disabled",
@@ -66,7 +66,7 @@ class RadioGroupItem(CoreComponent):
 
         input_props = {"name": name, "value": value}
         for key in list(props.keys()):
-            if key in ClassNames._KNOWN_INPUT_PROPS or key.startswith(
+            if key in ClassNames.KNOWN_INPUT_PROPS or key.startswith(
                 ("on_", "data-", "aria-"),
             ):
                 input_props[key] = props.pop(key)

@@ -14,6 +14,9 @@ DOCS_GETTING_STARTED_PATH = Path("docs/getting_started")
 DOCS_RESOURCES_PATH = Path("docs/resources")
 
 
+FRONTMATTER_PARTS = 3
+
+
 def parse_frontmatter(content: str) -> tuple[dict, str]:
     """Parses frontmatter metadata (like order and description) from Markdown content."""
     metadata = {}
@@ -21,7 +24,7 @@ def parse_frontmatter(content: str) -> tuple[dict, str]:
         return metadata, content
 
     parts = content.split("---", 2)
-    if len(parts) < 3:
+    if len(parts) < FRONTMATTER_PARTS:
         return metadata, content
 
     frontmatter = parts[1]
@@ -89,7 +92,7 @@ def get_links(source_dir: Path, url_prefix: str) -> list[Component]:
         try:
             content = file.read_text(encoding="utf-8")
             metadata, _ = parse_frontmatter(content)
-        except Exception:
+        except (OSError, ValueError):
             metadata = {}
 
         # Extract order (default to 999 if missing so unordered pages go to the end)

@@ -1,3 +1,6 @@
+FRONTMATTER_PARTS = 3
+
+
 def parse_frontmatter(content: str) -> tuple[dict, str]:
     """A simple frontmatter parser."""
     metadata = {}
@@ -5,7 +8,7 @@ def parse_frontmatter(content: str) -> tuple[dict, str]:
         return metadata, content
 
     parts = content.split("---", 2)
-    if len(parts) < 3:
+    if len(parts) < FRONTMATTER_PARTS:
         return metadata, content
 
     frontmatter = parts[1]

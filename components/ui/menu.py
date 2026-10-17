@@ -1,5 +1,5 @@
 import itertools
-from typing import Any
+from typing import Any, ClassVar
 
 import reflex as rx
 from reflex.components.component import ComponentNamespace
@@ -30,7 +30,7 @@ class ClassNames:
     SEPARATOR = "-mx-1 my-1 h-px bg-border"
     GROUP_LABEL = "px-1.5 py-1 text-xs font-medium text-muted-foreground"
     SHORTCUT = "ml-auto text-xs tracking-widest text-muted-foreground"
-    SIDE_OFFSETS = {
+    SIDE_OFFSETS: ClassVar[dict[str, str]] = {
         "bottom": "top-full",
         "top": "bottom-full",
         "right": "left-full",

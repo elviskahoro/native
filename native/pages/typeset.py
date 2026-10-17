@@ -1,4 +1,5 @@
 import json
+from pathlib import Path
 
 import reflex as rx
 
@@ -141,11 +142,10 @@ def _read_and_render_md(filename: str) -> str:
     """Helper to read and compile local Markdown files into HTML."""
     import markdown
 
-    _MD_EXTENSIONS = ["fenced_code", "tables", "toc"]
+    md_extensions = ["fenced_code", "tables", "toc"]
     try:
-        with open(f"native/lib/typeset/{filename}") as file:
-            content = file.read()
-        return markdown.markdown(content, extensions=_MD_EXTENSIONS)
+        content = Path(f"native/lib/typeset/{filename}").read_text()
+        return markdown.markdown(content, extensions=md_extensions)
     except FileNotFoundError:
         return f"<p>Error: {filename} not found.</p>"
 

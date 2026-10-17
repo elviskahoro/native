@@ -581,7 +581,7 @@ def area_chart_with_gradient() -> rx.Component:
         ("mobile", "Mobile", "--chart-2"),
     ]
 
-    def create_gradient(var_name) -> rx.Component:
+    def create_gradient(var_name: str) -> rx.Component:
         return rx.el.svg.linear_gradient(
             rx.el.svg.stop(
                 stop_color=f"var({var_name})",

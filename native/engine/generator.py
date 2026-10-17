@@ -1,5 +1,6 @@
 import os
 import re
+from pathlib import Path
 
 from native.engine import constants
 from native.engine.parser import parse_and_render
@@ -50,8 +51,7 @@ def generate_docs_library() -> list[constants.DocDataStruct]:
         url_path = "docs/" + "/".join(url_path_parts).replace(".md", "")
 
         # Read the markdown content
-        with open(md_file_path, encoding="utf-8") as f:
-            md_content = f.read()
+        md_content = Path(md_file_path).read_text(encoding="utf-8")
 
         md_data, md_content = parse_frontmatter(md_content)
 

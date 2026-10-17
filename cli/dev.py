@@ -8,6 +8,7 @@ from InquirerPy import inquirer
 from InquirerPy.base.control import Choice
 
 DOCS_DIR = Path("docs")
+MIN_PATH_PARTS = 2
 
 
 def build_index() -> dict[str, list[str]]:
@@ -23,7 +24,7 @@ def build_index() -> dict[str, list[str]]:
         rel = file.relative_to(DOCS_DIR)
         parts = rel.with_suffix("").parts
 
-        if len(parts) < 2:
+        if len(parts) < MIN_PATH_PARTS:
             continue
 
         section = parts[0].replace("_", "-")
@@ -31,8 +32,8 @@ def build_index() -> dict[str, list[str]]:
 
         sections.setdefault(section, []).append(page)
 
-    for k in sections:
-        sections[k].sort()
+    for pages in sections.values():
+        pages.sort()
 
     return sections
 
@@ -216,7 +217,7 @@ def run_reflex(env: str, pages: list[str] | None) -> int:
 
     cmd = ["uv", "run", "reflex", "run", "--env", env]
 
-    process = subprocess.Popen(
+    process = subprocess.Popen(  # noqa: S603  # fixed argv, env validated upstream
         cmd,
         stdout=subprocess.PIPE,
         stderr=subprocess.STDOUT,

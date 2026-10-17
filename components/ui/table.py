@@ -413,7 +413,12 @@ class TableHead(Th, CoreComponent):
 
 class TableCell(Td, CoreComponent):
     @classmethod
-    def create(cls, *children: Any, sort_value: object = None, **props: Any) -> Component:
+    def create(
+        cls,
+        *children: Any,
+        sort_value: object = None,
+        **props: Any,
+    ) -> Component:
         cls.set_class_name(ClassNames.CELL, props)
         if sort_value is not None:
             props["data-sort-value"] = str(sort_value)

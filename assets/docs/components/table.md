@@ -402,11 +402,11 @@ class TableRoot(Div, CoreComponent):
     @classmethod
     def create(
         cls,
-        *children,
+        *children: Any,
         searchable: bool = False,
         paginate: bool = False,
         page_size: int = 5,
-        **props,
+        **props: Any,
     ) -> Component:
         table_id = props.get("id") or f"data-table-{uuid.uuid4().hex[:8]}"
         props["id"] = table_id
@@ -469,7 +469,7 @@ class TableSearch(CoreComponent):
         *,
         for_table: str,
         placeholder: str = "Search\u2026",
-        **props,
+        **props: Any,
     ) -> Component:
         props.setdefault("placeholder", placeholder)
         props["data-dt-search-for"] = for_table
@@ -528,7 +528,12 @@ class TableHead(Th, CoreComponent):
 
 class TableCell(Td, CoreComponent):
     @classmethod
-    def create(cls, *children: Any, sort_value: Any = None, **props: Any) -> Component:
+    def create(
+        cls,
+        *children: Any,
+        sort_value: object = None,
+        **props: Any,
+    ) -> Component:
         cls.set_class_name(ClassNames.CELL, props)
         if sort_value is not None:
             props["data-sort-value"] = str(sort_value)

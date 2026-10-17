@@ -65,7 +65,7 @@ def cn(*classes: Var | str | tuple | list | None) -> Var:
 
 ```python
 import itertools
-from typing import Any
+from typing import Any, ClassVar
 
 import reflex as rx
 from reflex.components.component import ComponentNamespace
@@ -96,7 +96,7 @@ class ClassNames:
     SEPARATOR = "-mx-1 my-1 h-px bg-border"
     GROUP_LABEL = "px-1.5 py-1 text-xs font-medium text-muted-foreground"
     SHORTCUT = "ml-auto text-xs tracking-widest text-muted-foreground"
-    SIDE_OFFSETS = {
+    SIDE_OFFSETS: ClassVar[dict[str, str]] = {
         "bottom": "top-full",
         "top": "bottom-full",
         "right": "left-full",
@@ -155,11 +155,11 @@ class MenuContent(CoreComponent):
     @classmethod
     def create(
         cls,
-        *children,
+        *children: Any,
         side: str = "bottom",
         side_offset: int = 4,
         align: str = "start",
-        **props,
+        **props: Any,
     ) -> rx.Component:
         props["data-slot"] = "menu-content"
         props["data-side"] = side

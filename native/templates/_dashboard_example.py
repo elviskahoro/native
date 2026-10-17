@@ -30,7 +30,10 @@ def _dependency_group(label: str, names: list[str]) -> Component:
 
 
 def dashboard_example(
-    dashboard_id: str, *, title: str, description: str = ""
+    dashboard_id: str,
+    *,
+    title: str,
+    description: str = "",
 ) -> Component:
     """dashboard_id="dashboard_01" -> reads native/lib/dashboards/dashboard_01.py,
     renders it via dashboard_demo, and adds a metadata panel next to it

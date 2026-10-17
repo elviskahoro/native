@@ -64,7 +64,7 @@ def cn(*classes: Var | str | tuple | list | None) -> Var:
 ```
 
 ```python
-from typing import Any, Literal
+from typing import Any, ClassVar, Literal
 
 import reflex as rx
 from reflex.components.component import ComponentNamespace
@@ -87,7 +87,7 @@ BubbleSide = Literal["top", "bottom"]
 class ClassNames:
     GROUP = "flex min-w-0 flex-col gap-2"
 
-    VARIANTS: dict[str, str] = {
+    VARIANTS: ClassVar[dict[str, str]] = {
         "default": (
             "*:data-[slot=bubble-content]:bg-primary "
             "*:data-[slot=bubble-content]:text-primary-foreground"
@@ -137,12 +137,12 @@ class ClassNames:
         "rounded-full bg-muted px-1.5 py-0.5 text-sm ring-3 ring-card has-[button]:p-0"
     )
 
-    REACTIONS_SIDE: dict[str, str] = {
+    REACTIONS_SIDE: ClassVar[dict[str, str]] = {
         "top": "top-0 -translate-y-3/4",
         "bottom": "bottom-0 translate-y-3/4",
     }
 
-    REACTIONS_ALIGN: dict[str, str] = {
+    REACTIONS_ALIGN: ClassVar[dict[str, str]] = {
         "start": "left-3",
         "end": "right-3",
     }

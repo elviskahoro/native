@@ -1,4 +1,4 @@
-from typing import Any, Literal
+from typing import Any, ClassVar, Literal
 
 import reflex as rx
 from reflex.components.component import ComponentNamespace
@@ -14,7 +14,7 @@ class ClassNames:
         "text-left text-sm text-muted-foreground"
     )
 
-    VARIANTS: dict[str, str] = {
+    VARIANTS: ClassVar[dict[str, str]] = {
         "default": "",
         "separator": (
             "before:mr-1 before:h-px before:min-w-0 before:flex-1 before:bg-border "

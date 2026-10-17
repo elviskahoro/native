@@ -206,7 +206,7 @@ button = Button.create
 ```
 
 ```python
-from typing import Any, Literal
+from typing import Any, ClassVar, Literal
 
 import reflex as rx
 from reflex.components.component import ComponentNamespace
@@ -230,7 +230,7 @@ class ClassNames:
         "data-[state=idle]:border-dashed"
     )
 
-    SIZES = {
+    SIZES: ClassVar[dict[str, str]] = {
         "default": (
             "gap-2 text-sm "
             "has-data-[slot=attachment-content]:px-2.5 "
@@ -251,7 +251,7 @@ class ClassNames:
         ),
     }
 
-    ORIENTATIONS = {
+    ORIENTATIONS: ClassVar[dict[str, str]] = {
         "horizontal": "min-w-40 items-center",
         "vertical": "w-24 flex-col has-data-[slot=attachment-content]:w-30",
     }
@@ -271,7 +271,7 @@ class ClassNames:
         "group-data-[size=xs]/attachment:[&_svg:not([class*='size-'])]:size-3.5"
     )
 
-    MEDIA_VARIANTS = {
+    MEDIA_VARIANTS: ClassVar[dict[str, str]] = {
         "icon": "",
         "image": (
             "opacity-60 "
