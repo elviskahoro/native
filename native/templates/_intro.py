@@ -92,7 +92,7 @@ def _usage_demo(slug: str) -> rx.Component:
     )
 
 
-def intro(raw_arg) -> rx.Component:
+def intro(raw_arg: str) -> rx.Component:
     intro = raw_arg.strip("[]").strip()
 
     if "," not in intro:

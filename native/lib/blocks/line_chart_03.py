@@ -120,7 +120,7 @@ def _chart(show_y_axis: bool) -> rx.Component:
     )
 
 
-def _summary_list(items) -> rx.Component:
+def _summary_list(items: list[tuple[str, str]]) -> rx.Component:
     return rx.el.ul(
         *[
             rx.el.li(

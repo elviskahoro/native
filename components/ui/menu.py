@@ -89,11 +89,11 @@ class MenuContent(CoreComponent):
     @classmethod
     def create(
         cls,
-        *children,
+        *children: Any,
         side: str = "bottom",
         side_offset: int = 4,
         align: str = "start",
-        **props,
+        **props: Any,
     ) -> rx.Component:
         props["data-slot"] = "menu-content"
         props["data-side"] = side

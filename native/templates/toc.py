@@ -74,8 +74,8 @@ def _create_external_tool_links(url: str) -> rx.Component:
     """
 
     def external_tool_item(
-        icon_light,
-        icon_dark,
+        icon_light: str,
+        icon_dark: str,
         tooltip_content: str,
         href: str,
         icon_size: str = "size-4",

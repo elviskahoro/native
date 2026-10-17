@@ -113,7 +113,7 @@ def extract_frontmatter(path: Path) -> tuple[str, str]:
     )
 
 
-def draw_border(draw, width, height) -> None:
+def draw_border(draw: ImageDraw.ImageDraw, width: int, height: int) -> None:
     color = (200, 200, 200)  # Light gray
     stroke = 2
     margin = 80  # Distance from the edge for your "safe area"

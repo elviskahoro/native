@@ -16,7 +16,7 @@ def layout_decorator(
     logos: list | None = None,
 ) -> Callable[[Callable[..., Section]], Callable[..., Main]]:
 
-    def decorator(func):
+    def decorator(func: Callable[..., Section]) -> Callable[..., Main]:
         @functools.wraps(func)
         def wrapper(*args: Any, **kwargs: Any) -> Component:
             page_content = func(*args, **kwargs)

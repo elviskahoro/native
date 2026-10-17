@@ -5,7 +5,7 @@ from native.templates.navbar import navbar
 from native.templates.sidebar import sidebar
 
 
-def docpage(main_content, toc_content) -> rx.Component:
+def docpage(main_content: rx.Component, toc_content: rx.Component) -> rx.Component:
 
     return rx.el.div(
         navbar(),

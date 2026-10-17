@@ -10,7 +10,7 @@ from InquirerPy.base.control import Choice
 DOCS_DIR = Path("docs")
 
 
-def build_index():
+def build_index() -> dict[str, list[str]]:
     """Builds:
     {
         "getting-started": ["introduction", "installation"],
@@ -37,7 +37,7 @@ def build_index():
     return sections
 
 
-def build_arg_parser():
+def build_arg_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
         prog="dev",
         description="Run the docs site with a specific set of pages loaded.",
@@ -75,7 +75,11 @@ def build_arg_parser():
     return parser
 
 
-def resolve_pages(names, section_names, sections):
+def resolve_pages(
+    names: list[str],
+    section_names: list[str],
+    sections: dict[str, list[str]],
+) -> list[str] | None:
     """Resolves bare page names ('button'), full paths ('components/button'),
     and --section names into a deduped list of full 'section/page' paths.
 
@@ -136,7 +140,7 @@ def resolve_pages(names, section_names, sections):
     return resolved
 
 
-def select_env():
+def select_env() -> str | None:
     env = questionary.select(
         "Run mode:",
         choices=["dev", "prod"],
@@ -148,7 +152,7 @@ def select_env():
     return env
 
 
-def select_pages_fuzzy(sections):
+def select_pages_fuzzy(sections: dict[str, list[str]]) -> list[str] | None:
     """Fuzzy search + multi-select over all pages, plus a virtual
     "whole section" entry so you can grab an entire section without
     tabbing through every page in it individually.
@@ -197,7 +201,7 @@ def select_pages_fuzzy(sections):
     return pages
 
 
-def run_reflex(env, pages):
+def run_reflex(env: str, pages: list[str] | None) -> int:
     """Runs Reflex and prints correct URLs ONLY after the actual port is known."""
     if env == "dev":
         os.environ["BURIDAN_DEV_MODE"] = "true"

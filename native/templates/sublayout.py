@@ -16,7 +16,7 @@ def sub_layout_decorator(
     search: Div | list,
 ) -> Callable[[Callable[..., Div]], Callable[..., Main]]:
 
-    def decorator(func):
+    def decorator(func: Callable[..., Div]) -> Callable[..., Main]:
         @functools.wraps(func)
         def wrapper(*args: Any, **kwargs: Any) -> Component:
             page_content = func(*args, **kwargs)

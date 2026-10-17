@@ -86,7 +86,7 @@ def _usage_demo(component_name: str) -> rx.Component:
     )
 
 
-def usage(raw_arg) -> rx.Component:
+def usage(raw_arg: str) -> rx.Component:
 
     name = raw_arg.replace("_", " ").title()
 

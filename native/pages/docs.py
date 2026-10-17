@@ -77,7 +77,7 @@ def link_card(name: str, href: str, description: str = "") -> Component:
     )
 
 
-def get_links(source_dir: Path, url_prefix: str):
+def get_links(source_dir: Path, url_prefix: str) -> list[Component]:
     entries = []
 
     for file in source_dir.glob("*.md"):
@@ -112,7 +112,7 @@ def get_links(source_dir: Path, url_prefix: str):
     ]
 
 
-def section(title: str, description: str, links) -> Component:
+def section(title: str, description: str, links: list[Component]) -> Component:
     return div(
         div(
             h3(title, class_name="text-lg font-bold tracking-tight"),

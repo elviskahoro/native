@@ -32,10 +32,10 @@ class ClassNames:
 
 
 def marker_root(
-    *children,
+    *children: Any,
     variant: MarkerVariant = "default",
     class_name: str = "",
-    **props,
+    **props: Any,
 ) -> rx.Component:
 
     return rx.el.div(

@@ -48,7 +48,7 @@ def link_card(name: str, href: str, count: int) -> Component:
     )
 
 
-def get_links(source_dir: Path, examples_dir: Path, url_prefix: str):
+def get_links(source_dir: Path, examples_dir: Path, url_prefix: str) -> list[Component]:
     entries = []
 
     for file in source_dir.glob("*.py"):
@@ -67,7 +67,7 @@ def get_links(source_dir: Path, examples_dir: Path, url_prefix: str):
     ]
 
 
-def get_utility_links():
+def get_utility_links() -> list[Component]:
     return [
         link_card(
             name,
@@ -78,7 +78,7 @@ def get_utility_links():
     ]
 
 
-def get_chart_links():
+def get_chart_links() -> list[Component]:
     entries = []
 
     if CHART_EXAMPLES.exists():
@@ -102,7 +102,7 @@ def get_chart_links():
     ]
 
 
-def section(title: str, description: str, links) -> Component:
+def section(title: str, description: str, links: list[Component]) -> Component:
     return div(
         div(
             h3(title, class_name="text-lg font-bold tracking-tight"),

@@ -6,7 +6,7 @@ from native.engine.utils import parse_frontmatter
 
 
 # --- Method: Generate doc routes/urls ---
-def generate_doc_routes(section_folder, base_path) -> list[dict]:
+def generate_doc_routes(section_folder: str, base_path: str) -> list[dict]:
     """Generates routes for a documentation section by recursively reading
     frontmatter from markdown files.
 
@@ -71,7 +71,7 @@ DOC_SECTIONS = [
 ]
 
 
-def build_all_routes():
+def build_all_routes() -> dict[str, list[dict]]:
     result = {}
 
     for section, base_path, sort_key, extras in DOC_SECTIONS:

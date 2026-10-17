@@ -71,10 +71,10 @@ class DialogPopup(Div, CoreComponent):
     @classmethod
     def create(
         cls,
-        *children,
+        *children: Any,
         dismissible: bool = True,
         on_open_change: rx.EventHandler | None = None,
-        **props,
+        **props: Any,
     ) -> rx.Component:
         props["data-slot"] = "dialog-content"
 
