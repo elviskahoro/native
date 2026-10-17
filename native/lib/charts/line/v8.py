@@ -12,7 +12,7 @@ data = [
 ]
 
 
-def line_chart_footer_legend():
+def line_chart_footer_legend() -> rx.Component:
     return rx.el.div(
         rx.el.div(
             rx.el.div(

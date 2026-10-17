@@ -9,7 +9,9 @@ from components.core.hugeicon import hi
 
 
 def generate_component_id() -> str:
-    return "".join(random.choices(string.ascii_letters + string.digits, k=10))
+    return "".join(
+        random.choices(string.ascii_letters + string.digits, k=10),
+    )  # noqa: S311  # non-security DOM id
 
 
 def create_copy_button(content: str) -> tuple[Button, str]:

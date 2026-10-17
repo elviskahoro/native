@@ -13,7 +13,12 @@ BURIDAN_KEY_WORDS = (
 )
 
 
-def generate_site_meta_tags(title: str, url: str, description: str, social_card: str):
+def generate_site_meta_tags(
+    title: str,
+    url: str,
+    description: str,
+    social_card: str,
+) -> list[dict[str, str]]:
     return [
         {"name": "application-name", "content": title},
         {"name": "keywords", "content": BURIDAN_KEY_WORDS},

@@ -8,22 +8,23 @@ from InquirerPy import inquirer
 from InquirerPy.base.control import Choice
 
 DOCS_DIR = Path("docs")
+MIN_PATH_PARTS = 2
 
 
-def build_index():
+def build_index() -> dict[str, list[str]]:
     """Builds:
     {
         "getting-started": ["introduction", "installation"],
         "components": ["button", "input"]
     }.
     """
-    sections = {}
+    sections: dict[str, list[str]] = {}
 
     for file in DOCS_DIR.glob("**/*.md"):
         rel = file.relative_to(DOCS_DIR)
         parts = rel.with_suffix("").parts
 
-        if len(parts) < 2:
+        if len(parts) < MIN_PATH_PARTS:
             continue
 
         section = parts[0].replace("_", "-")
@@ -31,13 +32,13 @@ def build_index():
 
         sections.setdefault(section, []).append(page)
 
-    for k in sections:
-        sections[k].sort()
+    for pages in sections.values():
+        pages.sort()
 
     return sections
 
 
-def build_arg_parser():
+def build_arg_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
         prog="dev",
         description="Run the docs site with a specific set of pages loaded.",
@@ -75,13 +76,17 @@ def build_arg_parser():
     return parser
 
 
-def resolve_pages(names, section_names, sections):
+def resolve_pages(
+    names: list[str],
+    section_names: list[str],
+    sections: dict[str, list[str]],
+) -> list[str] | None:
     """Resolves bare page names ('button'), full paths ('components/button'),
     and --section names into a deduped list of full 'section/page' paths.
 
     Returns None (and prints errors) if anything couldn't be resolved.
     """
-    name_to_paths = {}
+    name_to_paths: dict[str, list[str]] = {}
     for section, pages in sections.items():
         for page in pages:
             name_to_paths.setdefault(page, []).append(f"{section}/{page}")
@@ -136,7 +141,7 @@ def resolve_pages(names, section_names, sections):
     return resolved
 
 
-def select_env():
+def select_env() -> str | None:
     env = questionary.select(
         "Run mode:",
         choices=["dev", "prod"],
@@ -148,7 +153,7 @@ def select_env():
     return env
 
 
-def select_pages_fuzzy(sections):
+def select_pages_fuzzy(sections: dict[str, list[str]]) -> list[str] | None:
     """Fuzzy search + multi-select over all pages, plus a virtual
     "whole section" entry so you can grab an entire section without
     tabbing through every page in it individually.
@@ -168,7 +173,9 @@ def select_pages_fuzzy(sections):
             choices.append(Choice(value=path, name=f"  {path}"))
 
     result = inquirer.fuzzy(
-        message="Search pages (type to filter, tab to select multiple, enter to confirm):",
+        message=(
+            "Search pages (type to filter, tab to select multiple, enter to confirm):"
+        ),
         choices=choices,
         multiselect=True,
         max_height="70%",
@@ -197,7 +204,7 @@ def select_pages_fuzzy(sections):
     return pages
 
 
-def run_reflex(env, pages):
+def run_reflex(env: str, pages: list[str] | None) -> str | None:
     """Runs Reflex and prints correct URLs ONLY after the actual port is known."""
     if env == "dev":
         os.environ["BURIDAN_DEV_MODE"] = "true"
@@ -212,7 +219,7 @@ def run_reflex(env, pages):
 
     cmd = ["uv", "run", "reflex", "run", "--env", env]
 
-    process = subprocess.Popen(
+    process = subprocess.Popen(  # noqa: S603  # fixed argv, env validated upstream
         cmd,
         stdout=subprocess.PIPE,
         stderr=subprocess.STDOUT,
@@ -220,6 +227,10 @@ def run_reflex(env, pages):
     )
 
     port = None
+
+    if process.stdout is None:
+        msg = "reflex subprocess has no stdout pipe"
+        raise RuntimeError(msg)
 
     for line in process.stdout:
         print(line, end="")

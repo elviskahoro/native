@@ -1,4 +1,4 @@
-from typing import Literal
+from typing import Any, Literal
 
 import reflex as rx
 from reflex.components.component import ComponentNamespace
@@ -39,7 +39,7 @@ SPACING_CLASSES: dict[str, str] = {
 
 class FrameRoot(CoreComponent):
     @classmethod
-    def create(cls, *children, **props) -> rx.Component:
+    def create(cls, *children: Any, **props: Any) -> rx.Component:
         variant: LiteralVariant = props.pop("variant", "default")
         spacing: LiteralSpacing = props.pop("spacing", "default")
         stacked: bool = props.pop("stacked", False)
@@ -77,7 +77,7 @@ class FrameRoot(CoreComponent):
 
 class FramePanel(CoreComponent):
     @classmethod
-    def create(cls, *children, **props) -> rx.Component:
+    def create(cls, *children: Any, **props: Any) -> rx.Component:
         class_name: str = props.pop("class_name", "")
         props["data-slot"] = "frame-panel"
         return rx.el.div(
@@ -89,7 +89,7 @@ class FramePanel(CoreComponent):
 
 class FrameHeader(CoreComponent):
     @classmethod
-    def create(cls, *children, **props) -> rx.Component:
+    def create(cls, *children: Any, **props: Any) -> rx.Component:
         class_name: str = props.pop("class_name", "")
         props["data-slot"] = "frame-panel-header"
         return rx.el.header(
@@ -101,7 +101,7 @@ class FrameHeader(CoreComponent):
 
 class FrameTitle(CoreComponent):
     @classmethod
-    def create(cls, *children, **props) -> rx.Component:
+    def create(cls, *children: Any, **props: Any) -> rx.Component:
         class_name: str = props.pop("class_name", "")
         props["data-slot"] = "frame-panel-title"
         return rx.el.div(
@@ -113,7 +113,7 @@ class FrameTitle(CoreComponent):
 
 class FrameDescription(CoreComponent):
     @classmethod
-    def create(cls, *children, **props) -> rx.Component:
+    def create(cls, *children: Any, **props: Any) -> rx.Component:
         class_name: str = props.pop("class_name", "")
         props["data-slot"] = "frame-panel-description"
         return rx.el.div(
@@ -125,7 +125,7 @@ class FrameDescription(CoreComponent):
 
 class FrameFooter(CoreComponent):
     @classmethod
-    def create(cls, *children, **props) -> rx.Component:
+    def create(cls, *children: Any, **props: Any) -> rx.Component:
         class_name: str = props.pop("class_name", "")
         props["data-slot"] = "frame-panel-footer"
         return rx.el.footer(

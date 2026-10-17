@@ -12,7 +12,7 @@ data = [
 ]
 
 
-def line_chart_basic():
+def line_chart_basic() -> rx.Component:
     return rx.el.div(
         rx.el.div(
             rx.el.h3("Line Chart", class_name="text-lg font-semibold"),

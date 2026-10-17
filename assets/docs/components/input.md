@@ -64,6 +64,8 @@ def cn(*classes: Var | str | tuple | list | None) -> Var:
 ```
 
 ```python
+from typing import Any
+
 from reflex.components.component import ComponentNamespace
 from reflex_components_core.el import Input as BaseInput
 
@@ -88,7 +90,7 @@ class ClassNames:
 
 class InputComponent(BaseInput, CoreComponent):
     @classmethod
-    def create(cls, *children, **props) -> BaseInput:
+    def create(cls, *children: Any, **props: Any) -> BaseInput:
 
         existing_class = props.get("class_name", "")
 
@@ -119,7 +121,7 @@ The default appearance and behavior. `type` defaults to `"text"` if not set.
 **Props used:** none required beyond default `input(...)`.
 
 ```python
-def input_basic_demo():
+def input_basic_demo() -> rx.Component:
     return rx.el.div(
         rx.el.p("Text Input", class_name="text-sm font-medium mb-2"),
         input(
@@ -135,7 +137,7 @@ def input_basic_demo():
 **Props used:** `type="email"` on `input`.
 
 ```python
-def input_email():
+def input_email() -> rx.Component:
     return rx.el.div(
         rx.el.p("Email Input", class_name="text-sm font-medium mb-2"),
         input(
@@ -151,7 +153,7 @@ def input_email():
 **Props used:** `type="password"` on `input`.
 
 ```python
-def input_password():
+def input_password() -> rx.Component:
     return rx.el.div(
         rx.el.p("Password Input", class_name="text-sm font-medium mb-2"),
         input(
@@ -167,7 +169,7 @@ def input_password():
 **Props used:** `disabled` on `input`.
 
 ```python
-def input_disabled():
+def input_disabled() -> rx.Component:
     return rx.el.div(
         rx.el.p("Disabled Input", class_name="text-sm font-medium mb-2"),
         input(
@@ -186,7 +188,7 @@ Native file styling (`file:` classes) is already baked into the base input style
 **Props used:** `type="file"` on `input`.
 
 ```python
-def input_file_input():
+def input_file_input() -> rx.Component:
     return rx.el.div(
         rx.el.p("File Input", class_name="text-sm font-medium mb-2"),
         input(
@@ -201,7 +203,7 @@ def input_file_input():
 **Props used:** `class_name` on `input`.
 
 ```python
-def input_custom_input():
+def input_custom_input() -> rx.Component:
     return rx.el.div(
         rx.el.p("Custom Width", class_name="text-sm font-medium mb-2"),
         input(

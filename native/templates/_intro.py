@@ -9,7 +9,7 @@ COPY_ICON_SVG = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" wid
 TICK_ICON_SVG = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" color="currentColor" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 14.5C5 14.5 6.5 14.5 8.5 18C8.5 18 14.0588 8.83333 19 7"/></svg>'
 
 
-def _usage_demo(slug: str):
+def _usage_demo(slug: str) -> rx.Component:
     demo_id = generate_component_id()
     icon_id = f"icon-{demo_id}"
 
@@ -19,7 +19,7 @@ def _usage_demo(slug: str):
         "pip": f"python -m buridan add {slug}",
     }
 
-    def view_button(view: str, label: str):
+    def view_button(view: str, label: str) -> rx.Component:
         return button(
             label,
             variant="outline",
@@ -33,7 +33,7 @@ def _usage_demo(slug: str):
             ),
         )
 
-    def command_line(view: str, command_text: str):
+    def command_line(view: str, command_text: str) -> rx.Component:
         return div(
             rx.el.pre(
                 rx.el.code(
@@ -92,11 +92,12 @@ def _usage_demo(slug: str):
     )
 
 
-def intro(raw_arg):
+def intro(raw_arg: str) -> rx.Component:
     intro = raw_arg.strip("[]").strip()
 
     if "," not in intro:
-        raise ValueError(f"Invalid INTRO format: {raw_arg!r}")
+        msg = f"Invalid INTRO format: {raw_arg!r}"
+        raise ValueError(msg)
 
     title, description = intro.split(",", 1)
     slug = title.strip().lower().replace(" ", "_")

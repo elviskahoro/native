@@ -5,7 +5,7 @@ from components.ui.attachment import attachment
 from components.ui.spinner import spinner
 
 
-def attachment_states_demo():
+def attachment_states_demo() -> rx.Component:
     return rx.el.div(
         attachment.root(
             attachment.media(hi("Clock01Icon")),

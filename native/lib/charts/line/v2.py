@@ -12,7 +12,7 @@ data = [
 ]
 
 
-def line_chart_linear():
+def line_chart_linear() -> rx.Component:
     return rx.el.div(
         rx.el.div(
             rx.el.h3("Line Chart - Linear", class_name="text-lg font-semibold"),

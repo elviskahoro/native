@@ -3,7 +3,7 @@ import reflex as rx
 from components.ui.bubble import bubble
 
 
-def bubble_group_demo():
+def bubble_group_demo() -> rx.Component:
     return rx.el.div(
         bubble.root(
             bubble.content("Can you tell me what's the issue?"),

@@ -61,7 +61,7 @@ data = [
 You can now build your chart using Recharts components.
 
 ```python
-def chart_example():
+def chart_example() -> rx.Component:
 
     return rx.recharts.bar_chart(
         rx.recharts.bar(
@@ -93,7 +93,7 @@ rx.recharts.cartesian_grid(
 ```
 
 ```python
-def chart_example_with_grid():
+def chart_example_with_grid() -> rx.Component:
 
     return rx.recharts.bar_chart(
         rx.recharts.cartesian_grid(horizontal=True, vertical=False),
@@ -131,7 +131,7 @@ rx.recharts.x_axis(
 ```
 
 ```python
-def chart_example_with_x_axis():
+def chart_example_with_x_axis() -> rx.Component:
 
     return rx.recharts.bar_chart(
         rx.recharts.cartesian_grid(
@@ -196,7 +196,7 @@ rx.recharts.bar_chart(
 ```
 
 ```python
-def chart_example_with_custom_tooltip():
+def chart_example_with_custom_tooltip() -> rx.Component:
 
     return rx.recharts.bar_chart(
         rx.recharts.cartesian_grid(
@@ -257,7 +257,7 @@ rx.el.div(
 ```
 
 ```python
-def chart_example_with_custom_legends():
+def chart_example_with_custom_legends() -> rx.Component:
 
     return rx.el.div(
         rx.recharts.bar_chart(

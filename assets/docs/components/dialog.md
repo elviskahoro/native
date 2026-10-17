@@ -65,6 +65,7 @@ def cn(*classes: Var | str | tuple | list | None) -> Var:
 
 ```python
 import uuid
+from typing import Any
 
 import reflex as rx
 from reflex.components.component import ComponentNamespace
@@ -96,7 +97,7 @@ class ClassNames:
 
 class DialogRoot(CoreComponent):
     @classmethod
-    def create(cls, *children, **props) -> rx.Component:
+    def create(cls, *children: Any, **props: Any) -> rx.Component:
         props["data-slot"] = "dialog-root"
         cls.set_class_name("contents", props)
         return rx.el.div(*children, **props)
@@ -104,7 +105,7 @@ class DialogRoot(CoreComponent):
 
 class DialogTrigger(CoreComponent):
     @classmethod
-    def create(cls, *children, **props) -> rx.Component:
+    def create(cls, *children: Any, **props: Any) -> rx.Component:
         custom_classes = props.pop("class_name", "")
         props["data-slot"] = "dialog-trigger"
 
@@ -136,10 +137,10 @@ class DialogPopup(Div, CoreComponent):
     @classmethod
     def create(
         cls,
-        *children,
+        *children: Any,
         dismissible: bool = True,
         on_open_change: rx.EventHandler | None = None,
-        **props,
+        **props: Any,
     ) -> rx.Component:
         props["data-slot"] = "dialog-content"
 
@@ -184,7 +185,7 @@ class DialogPopup(Div, CoreComponent):
 
 class DialogClose(CoreComponent):
     @classmethod
-    def create(cls, *children, **props) -> rx.Component:
+    def create(cls, *children: Any, **props: Any) -> rx.Component:
         custom_classes = props.pop("class_name", "")
         props["data-slot"] = "dialog-close"
 
@@ -214,7 +215,7 @@ class DialogClose(CoreComponent):
 
 class DialogTitle(CoreComponent):
     @classmethod
-    def create(cls, *children, **props) -> rx.Component:
+    def create(cls, *children: Any, **props: Any) -> rx.Component:
         props["data-slot"] = "dialog-title"
         cls.set_class_name(ClassNames.TITLE, props)
         return rx.el.h2(*children, **props)
@@ -222,7 +223,7 @@ class DialogTitle(CoreComponent):
 
 class DialogDescription(CoreComponent):
     @classmethod
-    def create(cls, *children, **props) -> rx.Component:
+    def create(cls, *children: Any, **props: Any) -> rx.Component:
         props["data-slot"] = "dialog-description"
         cls.set_class_name(ClassNames.DESCRIPTION, props)
         return rx.el.p(*children, **props)
@@ -230,7 +231,7 @@ class DialogDescription(CoreComponent):
 
 class DialogHeader(Div, CoreComponent):
     @classmethod
-    def create(cls, *children, **props) -> Div:
+    def create(cls, *children: Any, **props: Any) -> Div:
         props["data-slot"] = "dialog-header"
         cls.set_class_name(ClassNames.HEADER, props)
         return super().create(*children, **props)
@@ -238,7 +239,7 @@ class DialogHeader(Div, CoreComponent):
 
 class DialogFooter(Div, CoreComponent):
     @classmethod
-    def create(cls, *children, **props) -> Div:
+    def create(cls, *children: Any, **props: Any) -> Div:
         props["data-slot"] = "dialog-footer"
         cls.set_class_name(ClassNames.FOOTER, props)
         return super().create(*children, **props)

@@ -6,7 +6,7 @@ from components.ui.button import button
 from components.ui.message import message
 
 
-def message_with_actions():
+def message_with_actions() -> rx.Component:
     return rx.el.div(
         message.root(
             message.content(

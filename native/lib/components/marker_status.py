@@ -4,7 +4,7 @@ from components.ui.marker import marker
 from components.ui.spinner import spinner
 
 
-def marker_status_demo():
+def marker_status_demo() -> rx.Component:
     return rx.el.div(
         marker.root(
             marker.icon(spinner()),

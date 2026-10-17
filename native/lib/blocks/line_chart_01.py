@@ -125,7 +125,7 @@ def _chart(show_y_axis: bool) -> rx.Component:
     )
 
 
-def line_chart_01():
+def line_chart_01() -> rx.Component:
     return card.root(
         card.header(
             rx.el.p("Amazon, Inc. (AMZN)", class_name="text-sm text-muted-foreground"),

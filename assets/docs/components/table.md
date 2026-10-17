@@ -64,6 +64,8 @@ def cn(*classes: Var | str | tuple | list | None) -> Var:
 ```
 
 ```python
+from typing import Any
+
 from reflex.components.component import ComponentNamespace
 from reflex_components_core.el import Input as BaseInput
 
@@ -88,7 +90,7 @@ class ClassNames:
 
 class InputComponent(BaseInput, CoreComponent):
     @classmethod
-    def create(cls, *children, **props) -> BaseInput:
+    def create(cls, *children: Any, **props: Any) -> BaseInput:
 
         existing_class = props.get("class_name", "")
 
@@ -154,7 +156,7 @@ class ClassNames:
     PAGE_BUTTON = "h-8 rounded-md border border-input px-3 text-xs disabled:opacity-40 disabled:cursor-not-allowed"
 
 
-def _chevron_icon(path_d: str | list[str], **props) -> Component:
+def _chevron_icon(path_d: str | list[str], **props: Any) -> Component:
     paths = [path_d] if isinstance(path_d, str) else path_d
     return rx.el.svg(
         *[rx.el.path(d=p) for p in paths],
@@ -400,11 +402,11 @@ class TableRoot(Div, CoreComponent):
     @classmethod
     def create(
         cls,
-        *children,
+        *children: Any,
         searchable: bool = False,
         paginate: bool = False,
         page_size: int = 5,
-        **props,
+        **props: Any,
     ) -> Component:
         table_id = props.get("id") or f"data-table-{uuid.uuid4().hex[:8]}"
         props["id"] = table_id
@@ -467,7 +469,7 @@ class TableSearch(CoreComponent):
         *,
         for_table: str,
         placeholder: str = "Search\u2026",
-        **props,
+        **props: Any,
     ) -> Component:
         props.setdefault("placeholder", placeholder)
         props["data-dt-search-for"] = for_table
@@ -477,35 +479,40 @@ class TableSearch(CoreComponent):
 
 class TableHeader(Thead, CoreComponent):
     @classmethod
-    def create(cls, *children, **props) -> Component:
+    def create(cls, *children: Any, **props: Any) -> Component:
         cls.set_class_name(ClassNames.HEADER, props)
         return super().create(*children, **props)
 
 
 class TableBody(Tbody, CoreComponent):
     @classmethod
-    def create(cls, *children, **props) -> Component:
+    def create(cls, *children: Any, **props: Any) -> Component:
         cls.set_class_name(ClassNames.BODY, props)
         return super().create(*children, **props)
 
 
 class TableFooter(Tfoot, CoreComponent):
     @classmethod
-    def create(cls, *children, **props) -> Component:
+    def create(cls, *children: Any, **props: Any) -> Component:
         cls.set_class_name(ClassNames.FOOTER, props)
         return super().create(*children, **props)
 
 
 class TableRow(Tr, CoreComponent):
     @classmethod
-    def create(cls, *children, **props) -> Component:
+    def create(cls, *children: Any, **props: Any) -> Component:
         cls.set_class_name(ClassNames.ROW, props)
         return super().create(*children, **props)
 
 
 class TableHead(Th, CoreComponent):
     @classmethod
-    def create(cls, *children, sort_key: str | None = None, **props) -> Component:
+    def create(
+        cls,
+        *children: Any,
+        sort_key: str | None = None,
+        **props: Any,
+    ) -> Component:
         cls.set_class_name(ClassNames.HEAD, props)
         if sort_key:
             children = (
@@ -521,7 +528,12 @@ class TableHead(Th, CoreComponent):
 
 class TableCell(Td, CoreComponent):
     @classmethod
-    def create(cls, *children, sort_value: Any = None, **props) -> Component:
+    def create(
+        cls,
+        *children: Any,
+        sort_value: object = None,
+        **props: Any,
+    ) -> Component:
         cls.set_class_name(ClassNames.CELL, props)
         if sort_value is not None:
             props["data-sort-value"] = str(sort_value)
@@ -530,7 +542,7 @@ class TableCell(Td, CoreComponent):
 
 class TableCaption(Caption, CoreComponent):
     @classmethod
-    def create(cls, *children, **props) -> Component:
+    def create(cls, *children: Any, **props: Any) -> Component:
         cls.set_class_name(ClassNames.CAPTION, props)
         return super().create(*children, **props)
 

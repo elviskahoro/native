@@ -4,7 +4,7 @@ from components.core.hugeicon import hi
 from components.ui.attachment import attachment
 
 
-def attachment_sizes_demo():
+def attachment_sizes_demo() -> rx.Component:
     return rx.el.div(
         attachment.root(
             attachment.media(hi("File02Icon")),

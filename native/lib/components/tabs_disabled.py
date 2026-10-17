@@ -1,7 +1,9 @@
+from reflex.components.component import Component
+
 from components.ui.tabs import tabs
 
 
-def tabs_disabled():
+def tabs_disabled() -> Component:
     return tabs.root(
         tabs.list(
             tabs.trigger("Home", value="home"),

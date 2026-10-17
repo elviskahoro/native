@@ -4,7 +4,7 @@ from components.ui.badge import badge
 from components.ui.spinner import spinner
 
 
-def spinner_badge():
+def spinner_badge() -> rx.Component:
     return rx.el.div(
         badge(spinner(), "Syncing"),
         badge(spinner(), "Updating", variant="secondary"),

@@ -1,8 +1,10 @@
+from reflex.components.component import Component
+
 from components.core.hugeicon import hi
 from components.ui.button import button
 
 
-def button_icon():
+def button_icon() -> Component:
     return button(
         hi("CircleArrowUp01Icon", class_name="size-4"),
         variant="outline",

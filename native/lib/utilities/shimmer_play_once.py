@@ -6,7 +6,7 @@ from components.ui.button import button
 shimmer_key = ClientStateVar.create("shimmer_key", 0)
 
 
-def shimmer_once():
+def shimmer_once() -> rx.Component:
     return rx.el.div(
         rx.el.div(
             rx.el.p(

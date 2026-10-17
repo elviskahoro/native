@@ -3,7 +3,7 @@ import reflex as rx
 from components.ui.tabs import tabs
 
 
-def tabs_vertical():
+def tabs_vertical() -> rx.Component:
     return rx.el.div(
         tabs.root(
             tabs.list(

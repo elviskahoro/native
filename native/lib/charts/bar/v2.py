@@ -12,7 +12,7 @@ data = [
 ]
 
 
-def bar_chart_horizontal():
+def bar_chart_horizontal() -> rx.Component:
     return rx.el.div(
         rx.el.div(
             rx.el.h3(

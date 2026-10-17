@@ -34,6 +34,9 @@ UTILITY_SENTINELS = {
 # ── theme rebuilding ──────────────────────────────────────────────────────────
 
 
+VERSIONED_PATH_PARTS = 4
+
+
 def flatten_vars(obj: dict) -> dict:
     out = {}
     for k, v in obj.items():
@@ -106,10 +109,10 @@ def generate_theme_css(seed: str) -> str:
     if not decoded:
         return ""
 
-    def build(dark):
+    def build(*, dark: bool) -> str:
         return format_css(rebuild_theme({**decoded, "darkMode": dark}))
 
-    return f":root {{\n{build(False)}\n}}\n\n.dark {{\n{build(True)}\n}}"
+    return f":root {{\n{build(dark=False)}\n}}\n\n.dark {{\n{build(dark=True)}\n}}"
 
 
 # ── component copying ─────────────────────────────────────────────────────────
@@ -321,7 +324,7 @@ def remap_dest(rel: str) -> str:
     path = Path(rel)
     # Detect versioned components like components/ui/button/v1.py
     if (
-        len(path.parts) >= 4
+        len(path.parts) >= VERSIONED_PATH_PARTS
         and path.parts[0] == "components"
         and re.match(r"^v\d+(?:_\d+)*$", path.stem)
     ):
@@ -548,7 +551,7 @@ def cmd_apply(preset: str) -> None:
         if theme_marker in current:
             lines = current.splitlines()
             start_line = next(
-                (i for i, l in enumerate(lines) if l.strip().startswith(":root {")),
+                (i for i, ln in enumerate(lines) if ln.strip().startswith(":root {")),
                 None,
             )
             if start_line is not None:
@@ -562,8 +565,8 @@ def cmd_apply(preset: str) -> None:
                     if in_block and brace_depth == 0:
                         end_line = i
                         rest = lines[end_line + 1 :]
-                        for j, l in enumerate(rest):
-                            if l.strip().startswith(".dark {"):
+                        for j, ln in enumerate(rest):
+                            if ln.strip().startswith(".dark {"):
                                 bd = 0
                                 for k, dl in enumerate(
                                     lines[end_line + 1 + j :],

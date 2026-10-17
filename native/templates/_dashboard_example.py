@@ -1,3 +1,4 @@
+from reflex.components.component import Component
 from reflex_components_core.el import div, h3, p
 
 from components.ui.badge import badge
@@ -5,7 +6,7 @@ from native.registry.dashboard_introspect import load_dashboard_example
 from native.templates._dashboard import dashboard_demo
 
 
-def _dependency_group(label: str, names: list[str]):
+def _dependency_group(label: str, names: list[str]) -> Component:
     if not names:
         return div()
     return div(
@@ -28,7 +29,12 @@ def _dependency_group(label: str, names: list[str]):
     )
 
 
-def dashboard_example(dashboard_id: str, *, title: str, description: str = ""):
+def dashboard_example(
+    dashboard_id: str,
+    *,
+    title: str,
+    description: str = "",
+) -> Component:
     """dashboard_id="dashboard_01" -> reads native/lib/dashboards/dashboard_01.py,
     renders it via dashboard_demo, and adds a metadata panel next to it
     (title/description/dependency badges), pulled straight from that file's

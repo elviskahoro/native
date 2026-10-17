@@ -1,5 +1,6 @@
 from dataclasses import dataclass
 
+from reflex.components.component import Component
 from reflex.event import call_script
 from reflex_components_core.el import Div, Header, a, div, header, p
 
@@ -41,7 +42,7 @@ def _separator() -> Div:
     return div(class_name="h-3 w-px bg-muted-foreground/40")
 
 
-def _mobile_navigation():
+def _mobile_navigation() -> Component:
     menu_elements = []
 
     for s_idx, section in enumerate(MENU_SECTIONS):

@@ -96,7 +96,7 @@ def _clean_arg(raw_arg: str) -> str:
     return (raw_arg or "").strip().strip("'\"[]{}").lower()
 
 
-def _render_install(name: str):
+def _render_install(name: str) -> rx.Component:
     all_deps = get_all_dependencies(name)
     if not all_deps:
         return rx.el.p(f"Installation payload empty for {name}")

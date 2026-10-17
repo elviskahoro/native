@@ -64,6 +64,8 @@ def cn(*classes: Var | str | tuple | list | None) -> Var:
 ```
 
 ```python
+from typing import Any
+
 from reflex_components_core.el import Textarea
 
 from ..core.core import CoreComponent
@@ -82,7 +84,7 @@ class ClassNames:
 
 class TextAreaComponent(Textarea, CoreComponent):
     @classmethod
-    def create(cls, *children, **props) -> Textarea:
+    def create(cls, *children: Any, **props: Any) -> Textarea:
         props.setdefault(
             "custom_attrs",
             {
@@ -109,7 +111,7 @@ A standard multiline text input. Auto-grows with content via `field-sizing-conte
 **Props used:** none required beyond default `textarea(...)`.
 
 ```python
-def textarea_basic_demo():
+def textarea_basic_demo() -> Component:
     return textarea(placeholder="Type your message here.", class_name="max-w-xs")
 ```
 
@@ -120,7 +122,7 @@ Pair with `field.root`, `field.label`, and `field.description` for a structured,
 **Props used:** `id` on `textarea`; `html_for` on `field.label`.
 
 ```python
-def textarea_field():
+def textarea_field() -> Component:
     return field.root(
         field.label(
             "Message",
@@ -144,7 +146,7 @@ Use `disabled` on `textarea`. Add `data_invalid`/disabled state to `field.root` 
 **Props used:** `disabled` on `textarea`.
 
 ```python
-def textarea_disabled():
+def textarea_disabled() -> Component:
     return field.root(
         field.label(
             "Message",
@@ -167,7 +169,7 @@ Use `aria_invalid` on `textarea` to mark it invalid, and `data_invalid="true"` o
 **Props used:** `aria_invalid` on `textarea`; `data_invalid` on `field.root`.
 
 ```python
-def textarea_invalid():
+def textarea_invalid() -> Component:
     return field.root(
         field.label(
             "Message",

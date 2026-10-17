@@ -1,10 +1,11 @@
+from reflex.components.component import Component
 from reflex_base.event import call_script
 from reflex_components_core.el import svg
 
 from components.ui.button import button
 
 
-def theme_toggle_button():
+def theme_toggle_button() -> Component:
     return button(
         svg(
             svg.path(

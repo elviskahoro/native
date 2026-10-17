@@ -10,7 +10,7 @@ from pathlib import Path
 ROOT_DIR = Path(__file__).parent.parent
 sys.path.append(str(ROOT_DIR))
 
-from reflex.components.component import ComponentNamespace
+from reflex.components.component import ComponentNamespace  # noqa: E402
 
 from native.registry.components import COMPONENT_REGISTRY
 
@@ -123,10 +123,10 @@ def clean_arg(value: str | None) -> str:
     return (value or "").strip().strip("'\"[]{}").lower()
 
 
-def get_dependencies(name: str):
+def get_dependencies(name: str) -> list[str]:
     ordered = []
 
-    def resolve(component) -> None:
+    def resolve(component: str) -> None:
         # Normalize key so button-group matches button_group in COMPONENT_REGISTRY
         comp_key = component.lower().replace("-", "_")
         data = COMPONENT_REGISTRY.get(comp_key)
@@ -167,7 +167,7 @@ def get_dependencies(name: str):
 #     return ordered
 
 
-def read_component_files(name: str):
+def read_component_files(name: str) -> list[str]:
     output = []
 
     for dep in get_dependencies(name):
@@ -191,9 +191,9 @@ def read_component_files(name: str):
 TOKEN_RE = r"--([\w_]+)(?:\((.*)\))?--"
 
 
-def convert_to_markdown(content: str):
+def convert_to_markdown(content: str) -> str:
 
-    def replace(match):
+    def replace(match: re.Match[str]) -> str:
 
         cmd = match.group(1).lower()
         name = clean_arg(match.group(2))

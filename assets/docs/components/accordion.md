@@ -64,6 +64,8 @@ def cn(*classes: Var | str | tuple | list | None) -> Var:
 ```
 
 ```python
+from typing import Any
+
 from reflex.components.component import Component
 from reflex.utils.imports import ImportVar
 from reflex.vars.base import Var, VarData
@@ -100,7 +102,7 @@ class HugeIcon(CoreComponent):
     disable_secondary_opacity: Var[bool]
 
     @classmethod
-    def create(cls, *children, **props) -> Component:
+    def create(cls, *children: Any, **props: Any) -> Component:
 
         if children and isinstance(children[0], str) and "icon" not in props:
             props["icon"] = children[0]
@@ -131,6 +133,8 @@ hi = icon = HugeIcon.create
 ```
 
 ```python
+from typing import Any
+
 import reflex as rx
 from reflex.components.component import ComponentNamespace
 
@@ -166,7 +170,7 @@ class ClassNames:
 
 class NativeAccordionRoot(CoreComponent):
     @classmethod
-    def create(cls, *children, **props) -> rx.Component:
+    def create(cls, *children: Any, **props: Any) -> rx.Component:
         data_slot = props.pop("data_slot", "accordion")
         props["data-slot"] = data_slot
         cls.set_class_name(ClassNames.ROOT, props)
@@ -175,7 +179,7 @@ class NativeAccordionRoot(CoreComponent):
 
 class NativeAccordionItem(CoreComponent):
     @classmethod
-    def create(cls, *children, **props) -> rx.Component:
+    def create(cls, *children: Any, **props: Any) -> rx.Component:
         data_slot = props.pop("data_slot", "accordion-item")
         props["data-slot"] = data_slot
         name = props.pop("name", None)
@@ -189,7 +193,7 @@ class NativeAccordionItem(CoreComponent):
 
 class NativeAccordionTrigger(CoreComponent):
     @classmethod
-    def create(cls, *children, **props) -> rx.Component:
+    def create(cls, *children: Any, **props: Any) -> rx.Component:
         data_slot = props.pop("data_slot", "accordion-trigger")
         props["data-slot"] = data_slot
         cls.set_class_name(ClassNames.TRIGGER, props)
@@ -207,7 +211,7 @@ class NativeAccordionTrigger(CoreComponent):
 
 class NativeAccordionPanel(CoreComponent):
     @classmethod
-    def create(cls, *children, **props) -> rx.Component:
+    def create(cls, *children: Any, **props: Any) -> rx.Component:
         data_slot = props.pop("data_slot", "accordion-panel")
         props["data-slot"] = data_slot
         inner_class = props.pop("class_name", "")
@@ -239,7 +243,7 @@ Built on native `<details>`/`<summary>` — expand/collapse, keyboard support, a
 **Props used:** `name` on `accordion.item` (groups items so only one stays open at a time, matching native `<details name="...">` behavior).
 
 ```python
-def accordion_basic():
+def accordion_basic() -> rx.Component:
     return rx.el.div(
         accordion.root(
             accordion.item(

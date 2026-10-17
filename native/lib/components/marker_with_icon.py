@@ -4,7 +4,7 @@ from components.core.hugeicon import hi
 from components.ui.marker import marker
 
 
-def marker_with_icon():
+def marker_with_icon() -> rx.Component:
     return rx.el.div(
         marker.root(
             marker.icon(hi("GitBranchIcon")),

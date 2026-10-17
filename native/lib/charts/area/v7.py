@@ -12,7 +12,7 @@ data = [
 ]
 
 
-def area_chart_with_axis():
+def area_chart_with_axis() -> rx.Component:
     return rx.el.div(
         rx.el.div(
             rx.el.h3(

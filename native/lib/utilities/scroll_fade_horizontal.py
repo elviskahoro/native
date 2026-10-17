@@ -16,7 +16,7 @@ tags = [
 ]
 
 
-def scroll_fade_horizontal():
+def scroll_fade_horizontal() -> rx.Component:
     return rx.el.div(
         rx.el.div(
             rx.el.div(

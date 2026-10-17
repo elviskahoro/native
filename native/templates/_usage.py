@@ -6,7 +6,7 @@ from native.registry.anatomy import ANATOMY
 from native.templates._copy_btn import generate_component_id
 
 
-def _usage_demo(component_name: str):
+def _usage_demo(component_name: str) -> rx.Component:
 
     demo_id = generate_component_id()
     anatomy = ANATOMY.get(component_name)
@@ -86,7 +86,7 @@ def _usage_demo(component_name: str):
     )
 
 
-def usage(raw_arg):
+def usage(raw_arg: str) -> rx.Component:
 
     name = raw_arg.replace("_", " ").title()
 

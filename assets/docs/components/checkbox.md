@@ -64,6 +64,8 @@ def cn(*classes: Var | str | tuple | list | None) -> Var:
 ```
 
 ```python
+from typing import Any
+
 from reflex.components.component import Component
 from reflex.utils.imports import ImportVar
 from reflex.vars.base import Var, VarData
@@ -100,7 +102,7 @@ class HugeIcon(CoreComponent):
     disable_secondary_opacity: Var[bool]
 
     @classmethod
-    def create(cls, *children, **props) -> Component:
+    def create(cls, *children: Any, **props: Any) -> Component:
 
         if children and isinstance(children[0], str) and "icon" not in props:
             props["icon"] = children[0]
@@ -131,6 +133,8 @@ hi = icon = HugeIcon.create
 ```
 
 ```python
+from typing import Any
+
 import reflex as rx
 from reflex.components.component import ComponentNamespace
 
@@ -169,7 +173,7 @@ class ClassNames:
         "dark:peer-checked:bg-primary"
     )
 
-    _KNOWN_INPUT_PROPS = (
+    KNOWN_INPUT_PROPS = (
         "checked",
         "default_checked",
         "disabled",
@@ -182,12 +186,12 @@ class ClassNames:
 
 class CheckboxRoot(CoreComponent):
     @classmethod
-    def create(cls, *children, **props) -> rx.Component:
+    def create(cls, *children: Any, **props: Any) -> rx.Component:
         custom_classes = props.pop("class_name", "")
 
         input_props = {}
         for key in list(props.keys()):
-            if key in ClassNames._KNOWN_INPUT_PROPS or key.startswith(
+            if key in ClassNames.KNOWN_INPUT_PROPS or key.startswith(
                 ("on_", "data-", "aria-"),
             ):
                 input_props[key] = props.pop(key)
@@ -207,7 +211,7 @@ class CheckboxRoot(CoreComponent):
 
 class CheckboxIndicator(CoreComponent):
     @classmethod
-    def create(cls, *children, **props) -> rx.Component:
+    def create(cls, *children: Any, **props: Any) -> rx.Component:
         if len(children) == 0:
             children = (hi("Tick02Icon"),)
         props["data-slot"] = "checkbox-indicator"
@@ -233,7 +237,7 @@ Pair the checkbox with `field.root` and `field.label` for proper layout and labe
 **Props used:** `id`, `default_checked` on `checkbox.root`; `html_for` on `field.label`.
 
 ```python
-def checkbox_basic():
+def checkbox_basic() -> rx.Component:
     return rx.el.div(
         field.root(
             checkbox.root(

@@ -1,6 +1,8 @@
 import functools
 from collections.abc import Callable
+from typing import Any
 
+from reflex.components.component import Component
 from reflex_components_core.el import Main, Section, div, h1, main, p, section
 
 from native.templates.footer import _footer
@@ -14,9 +16,9 @@ def layout_decorator(
     logos: list | None = None,
 ) -> Callable[[Callable[..., Section]], Callable[..., Main]]:
 
-    def decorator(func):
+    def decorator(func: Callable[..., Section]) -> Callable[..., Main]:
         @functools.wraps(func)
-        def wrapper(*args, **kwargs):
+        def wrapper(*args: Any, **kwargs: Any) -> Component:
             page_content = func(*args, **kwargs)
             return main(
                 section(

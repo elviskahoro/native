@@ -3,7 +3,7 @@ import reflex as rx
 from components.ui.accordion import accordion
 
 
-def accordion_basic():
+def accordion_basic() -> rx.Component:
     return rx.el.div(
         accordion.root(
             accordion.item(

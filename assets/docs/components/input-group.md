@@ -64,7 +64,7 @@ def cn(*classes: Var | str | tuple | list | None) -> Var:
 ```
 
 ```python
-from typing import Literal
+from typing import Any, Literal
 
 from reflex.vars.base import Var
 from reflex_components_core.el import Button as BaseButton
@@ -172,7 +172,7 @@ class Button(BaseButton, CoreComponent):
     size: Var[LiteralButtonSize]
 
     @classmethod
-    def create(cls, *children, **props) -> BaseButton:
+    def create(cls, *children: Any, **props: Any) -> BaseButton:
         variant = props.pop("variant", "default")
         size = props.pop("size", "default")
         custom_classes = props.pop("class_name", "")
@@ -206,6 +206,8 @@ button = Button.create
 ```
 
 ```python
+from typing import Any
+
 from reflex.components.component import ComponentNamespace
 from reflex_components_core.el import Input as BaseInput
 
@@ -230,7 +232,7 @@ class ClassNames:
 
 class InputComponent(BaseInput, CoreComponent):
     @classmethod
-    def create(cls, *children, **props) -> BaseInput:
+    def create(cls, *children: Any, **props: Any) -> BaseInput:
 
         existing_class = props.get("class_name", "")
 
@@ -253,6 +255,8 @@ input = Input()
 ```
 
 ```python
+from typing import Any
+
 from reflex_components_core.el import Textarea
 
 from ..core.core import CoreComponent
@@ -271,7 +275,7 @@ class ClassNames:
 
 class TextAreaComponent(Textarea, CoreComponent):
     @classmethod
-    def create(cls, *children, **props) -> Textarea:
+    def create(cls, *children: Any, **props: Any) -> Textarea:
         props.setdefault(
             "custom_attrs",
             {
@@ -290,9 +294,9 @@ textarea = TextAreaComponent.create
 ```
 
 ```python
-from typing import Literal
+from typing import Any, Literal
 
-from reflex.components.component import ComponentNamespace
+from reflex.components.component import Component, ComponentNamespace
 from reflex_components_core.el import (
     Div as ElDiv,
     Span as ElSpan,
@@ -363,7 +367,7 @@ class ClassNames:
 
 class InputGroupRoot(ElDiv, CoreComponent):
     @classmethod
-    def create(cls, *children, **props) -> ElDiv:
+    def create(cls, *children: Any, **props: Any) -> ElDiv:
         props["role"] = "group"
         props["data_slot"] = "input-group"
 
@@ -373,7 +377,7 @@ class InputGroupRoot(ElDiv, CoreComponent):
 
 class InputGroupAddon(ElDiv, CoreComponent):
     @classmethod
-    def create(cls, *children, **props) -> ElDiv:
+    def create(cls, *children: Any, **props: Any) -> ElDiv:
         props["role"] = "group"
         props["data_slot"] = "input-group-addon"
 
@@ -418,14 +422,14 @@ class InputGroupAddon(ElDiv, CoreComponent):
 
 class InputGroupText(ElSpan, CoreComponent):
     @classmethod
-    def create(cls, *children, **props) -> ElSpan:
+    def create(cls, *children: Any, **props: Any) -> ElSpan:
         cls.set_class_name(ClassNames.TEXT, props)
         return super().create(*children, **props)
 
 
 class InputGroupButton(CoreComponent):
     @classmethod
-    def create(cls, *children, **props):
+    def create(cls, *children: Any, **props: Any) -> Component:
         props.setdefault("type", "button")
         props.setdefault("variant", "ghost")
 
@@ -443,7 +447,7 @@ class InputGroupButton(CoreComponent):
 
 class InputGroupInput(CoreComponent):
     @classmethod
-    def create(cls, *children, **props):
+    def create(cls, *children: Any, **props: Any) -> Component:
         props.setdefault("type", "text")
         props["data_slot"] = "input-group-control"
         props["class_name"] = cn(
@@ -456,7 +460,7 @@ class InputGroupInput(CoreComponent):
 
 class InputGroupTextarea(CoreComponent):
     @classmethod
-    def create(cls, *children, **props):
+    def create(cls, *children: Any, **props: Any) -> Component:
         props["data_slot"] = "input-group-control"
         props["class_name"] = cn(
             ClassNames.CONTROL_TEXTAREA,

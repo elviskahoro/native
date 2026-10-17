@@ -55,7 +55,7 @@ def _kpi_card(name: str, stat: str, change: str, color: str) -> rx.Component:
     )
 
 
-def kpi_card_01():
+def kpi_card_01() -> rx.Component:
     return rx.el.dl(
         *[_kpi_card(**item) for item in data],
         class_name="w-full grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-4",

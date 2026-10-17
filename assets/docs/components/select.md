@@ -64,6 +64,8 @@ def cn(*classes: Var | str | tuple | list | None) -> Var:
 ```
 
 ```python
+from typing import Any
+
 from reflex.components.component import Component
 from reflex.utils.imports import ImportVar
 from reflex.vars.base import Var, VarData
@@ -100,7 +102,7 @@ class HugeIcon(CoreComponent):
     disable_secondary_opacity: Var[bool]
 
     @classmethod
-    def create(cls, *children, **props) -> Component:
+    def create(cls, *children: Any, **props: Any) -> Component:
 
         if children and isinstance(children[0], str) and "icon" not in props:
             props["icon"] = children[0]
@@ -131,7 +133,7 @@ hi = icon = HugeIcon.create
 ```
 
 ```python
-from typing import Literal
+from typing import Any, Literal
 
 import reflex as rx
 from reflex.components.component import ComponentNamespace
@@ -171,7 +173,7 @@ class ClassNames:
 
 class NativeSelectComponent(CoreComponent):
     @classmethod
-    def create(cls, *children, **props) -> rx.Component:
+    def create(cls, *children: Any, **props: Any) -> rx.Component:
         size = props.pop("size", "default")
         wrapper_class_name = props.pop("wrapper_class_name", "")
         data_slot = props.pop("data_slot", "native-select")
@@ -199,7 +201,7 @@ class NativeSelectComponent(CoreComponent):
 
 class NativeSelectOptionComponent(CoreComponent):
     @classmethod
-    def create(cls, *children, **props) -> rx.Component:
+    def create(cls, *children: Any, **props: Any) -> rx.Component:
         props["data-slot"] = "native-select-option"
         cls.set_class_name(ClassNames.OPTION, props)
         return rx.el.option(*children, **props)
@@ -207,7 +209,7 @@ class NativeSelectOptionComponent(CoreComponent):
 
 class NativeSelectOptGroupComponent(CoreComponent):
     @classmethod
-    def create(cls, *children, **props) -> rx.Component:
+    def create(cls, *children: Any, **props: Any) -> rx.Component:
         props["data-slot"] = "native-select-optgroup"
         cls.set_class_name(ClassNames.OPTGROUP, props)
         return rx.el.optgroup(*children, **props)

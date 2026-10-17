@@ -12,7 +12,7 @@ data = [
 ]
 
 
-def line_chart_multiple():
+def line_chart_multiple() -> rx.Component:
     return rx.el.div(
         rx.el.div(
             rx.el.h3("Line Chart - Multiple", class_name="text-lg font-semibold"),

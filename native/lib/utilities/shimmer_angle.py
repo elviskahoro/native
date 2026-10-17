@@ -1,7 +1,7 @@
 import reflex as rx
 
 
-def shimmer_angle():
+def shimmer_angle() -> rx.Component:
     return rx.el.div(
         rx.el.div(
             rx.el.p("Generating response...", class_name="shimmer"),

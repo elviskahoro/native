@@ -1,12 +1,12 @@
-import glob
-import os
+from pathlib import Path
+from typing import Any
 
 from native.engine import constants
 from native.engine.utils import parse_frontmatter
 
 
 # --- Method: Generate doc routes/urls ---
-def generate_doc_routes(section_folder, base_path) -> list[dict]:
+def generate_doc_routes(section_folder: str, base_path: str) -> list[dict]:
     """Generates routes for a documentation section by recursively reading
     frontmatter from markdown files.
 
@@ -19,9 +19,8 @@ def generate_doc_routes(section_folder, base_path) -> list[dict]:
     """
     routes = []
     docs_path = f"{constants.DOCS_BASE_DIR}/{section_folder}"
-    search_path = os.path.join(docs_path, "**/*.md")
 
-    md_files = glob.glob(search_path, recursive=True)
+    md_files = [str(p) for p in Path(docs_path).rglob("*.md")]
 
     if not md_files:
         print(f"Warning: No markdown files found in '{docs_path}'")
@@ -29,8 +28,7 @@ def generate_doc_routes(section_folder, base_path) -> list[dict]:
 
     for file_path in md_files:
         try:
-            with open(file_path, encoding="utf-8") as f:
-                content = f.read()
+            content = Path(file_path).read_text(encoding="utf-8")
         except FileNotFoundError:
             continue
 
@@ -40,7 +38,7 @@ def generate_doc_routes(section_folder, base_path) -> list[dict]:
             continue
 
         # Create a URL slug from the file path relative to the section folder.
-        relative_path = os.path.relpath(file_path, docs_path)
+        relative_path = Path(file_path).relative_to(docs_path).as_posix()
         path_slug = relative_path.replace(".md", "").replace("_", "-")
 
         route_info = {
@@ -71,7 +69,7 @@ DOC_SECTIONS = [
 ]
 
 
-def build_all_routes():
+def build_all_routes() -> dict[str, list[dict[str, Any]]]:
     result = {}
 
     for section, base_path, sort_key, extras in DOC_SECTIONS:

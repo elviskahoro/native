@@ -1,5 +1,6 @@
 from pathlib import Path
 
+from reflex.components.component import Component
 from reflex.event import call_script
 from reflex_base.vars.base import Var
 from reflex_components_core.el import a, div, h3, h4, p, span
@@ -13,6 +14,9 @@ DOCS_GETTING_STARTED_PATH = Path("docs/getting_started")
 DOCS_RESOURCES_PATH = Path("docs/resources")
 
 
+FRONTMATTER_PARTS = 3
+
+
 def parse_frontmatter(content: str) -> tuple[dict, str]:
     """Parses frontmatter metadata (like order and description) from Markdown content."""
     metadata = {}
@@ -20,7 +24,7 @@ def parse_frontmatter(content: str) -> tuple[dict, str]:
         return metadata, content
 
     parts = content.split("---", 2)
-    if len(parts) < 3:
+    if len(parts) < FRONTMATTER_PARTS:
         return metadata, content
 
     frontmatter = parts[1]
@@ -45,7 +49,7 @@ def parse_frontmatter(content: str) -> tuple[dict, str]:
     return metadata, rest_of_content.lstrip()
 
 
-def link_card(name: str, href: str, description: str = ""):
+def link_card(name: str, href: str, description: str = "") -> Component:
     return a(
         div(
             # Title Stack
@@ -76,7 +80,7 @@ def link_card(name: str, href: str, description: str = ""):
     )
 
 
-def get_links(source_dir: Path, url_prefix: str):
+def get_links(source_dir: Path, url_prefix: str) -> list[Component]:
     entries = []
 
     for file in source_dir.glob("*.md"):
@@ -88,7 +92,7 @@ def get_links(source_dir: Path, url_prefix: str):
         try:
             content = file.read_text(encoding="utf-8")
             metadata, _ = parse_frontmatter(content)
-        except Exception:
+        except (OSError, ValueError):
             metadata = {}
 
         # Extract order (default to 999 if missing so unordered pages go to the end)
@@ -111,7 +115,7 @@ def get_links(source_dir: Path, url_prefix: str):
     ]
 
 
-def section(title: str, description: str, links):
+def section(title: str, description: str, links: list[Component]) -> Component:
     return div(
         div(
             h3(title, class_name="text-lg font-bold tracking-tight"),
@@ -130,7 +134,7 @@ def section(title: str, description: str, links):
     )
 
 
-def no_results():
+def no_results() -> Component:
     return div(
         div(
             div(
@@ -252,7 +256,7 @@ def filter_script(value: Var) -> Var:
         ),
     ),
 )
-def docs_page():
+def docs_page() -> Component:
     return div(
         section(
             "Getting Started",

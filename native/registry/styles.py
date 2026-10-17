@@ -2,7 +2,7 @@
 # STYLE REGISTRY
 # Add new entries here to expose new style personalities.
 # ---------------------------------------------------------------------------
-STYLE_REGISTRY = [
+STYLE_REGISTRY: list[dict[str, str | dict[str, str]]] = [
     {
         "id": "vega",
         "label": "Vega",

@@ -10,7 +10,7 @@ data = [
 ]
 
 
-def chart_example():
+def chart_example() -> rx.Component:
 
     return rx.recharts.bar_chart(
         rx.recharts.bar(

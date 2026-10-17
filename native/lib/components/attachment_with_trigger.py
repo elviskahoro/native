@@ -5,7 +5,7 @@ from components.ui.attachment import attachment
 from components.ui.dialog import dialog
 
 
-def attachment_trigger_dialog_demo():
+def attachment_trigger_dialog_demo() -> rx.Component:
     return rx.el.div(
         dialog.root(
             attachment.root(

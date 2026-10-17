@@ -23,7 +23,7 @@ formatted_data = [
 ]
 
 
-def line_chart_interactive():
+def line_chart_interactive() -> rx.Component:
     return rx.el.div(
         rx.el.div(
             rx.el.h3("Line Chart - Interactive", class_name="text-lg font-semibold"),

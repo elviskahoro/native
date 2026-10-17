@@ -11,7 +11,7 @@ data = [
 ]
 
 
-def bar_chart_mixed():
+def bar_chart_mixed() -> rx.Component:
     return rx.el.div(
         rx.el.div(
             rx.el.h3(

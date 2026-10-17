@@ -3,7 +3,7 @@ import reflex as rx
 from components.ui.input import input
 
 
-def input_basic_demo():
+def input_basic_demo() -> rx.Component:
     return rx.el.div(
         rx.el.p("Text Input", class_name="text-sm font-medium mb-2"),
         input(

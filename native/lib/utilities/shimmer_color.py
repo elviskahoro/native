@@ -1,7 +1,7 @@
 import reflex as rx
 
 
-def shimmer_color():
+def shimmer_color() -> rx.Component:
     return rx.el.div(
         rx.el.p(
             "Generating response",
