@@ -81,29 +81,34 @@ class TestMarkdownGeneration:
         _all_md,
         ids=lambda f: str(f.relative_to(DOCS_DIR)),
     )
-    def test_output_file_exists(self, md_file) -> None:
+    def test_output_file_exists(self, md_file):
         """Every source .md file must have a corresponding generated output file."""
         output = expected_markdown_output_path(md_file)
-        assert output.exists(), f"Missing generated markdown for {md_file.relative_to(ROOT_DIR)}\nExpected output: {output.relative_to(ROOT_DIR)}"
+        assert output.exists(), (
+            f"Missing generated markdown for {md_file.relative_to(ROOT_DIR)}\n"
+            f"Expected output: {output.relative_to(ROOT_DIR)}"
+        )
 
     @pytest.mark.parametrize(
         "md_file",
         _all_md,
         ids=lambda f: str(f.relative_to(DOCS_DIR)),
     )
-    def test_output_file_is_not_empty(self, md_file) -> None:
+    def test_output_file_is_not_empty(self, md_file):
         """Generated markdown files must not be empty."""
         output = expected_markdown_output_path(md_file)
         if not output.exists():
             pytest.skip("Output file missing — covered by test_output_file_exists")
-        assert output.stat().st_size > 0, f"Generated file is empty: {output.relative_to(ROOT_DIR)}"
+        assert output.stat().st_size > 0, (
+            f"Generated file is empty: {output.relative_to(ROOT_DIR)}"
+        )
 
     @pytest.mark.parametrize(
         "md_file",
         _all_md,
         ids=lambda f: str(f.relative_to(DOCS_DIR)),
     )
-    def test_no_unresolved_delimiters(self, md_file) -> None:
+    def test_no_unresolved_delimiters(self, md_file):
         """
         Generated markdown must contain no unresolved --component-- delimiters,
         which would indicate a registry lookup failure during generation.
@@ -114,13 +119,18 @@ class TestMarkdownGeneration:
 
         content = output.read_text(encoding="utf-8")
         matches = UNRESOLVED_DELIMITER_PATTERN.findall(content)
-        assert not matches, f"Unresolved delimiters found in {output.relative_to(ROOT_DIR)}: {', '.join(f'--{m}--' for m in matches)}"
+        assert not matches, (
+            f"Unresolved delimiters found in {output.relative_to(ROOT_DIR)}: "
+            + ", ".join(f"--{m}--" for m in matches)
+        )
 
-    def test_output_directory_exists(self) -> None:
+    def test_output_directory_exists(self):
         """The assets/docs/ output directory itself must exist."""
-        assert MARKDOWN_OUTPUT_DIR.exists() and MARKDOWN_OUTPUT_DIR.is_dir(), f"Output directory missing: {MARKDOWN_OUTPUT_DIR.relative_to(ROOT_DIR)}"
+        assert MARKDOWN_OUTPUT_DIR.exists() and MARKDOWN_OUTPUT_DIR.is_dir(), (
+            f"Output directory missing: {MARKDOWN_OUTPUT_DIR.relative_to(ROOT_DIR)}"
+        )
 
-    def test_no_extra_output_files(self) -> None:
+    def test_no_extra_output_files(self):
         """
         Every file in assets/docs/ should trace back to a source file in docs/.
         Catches stale outputs from deleted source files.
@@ -128,7 +138,9 @@ class TestMarkdownGeneration:
         expected_outputs = {expected_markdown_output_path(f) for f in _all_md}
         actual_outputs = set(MARKDOWN_OUTPUT_DIR.rglob("*.md"))
         stale = actual_outputs - expected_outputs
-        assert not stale, "Stale output files with no matching source:\n" + "\n".join(f"  {p.relative_to(ROOT_DIR)}" for p in sorted(stale))
+        assert not stale, "Stale output files with no matching source:\n" + "\n".join(
+            f"  {p.relative_to(ROOT_DIR)}" for p in sorted(stale)
+        )
 
 
 # ---------------------------------------------------------------------------
@@ -137,54 +149,66 @@ class TestMarkdownGeneration:
 
 
 class TestSocialCardGeneration:
-    def test_output_directory_exists(self) -> None:
+    def test_output_directory_exists(self):
         """The assets/social/ output directory must exist."""
-        assert SOCIAL_OUTPUT_DIR.exists() and SOCIAL_OUTPUT_DIR.is_dir(), f"Social card output directory missing: {SOCIAL_OUTPUT_DIR.relative_to(ROOT_DIR)}"
+        assert SOCIAL_OUTPUT_DIR.exists() and SOCIAL_OUTPUT_DIR.is_dir(), (
+            f"Social card output directory missing: {SOCIAL_OUTPUT_DIR.relative_to(ROOT_DIR)}"
+        )
 
     @pytest.mark.parametrize("route", PAGES_CONFIG_ROUTES)
-    def test_pages_config_card_exists(self, route) -> None:
+    def test_pages_config_card_exists(self, route):
         """Each hardcoded PAGES_CONFIG entry must have a .webp social card."""
         filename = route.replace("/", "-") + ".webp"
         card_path = SOCIAL_OUTPUT_DIR / filename
-        assert card_path.exists(), f"Missing social card for PAGES_CONFIG route '{route}': {card_path.relative_to(ROOT_DIR)}"
+        assert card_path.exists(), (
+            f"Missing social card for PAGES_CONFIG route '{route}': "
+            f"{card_path.relative_to(ROOT_DIR)}"
+        )
 
     @pytest.mark.parametrize("route", PAGES_CONFIG_ROUTES)
-    def test_pages_config_card_is_not_empty(self, route) -> None:
+    def test_pages_config_card_is_not_empty(self, route):
         """PAGES_CONFIG social cards must not be zero-byte files."""
         filename = route.replace("/", "-") + ".webp"
         card_path = SOCIAL_OUTPUT_DIR / filename
         if not card_path.exists():
             pytest.skip("Card missing — covered by test_pages_config_card_exists")
-        assert card_path.stat().st_size > 0, f"Social card is empty: {card_path.relative_to(ROOT_DIR)}"
+        assert card_path.stat().st_size > 0, (
+            f"Social card is empty: {card_path.relative_to(ROOT_DIR)}"
+        )
 
     @pytest.mark.parametrize(
         "md_file",
         _md_with_frontmatter,
         ids=lambda f: str(f.relative_to(DOCS_DIR)),
     )
-    def test_doc_social_card_exists(self, md_file) -> None:
+    def test_doc_social_card_exists(self, md_file):
         """Every docs/ markdown file with frontmatter must have a .webp social card."""
         card_path = expected_social_card_path(md_file)
-        assert card_path.exists(), f"Missing social card for {md_file.relative_to(ROOT_DIR)}\nExpected: {card_path.relative_to(ROOT_DIR)}"
+        assert card_path.exists(), (
+            f"Missing social card for {md_file.relative_to(ROOT_DIR)}\n"
+            f"Expected: {card_path.relative_to(ROOT_DIR)}"
+        )
 
     @pytest.mark.parametrize(
         "md_file",
         _md_with_frontmatter,
         ids=lambda f: str(f.relative_to(DOCS_DIR)),
     )
-    def test_doc_social_card_is_not_empty(self, md_file) -> None:
+    def test_doc_social_card_is_not_empty(self, md_file):
         """Social cards for docs pages must not be zero-byte files."""
         card_path = expected_social_card_path(md_file)
         if not card_path.exists():
             pytest.skip("Card missing — covered by test_doc_social_card_exists")
-        assert card_path.stat().st_size > 0, f"Social card is empty: {card_path.relative_to(ROOT_DIR)}"
+        assert card_path.stat().st_size > 0, (
+            f"Social card is empty: {card_path.relative_to(ROOT_DIR)}"
+        )
 
     @pytest.mark.parametrize(
         "md_file",
         _md_with_frontmatter,
         ids=lambda f: str(f.relative_to(DOCS_DIR)),
     )
-    def test_doc_social_card_is_webp(self, md_file) -> None:
+    def test_doc_social_card_is_webp(self, md_file):
         """
         Social card files should be valid WEBP images — checked by magic bytes
         (no Pillow dependency needed at test time).
@@ -197,4 +221,6 @@ class TestSocialCardGeneration:
         with card_path.open("rb") as fh:
             header = fh.read(12)
 
-        assert header[:4] == b"RIFF" and header[8:12] == b"WEBP", f"File does not appear to be a valid WEBP: {card_path.relative_to(ROOT_DIR)}"
+        assert header[:4] == b"RIFF" and header[8:12] == b"WEBP", (
+            f"File does not appear to be a valid WEBP: {card_path.relative_to(ROOT_DIR)}"
+        )
