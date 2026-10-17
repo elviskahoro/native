@@ -72,7 +72,7 @@ def _sidebar_item(label: str, icon: str, active: bool = False) -> rx.Component:
 
 def sidebar_items() -> rx.Component:
     return rx.el.div(
-        *[_sidebar_item(i["label"], i["icon"], i["active"]) for i in NAV_ITEMS],
+        *[_sidebar_item(i["label"], i["icon"], i["active"]) for i in NAV_ITEMS],  # type: ignore
         class_name="flex flex-col gap-1 p-2",
     )
 

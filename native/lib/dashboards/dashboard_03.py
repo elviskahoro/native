@@ -113,7 +113,7 @@ def _sidebar_item(label: str, icon: str, active: bool = False) -> rx.Component:
 def sidebar_platform_items() -> rx.Component:
     return rx.el.div(
         _section_label("Platform"),
-        *[_sidebar_item(i["label"], i["icon"], i["active"]) for i in NAV_ITEMS],
+        *[_sidebar_item(i["label"], i["icon"], i["active"]) for i in NAV_ITEMS],  # type: ignore
         class_name="flex flex-col",
     )
 
@@ -228,7 +228,7 @@ def breadcrumb() -> rx.Component:
         items.append(
             _breadcrumb_item(
                 crumb["label"],
-                crumb["icon"],
+                crumb["icon"],  # type: ignore
                 i == len(BREADCRUMB_ITEMS) - 1,
             ),
         )

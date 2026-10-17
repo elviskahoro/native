@@ -5,7 +5,6 @@ import re
 import shutil
 import sys
 from pathlib import Path
-from typing import cast
 
 # Add project root
 ROOT_DIR = Path(__file__).parent.parent
@@ -13,7 +12,7 @@ sys.path.append(str(ROOT_DIR))
 
 from reflex.components.component import ComponentNamespace  # noqa: E402
 
-from native.registry.components import COMPONENT_REGISTRY  # noqa: E402
+from native.registry.components import COMPONENT_REGISTRY
 
 # ---------------------------------------------------------
 # PATHS
@@ -227,7 +226,7 @@ def convert_to_markdown(content: str) -> str:
                 obj, preferred_name = entry
 
                 target = type(obj) if isinstance(obj, ComponentNamespace) else obj
-                file = Path(inspect.getfile(cast("object", target))).stem
+                file = Path(inspect.getfile(target)).stem  # type: ignore
 
                 return (
                     f"```python\nfrom components.ui.{file} import {preferred_name}\n```"
@@ -259,7 +258,7 @@ def convert_to_markdown(content: str) -> str:
 
                 obj, _ = entry
 
-                source = inspect.getsource(cast("object", obj))
+                source = inspect.getsource(obj)  # type: ignore
 
                 return f"```python\n{source.strip()}\n```"
 

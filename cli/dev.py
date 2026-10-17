@@ -226,7 +226,7 @@ def run_reflex(env: str, pages: list[str] | None) -> str | None:
 
     port = None
 
-    for line in process.stdout:
+    for line in process.stdout or []:
         print(line, end="")
 
         # Detect actual runtime port from Reflex output (only once)
