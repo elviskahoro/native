@@ -1,9 +1,8 @@
 import os
-import re
 from pathlib import Path
 
 from native.engine import constants
-from native.engine.parser import parse_and_render
+from native.engine.parser import extract_toc_data, parse_and_render
 from native.engine.utils import parse_frontmatter
 
 
@@ -56,24 +55,13 @@ def generate_docs_library() -> list[constants.DocDataStruct]:
         md_data, md_content = parse_frontmatter(md_content)
 
         # Extract headings for TOC from THIS file's content
-        toc_data = []
-        for match in re.finditer(r"^(#{1,2})\s+(.+)$", md_content, re.MULTILINE):
-            level = len(match.group(1))  # Count the # characters (1-2)
-            heading_text = match.group(2).strip()  # Get the heading text
-
-            toc_data.append(
-                {
-                    "text": heading_text,
-                    "id": heading_text,
-                    "level": level,
-                },
-            )
+        toc_data = extract_toc_data(md_content)
 
         doc = constants.DocDataStruct(
             url=url_path,
             description=md_data.get("description", ""),
             component=parse_and_render(md_content),
-            table_of_content=toc_data,
+            table_of_content=toc_data,  # type: ignore[reportArgumentType]
         )
 
         docs.append(doc)

@@ -16,11 +16,13 @@ the other:
       real object to call and/or introspect for source.
 """
 
+import html
 import importlib
 import inspect
 import pathlib
 import re
 from pathlib import Path
+from typing import TypedDict
 
 import markdown  # noqa: E402
 import reflex as rx
@@ -209,3 +211,24 @@ def parse_and_render(content: str) -> list[rx.Component]:
         pieces.append(render_markdown_chunk(content[cursor:]))
 
     return pieces
+
+
+_HEADING_RE = re.compile(r'<h([12])\s+id="([^"]+)"[^>]*>(.*?)</h\1>', re.DOTALL)
+
+
+class TocEntry(TypedDict):
+    level: int
+    text: str
+    id: str
+
+
+def extract_toc_data(body: str) -> list[TocEntry]:
+    """Build TOC entries from python-markdown's whole-body rendered heading ids."""
+    rendered = markdown.markdown(body, extensions=_MD_EXTENSIONS)
+    toc_data: list[TocEntry] = []
+    for match in _HEADING_RE.finditer(rendered):
+        level = int(match.group(1))
+        heading_id = match.group(2)
+        text = html.unescape(re.sub(r"<[^>]+>", "", match.group(3))).strip()
+        toc_data.append({"level": level, "text": text, "id": heading_id})
+    return toc_data
