@@ -64,6 +64,8 @@ def cn(*classes: Var | str | tuple | list | None) -> Var:
 ```
 
 ```python
+from typing import Any
+
 import reflex as rx
 from reflex.components.component import Component, ComponentNamespace
 from reflex_components_core.el import Div
@@ -83,7 +85,12 @@ class ClassNames:
 
 class CollapsibleRoot(CoreComponent):
     @classmethod
-    def create(cls, *children, default_open: bool = False, **props) -> Component:
+    def create(
+        cls,
+        *children: Any,
+        default_open: bool = False,
+        **props: Any,
+    ) -> Component:
         props["data-slot"] = "collapsible"
         if default_open:
             props.setdefault("open", True)
@@ -93,7 +100,7 @@ class CollapsibleRoot(CoreComponent):
 
 class CollapsibleTrigger(CoreComponent):
     @classmethod
-    def create(cls, *children, **props) -> Component:
+    def create(cls, *children: Any, **props: Any) -> Component:
         props["data-slot"] = "collapsible-trigger"
         cls.set_class_name(ClassNames.TRIGGER, props)
         return rx.el.summary(*children, **props)
@@ -101,7 +108,7 @@ class CollapsibleTrigger(CoreComponent):
 
 class CollapsiblePanel(Div, CoreComponent):
     @classmethod
-    def create(cls, *children, **props) -> Div:
+    def create(cls, *children: Any, **props: Any) -> Div:
         props["data-slot"] = "collapsible-panel"
         cls.set_class_name(ClassNames.PANEL, props)
         return super().create(*children, **props)

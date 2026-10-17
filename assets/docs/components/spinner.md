@@ -64,13 +64,15 @@ def cn(*classes: Var | str | tuple | list | None) -> Var:
 ```
 
 ```python
+from typing import Any
+
 import reflex as rx
 from reflex_components_core.el import svg
 
 from ..core.core import cn
 
 
-def spinner(class_name: str = "", **props) -> rx.Component:
+def spinner(class_name: str = "", **props: Any) -> rx.Component:
     return svg(
         svg.path(
             d="M21.9961 12C21.9961 17.5228 17.5189 22 11.9961 22C6.47325 22 1.99609 17.5228 1.99609 12C1.99609 6.47715 6.47325 2 11.9961 2",
@@ -97,7 +99,7 @@ Use a `size-*` utility class to change the spinner's size.
 **Props used:** `class_name` on `spinner`.
 
 ```python
-def spinner_size():
+def spinner_size() -> rx.Component:
     return rx.el.div(
         spinner(class_name="size-3"),
         spinner(class_name="size-4"),
@@ -114,7 +116,7 @@ Add a spinner to a button for a loading state. Add `data-icon="inline-start"` to
 **Props used:** `data_icon` on `spinner`.
 
 ```python
-def spinner_button():
+def spinner_button() -> rx.Component:
     return rx.el.div(
         button(spinner(), "Loading...", disabled=True, size="sm"),
         button(spinner(), "Please wait", disabled=True, size="sm", variant="outline"),
@@ -130,7 +132,7 @@ Add a spinner to a badge for a loading/syncing state.
 **Props used:** `data_icon` on `spinner`.
 
 ```python
-def spinner_badge():
+def spinner_badge() -> rx.Component:
     return rx.el.div(
         badge(spinner(), "Syncing"),
         badge(spinner(), "Updating", variant="secondary"),
@@ -146,7 +148,7 @@ Combine `spinner` with `marker` and the `shimmer` utility for animated streaming
 **Props used:** `role` on `spinner`.
 
 ```python
-def spinner_marker():
+def spinner_marker() -> rx.Component:
     return rx.el.div(
         marker.root(
             marker.icon(spinner()),

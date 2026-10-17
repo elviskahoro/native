@@ -167,7 +167,7 @@ The effect is pure CSS. The text is painted with `background-clip: text`, and th
 Use `shimmer-color-<color>` to set the highlight color explicitly. It accepts theme colors with an optional opacity modifier, or any arbitrary color value.
 
 ```python
-def shimmer_color():
+def shimmer_color() -> rx.Component:
     return rx.el.div(
         rx.el.p(
             "Generating response",
@@ -186,7 +186,7 @@ def shimmer_color():
 Use `shimmer-duration-<number>` to set the duration of one sweep in milliseconds. The default is `2000`, i.e. `2s`.
 
 ```python
-def shimmer_duration():
+def shimmer_duration() -> rx.Component:
     return rx.el.div(
         rx.el.div(
             rx.el.p("Generating response...", class_name="shimmer"),
@@ -210,7 +210,7 @@ def shimmer_duration():
 Use `shimmer-spread-<number>` to set the width of the highlight band using the spacing scale. The default is `calc(3ch + 40px)`: a fixed base plus a `3ch` term that scales with the font size.
 
 ```python
-def shimmer_spread():
+def shimmer_spread() -> rx.Component:
     return rx.el.div(
         rx.el.div(
             rx.el.p("Generating response...", class_name="shimmer shimmer-spread-4"),
@@ -231,7 +231,7 @@ def shimmer_spread():
 Use `shimmer-angle-<number>` to set the tilt of the highlight band in degrees. The default is `20`.
 
 ```python
-def shimmer_angle():
+def shimmer_angle() -> rx.Component:
     return rx.el.div(
         rx.el.div(
             rx.el.p("Generating response...", class_name="shimmer"),
@@ -252,7 +252,7 @@ def shimmer_angle():
 Use `shimmer-reverse` to sweep the highlight in the opposite direction.
 
 ```python
-def shimmer_reverse():
+def shimmer_reverse() -> rx.Component:
     return rx.el.div(
         rx.el.div(
             rx.el.p("Generating response...", class_name="shimmer shimmer-reverse"),
@@ -268,7 +268,7 @@ def shimmer_reverse():
 Use `shimmer-once` to play a single sweep instead of looping, useful as a reveal when streaming completes. Pair it with `shimmer-duration-<number>` to control how long the sweep takes.
 
 ```python
-def shimmer_once():
+def shimmer_once() -> rx.Component:
     return rx.el.div(
         rx.el.div(
             rx.el.p(
@@ -299,7 +299,7 @@ rx.el.p("Response Generated", class_name="shimmer shimmer-duration-1100 shimmer-
 Use `shimmer-none` to turn the effect off and render the text normally. It works in any class order, so the typical use is responsive or stateful.
 
 ```python
-def shimmer_none():
+def shimmer_none() -> rx.Component:
     return rx.el.div(
         rx.el.p("Generating response...", class_name="shimmer md:shimmer-none"),
         rx.el.p("shimmer md:shimmer-none", class_name="font-mono text-xs"),

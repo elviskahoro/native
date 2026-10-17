@@ -64,7 +64,7 @@ def cn(*classes: Var | str | tuple | list | None) -> Var:
 ```
 
 ```python
-from typing import Literal
+from typing import Any, Literal
 
 from reflex.vars.base import Var
 from reflex_components_core.el import Button as BaseButton
@@ -172,7 +172,7 @@ class Button(BaseButton, CoreComponent):
     size: Var[LiteralButtonSize]
 
     @classmethod
-    def create(cls, *children, **props) -> BaseButton:
+    def create(cls, *children: Any, **props: Any) -> BaseButton:
         variant = props.pop("variant", "default")
         size = props.pop("size", "default")
         custom_classes = props.pop("class_name", "")
@@ -265,7 +265,7 @@ def button_size() -> rx.Component:
 **Props used:** none required — `variant="default"` is the default.
 
 ```python
-def button_default():
+def button_default() -> Component:
     return button("Button")
 ```
 
@@ -274,7 +274,7 @@ def button_default():
 **Props used:** `variant` on `button`.
 
 ```python
-def button_secondary():
+def button_secondary() -> Component:
     return button("Secondary", variant="secondary")
 ```
 
@@ -283,7 +283,7 @@ def button_secondary():
 **Props used:** `variant` on `button`.
 
 ```python
-def button_outline():
+def button_outline() -> Component:
     return button("Outline", variant="outline")
 ```
 
@@ -292,7 +292,7 @@ def button_outline():
 **Props used:** `variant` on `button`.
 
 ```python
-def button_ghost():
+def button_ghost() -> Component:
     return button("Ghost", variant="ghost")
 ```
 
@@ -301,7 +301,7 @@ def button_ghost():
 **Props used:** `variant` on `button`.
 
 ```python
-def button_link():
+def button_link() -> Component:
     return button("Link", variant="link")
 ```
 
@@ -310,7 +310,7 @@ def button_link():
 **Props used:** `variant` on `button`.
 
 ```python
-def button_destructive():
+def button_destructive() -> Component:
     return button("Destructive", variant="destructive")
 ```
 
@@ -319,7 +319,7 @@ def button_destructive():
 **Props used:** `size="icon"` on `button`.
 
 ```python
-def button_icon():
+def button_icon() -> Component:
     return button(
         hi("CircleArrowUp01Icon", class_name="size-4"),
         variant="outline",

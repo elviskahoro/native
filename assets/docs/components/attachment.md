@@ -64,7 +64,7 @@ def cn(*classes: Var | str | tuple | list | None) -> Var:
 ```
 
 ```python
-from typing import Literal
+from typing import Any, Literal
 
 from reflex.vars.base import Var
 from reflex_components_core.el import Button as BaseButton
@@ -172,7 +172,7 @@ class Button(BaseButton, CoreComponent):
     size: Var[LiteralButtonSize]
 
     @classmethod
-    def create(cls, *children, **props) -> BaseButton:
+    def create(cls, *children: Any, **props: Any) -> BaseButton:
         variant = props.pop("variant", "default")
         size = props.pop("size", "default")
         custom_classes = props.pop("class_name", "")
@@ -206,7 +206,7 @@ button = Button.create
 ```
 
 ```python
-from typing import Literal
+from typing import Any, Literal
 
 import reflex as rx
 from reflex.components.component import ComponentNamespace
@@ -317,7 +317,7 @@ class ClassNames:
 
 class NativeAttachmentRoot(CoreComponent):
     @classmethod
-    def create(cls, *children, **props) -> rx.Component:
+    def create(cls, *children: Any, **props: Any) -> rx.Component:
         orientation: AttachmentOrientation = props.pop("orientation", "horizontal")
         size: AttachmentSize = props.pop("size", "default")
         state: AttachmentState = props.pop("state", "done")
@@ -340,7 +340,7 @@ class NativeAttachmentRoot(CoreComponent):
 
 class NativeAttachmentMedia(CoreComponent):
     @classmethod
-    def create(cls, *children, **props) -> rx.Component:
+    def create(cls, *children: Any, **props: Any) -> rx.Component:
         variant: AttachmentMediaVariant = props.pop("variant", "icon")
 
         props["data-slot"] = "attachment-media"
@@ -358,7 +358,7 @@ class NativeAttachmentMedia(CoreComponent):
 
 class NativeAttachmentContent(CoreComponent):
     @classmethod
-    def create(cls, *children, **props) -> rx.Component:
+    def create(cls, *children: Any, **props: Any) -> rx.Component:
         props["data-slot"] = "attachment-content"
         cls.set_class_name(ClassNames.CONTENT, props)
         return rx.el.div(*children, **props)
@@ -366,7 +366,7 @@ class NativeAttachmentContent(CoreComponent):
 
 class NativeAttachmentTitle(CoreComponent):
     @classmethod
-    def create(cls, *children, **props) -> rx.Component:
+    def create(cls, *children: Any, **props: Any) -> rx.Component:
         props["data-slot"] = "attachment-title"
         cls.set_class_name(ClassNames.TITLE, props)
         return rx.el.span(*children, **props)
@@ -374,7 +374,7 @@ class NativeAttachmentTitle(CoreComponent):
 
 class NativeAttachmentDescription(CoreComponent):
     @classmethod
-    def create(cls, *children, **props) -> rx.Component:
+    def create(cls, *children: Any, **props: Any) -> rx.Component:
         props["data-slot"] = "attachment-description"
         cls.set_class_name(ClassNames.DESCRIPTION, props)
         return rx.el.span(*children, **props)
@@ -382,7 +382,7 @@ class NativeAttachmentDescription(CoreComponent):
 
 class NativeAttachmentActions(CoreComponent):
     @classmethod
-    def create(cls, *children, **props) -> rx.Component:
+    def create(cls, *children: Any, **props: Any) -> rx.Component:
         props["data-slot"] = "attachment-actions"
         cls.set_class_name(ClassNames.ACTIONS, props)
         return rx.el.div(*children, **props)
@@ -390,7 +390,7 @@ class NativeAttachmentActions(CoreComponent):
 
 class NativeAttachmentAction(CoreComponent):
     @classmethod
-    def create(cls, *children, **props) -> rx.Component:
+    def create(cls, *children: Any, **props: Any) -> rx.Component:
         props.setdefault("variant", "ghost")
         props.setdefault("size", "icon-xs")
         props["data-slot"] = "attachment-action"
@@ -399,7 +399,7 @@ class NativeAttachmentAction(CoreComponent):
 
 class NativeAttachmentTrigger(CoreComponent):
     @classmethod
-    def create(cls, *children, **props) -> rx.Component:
+    def create(cls, *children: Any, **props: Any) -> rx.Component:
         link: bool = props.pop("link", False)
         component_fn = rx.el.a if link else rx.el.button
 
@@ -414,7 +414,7 @@ class NativeAttachmentTrigger(CoreComponent):
 
 class NativeAttachmentGroup(CoreComponent):
     @classmethod
-    def create(cls, *children, **props) -> rx.Component:
+    def create(cls, *children: Any, **props: Any) -> rx.Component:
         props["data-slot"] = "attachment-group"
         cls.set_class_name(ClassNames.GROUP, props)
         return rx.el.div(*children, **props)
@@ -454,7 +454,7 @@ Set `variant="image"` on `attachment.media` and render an `rx.el.img()` inside i
 **Props used:** `variant` on `attachment.media`; `orientation` on `attachment.root`.
 
 ```python
-def attachment_image_demo():
+def attachment_image_demo() -> rx.Component:
     return rx.el.div(
         attachment.group(
             [
@@ -497,7 +497,7 @@ Set `state` to reflect the upload lifecycle. `uploading` and `processing` shimme
 **Props used:** `state` on `attachment.root`.
 
 ```python
-def attachment_states_demo():
+def attachment_states_demo() -> rx.Component:
     return rx.el.div(
         attachment.root(
             attachment.media(hi("Clock01Icon")),
@@ -582,7 +582,7 @@ Use `size` to switch between `default`, `sm`, and `xs`.
 **Props used:** `size` on `attachment.root`.
 
 ```python
-def attachment_sizes_demo():
+def attachment_sizes_demo() -> rx.Component:
     return rx.el.div(
         attachment.root(
             attachment.media(hi("File02Icon")),
@@ -618,7 +618,7 @@ Wrap attachments in `attachment.group` to lay them out in a horizontally scrolla
 **Props used:** none required beyond default `attachment.group` composition.
 
 ```python
-def attachment_group_demo():
+def attachment_group_demo() -> rx.Component:
     return rx.el.div(
         attachment.group(
             [
@@ -658,7 +658,7 @@ Add an `attachment.trigger` to make the whole card open a link or dialog. It fil
 **Props used:** `link`, `href`, `aria_label` on `attachment.trigger`.
 
 ```python
-def attachment_trigger_dialog_demo():
+def attachment_trigger_dialog_demo() -> rx.Component:
     return rx.el.div(
         dialog.root(
             attachment.root(

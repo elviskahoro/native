@@ -64,7 +64,7 @@ def cn(*classes: Var | str | tuple | list | None) -> Var:
 ```
 
 ```python
-from typing import Literal
+from typing import Any, Literal
 
 import reflex as rx
 from reflex.components.component import ComponentNamespace
@@ -109,7 +109,7 @@ class ClassNames:
 
 class NativeMessageGroup(CoreComponent):
     @classmethod
-    def create(cls, *children, **props) -> rx.Component:
+    def create(cls, *children: Any, **props: Any) -> rx.Component:
         props["data-slot"] = "message-group"
         cls.set_class_name(ClassNames.GROUP, props)
         return rx.el.div(*children, **props)
@@ -117,7 +117,7 @@ class NativeMessageGroup(CoreComponent):
 
 class NativeMessageRoot(CoreComponent):
     @classmethod
-    def create(cls, *children, **props) -> rx.Component:
+    def create(cls, *children: Any, **props: Any) -> rx.Component:
         align = props.pop("align", "start")
         props["data-slot"] = "message"
         props["data-align"] = align
@@ -127,7 +127,7 @@ class NativeMessageRoot(CoreComponent):
 
 class NativeMessageAvatar(CoreComponent):
     @classmethod
-    def create(cls, *children, **props) -> rx.Component:
+    def create(cls, *children: Any, **props: Any) -> rx.Component:
         props["data-slot"] = "message-avatar"
         cls.set_class_name(ClassNames.AVATAR, props)
         return rx.el.div(*children, **props)
@@ -135,7 +135,7 @@ class NativeMessageAvatar(CoreComponent):
 
 class NativeMessageContent(CoreComponent):
     @classmethod
-    def create(cls, *children, **props) -> rx.Component:
+    def create(cls, *children: Any, **props: Any) -> rx.Component:
         props["data-slot"] = "message-content"
         cls.set_class_name(ClassNames.CONTENT, props)
         return rx.el.div(*children, **props)
@@ -143,7 +143,7 @@ class NativeMessageContent(CoreComponent):
 
 class NativeMessageHeader(CoreComponent):
     @classmethod
-    def create(cls, *children, **props) -> rx.Component:
+    def create(cls, *children: Any, **props: Any) -> rx.Component:
         props["data-slot"] = "message-header"
         cls.set_class_name(ClassNames.HEADER, props)
         return rx.el.div(*children, **props)
@@ -151,7 +151,7 @@ class NativeMessageHeader(CoreComponent):
 
 class NativeMessageFooter(CoreComponent):
     @classmethod
-    def create(cls, *children, **props) -> rx.Component:
+    def create(cls, *children: Any, **props: Any) -> rx.Component:
         props["data-slot"] = "message-footer"
         cls.set_class_name(ClassNames.FOOTER, props)
         return rx.el.div(*children, **props)
@@ -184,7 +184,7 @@ Use `message.avatar` to render an avatar next to the message. Set `align="end"` 
 **Props used:** `align` on `message.root`.
 
 ```python
-def message_with_avatar():
+def message_with_avatar() -> rx.Component:
     return rx.el.div(
         message.root(
             message.avatar(
@@ -253,7 +253,7 @@ Use `message.group` to stack consecutive messages from the same sender. Render a
 **Props used:** none required beyond default `message.group` composition.
 
 ```python
-def message_with_group():
+def message_with_group() -> rx.Component:
     return rx.el.div(
         message.group(
             message.root(
@@ -293,7 +293,7 @@ Use `message.header` for a sender name and `message.footer` for metadata such as
 **Props used:** none required beyond default `message.header`/`message.footer` composition.
 
 ```python
-def message_header_footer():
+def message_header_footer() -> rx.Component:
     return rx.el.div(
         message.root(
             message.content(
@@ -331,7 +331,7 @@ Place message-level actions in `message.footer`, such as copy, retry, or feedbac
 **Props used:** none required — place `button(...)` inside `message.footer`.
 
 ```python
-def message_with_actions():
+def message_with_actions() -> rx.Component:
     return rx.el.div(
         message.root(
             message.content(
@@ -399,7 +399,7 @@ Use the [`Attachment`](/docs/components/attachment) with the messages to display
 **Props used:** see the [Attachment](/docs/components/attachment) docs for attachment-specific props.
 
 ```python
-def message_with_attachment():
+def message_with_attachment() -> rx.Component:
     return rx.el.div(
         message.root(
             message.content(

@@ -19,7 +19,7 @@ A multi-series vertical bar chart showing a comparison of discrete datasets side
 **Props used:** `data_key`, `fill`, `radius`, `is_animation_active` on `bar`; `data_key`, `axis_line`, `tick_size`, `tick_line`, `tick` on `x_axis`.
 
 ```python
-def bar_chart_multiple():
+def bar_chart_multiple() -> rx.Component:
     return rx.el.div(
         rx.el.div(
             rx.el.h3(
@@ -94,7 +94,7 @@ A horizontal bar chart layout ideal for ranking categories or displaying long te
 **Props used:** `layout="vertical"` on `bar_chart`; `type_="number"`, `hide=True` on `x_axis`; `type_="category"`, `data_key` on `y_axis`.
 
 ```python
-def bar_chart_horizontal():
+def bar_chart_horizontal() -> rx.Component:
     return rx.el.div(
         rx.el.div(
             rx.el.h3(
@@ -164,7 +164,7 @@ A stacked vertical bar chart with built-in legend rendering for multi-series com
 **Props used:** `stack_id`, `radius` on `bar`; `legend` component container.
 
 ```python
-def bar_chart_with_legend():
+def bar_chart_with_legend() -> rx.Component:
     return rx.el.div(
         rx.el.div(
             rx.el.h3(
@@ -246,7 +246,7 @@ Displays numeric or text labels directly above individual bars using inline trac
 **Props used:** `label_list` inside `bar` component container; `position`, `offset`, `fill`, `font_size` on `label_list`.
 
 ```python
-def bar_chart_labeled():
+def bar_chart_labeled() -> rx.Component:
     return rx.el.div(
         rx.el.div(
             rx.el.h3(
@@ -327,7 +327,7 @@ Demonstrates dynamic data streaming and filtering utilizing interactive dropdown
 **Props used:** `ClientStateVar`, dynamic `data_key` binding on `bar`.
 
 ```python
-def bar_chart_dynamic():
+def bar_chart_dynamic() -> rx.Component:
 
     return rx.el.div(
         rx.el.div(
@@ -410,7 +410,7 @@ Highlights an individual bar node using distinct stroke attributes based on inte
 **Props used:** `stroke`, `stroke_width` mapped dynamically on `bar`.
 
 ```python
-def bar_chart_active():
+def bar_chart_active() -> rx.Component:
     return rx.el.div(
         rx.el.div(
             rx.el.h3(
@@ -486,7 +486,7 @@ Applies explicit unique color configurations per bar instance directly parsed fr
 **Props used:** `fill` bound directly to a data dictionary key rather than a static string.
 
 ```python
-def bar_chart_mixed():
+def bar_chart_mixed() -> rx.Component:
     return rx.el.div(
         rx.el.div(
             rx.el.h3(
@@ -556,7 +556,7 @@ Renders multiple custom-colored tracking datasets concurrently and integrates a 
 **Props used:** Triple `bar` tracks with corresponding `bg-chart-*` tracking utilities.
 
 ```python
-def bar_chart_multiple_tracks():
+def bar_chart_multiple_tracks() -> rx.Component:
     return rx.el.div(
         rx.el.div(
             rx.el.h3(

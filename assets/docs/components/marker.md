@@ -64,7 +64,7 @@ def cn(*classes: Var | str | tuple | list | None) -> Var:
 ```
 
 ```python
-from typing import Literal
+from typing import Any, Literal
 
 import reflex as rx
 from reflex.components.component import ComponentNamespace
@@ -117,7 +117,7 @@ def marker_root(
     )
 
 
-def marker_icon(*children, class_name: str = "", **props) -> rx.Component:
+def marker_icon(*children: Any, class_name: str = "", **props: Any) -> rx.Component:
 
     return rx.el.span(
         *children,
@@ -128,7 +128,7 @@ def marker_icon(*children, class_name: str = "", **props) -> rx.Component:
     )
 
 
-def marker_content(*children, class_name: str = "", **props) -> rx.Component:
+def marker_content(*children: Any, class_name: str = "", **props: Any) -> rx.Component:
 
     return rx.el.span(
         *children,
@@ -156,7 +156,7 @@ marker = Marker()
 Use `variant` to switch between an inline marker, bordered row, and labeled separator.
 
 ```python
-def marker_variants_demo():
+def marker_variants_demo() -> rx.Component:
     return rx.el.div(
         marker.root(
             marker.content("A default marker for inline notes."),
@@ -184,7 +184,7 @@ def marker_variants_demo():
 Set `role="status"` and include a [`Spinner`](/docs/components/spinner) for streaming or in-progress markers so updates are announced.
 
 ```python
-def marker_status_demo():
+def marker_status_demo() -> rx.Component:
     return rx.el.div(
         marker.root(
             marker.icon(spinner()),
@@ -206,7 +206,7 @@ def marker_status_demo():
 Add the [`shimmer`](/docs/utilities/shimmer) utility class to `marker.content` for an animated streaming-text effect. The utility ships with the `buridan` package — see the shimmer docs for installation.
 
 ```python
-def marker_shimmer():
+def marker_shimmer() -> rx.Component:
     return rx.el.div(
         marker.root(
             marker.content("Thinking...", class_name="shimmer"),
@@ -226,7 +226,7 @@ def marker_shimmer():
 Use the `separator` variant for labeled dividers, such as dates or section breaks, in a conversation.
 
 ```python
-def marker_separator():
+def marker_separator() -> rx.Component:
     return rx.el.div(
         marker.root(
             marker.content("Today"),
@@ -249,7 +249,7 @@ def marker_separator():
 Use the `border` variant for status rows that should keep the default marker alignment while separating the next row.
 
 ```python
-def marker_border():
+def marker_border() -> rx.Component:
     return rx.el.div(
         marker.root(
             marker.icon(hi("GitBranchIcon")),
@@ -275,7 +275,7 @@ def marker_border():
 Use `marker.icon` to render an icon alongside the content. Use `flex-col` to stack the icon above the content.
 
 ```python
-def marker_with_icon():
+def marker_with_icon() -> rx.Component:
     return rx.el.div(
         marker.root(
             marker.icon(hi("GitBranchIcon")),
@@ -300,7 +300,7 @@ def marker_with_icon():
 Turn a marker into a link or button with.
 
 ```python
-def marker_link_button():
+def marker_link_button() -> rx.Component:
     return rx.el.div(
         marker.root(
             rx.el.a(

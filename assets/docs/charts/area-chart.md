@@ -19,7 +19,7 @@ A simple area chart showing a single data series over time.
 **Props used:** `data_key`, `fill`, `stroke`, `stroke_width`, `type_`, `is_animation_active` on `area`; `data_key`, `axis_line`, `tick_size`, `tick_line`, `tick` on `x_axis`.
 
 ```python
-def area_chart_basic_type():
+def area_chart_basic_type() -> rx.Component:
     return rx.el.div(
         rx.el.div(
             rx.el.h3(
@@ -89,7 +89,7 @@ Uses a linear interpolation curve between points.
 **Props used:** `type_="linear"` on `area`.
 
 ```python
-def area_chart_linear_type():
+def area_chart_linear_type() -> rx.Component:
     return rx.el.div(
         rx.el.div(
             rx.el.h3(
@@ -160,7 +160,7 @@ Uses stepped interpolation to emphasize discrete changes between values.
 **Props used:** `type_="step"` on `area`.
 
 ```python
-def area_chart_step_type():
+def area_chart_step_type() -> rx.Component:
     return rx.el.div(
         rx.el.div(
             rx.el.h3(
@@ -231,7 +231,7 @@ Displays multiple datasets stacked on top of each other to show combined totals.
 **Props used:** `stack_id` on `area`.
 
 ```python
-def area_chart_stacked():
+def area_chart_stacked() -> rx.Component:
     return rx.el.div(
         rx.el.div(
             rx.el.h3(
@@ -310,7 +310,7 @@ Demonstrates updating chart data from application state.
 **Props used:** `data`, `ClientStateVar`, and dynamic chart updates.
 
 ```python
-def area_chart_dynamic():
+def area_chart_dynamic() -> rx.Component:
     select_options = [
         ("Last 3 Months", data),
         ("Last 30 Days", data[-30:]),
@@ -405,7 +405,7 @@ Shows multiple series with a chart legend.
 **Props used:** `legend`, multiple `area` components.
 
 ```python
-def area_chart_with_legend():
+def area_chart_with_legend() -> rx.Component:
     return rx.el.div(
         rx.el.div(
             rx.el.h3(
@@ -485,7 +485,7 @@ Customizes axis appearance and tick formatting.
 **Props used:** `x_axis`, `y_axis`, `tick`, `min_tick_gap`, `tick_size`.
 
 ```python
-def area_chart_with_axis():
+def area_chart_with_axis() -> rx.Component:
     return rx.el.div(
         rx.el.div(
             rx.el.h3(
@@ -575,13 +575,13 @@ Uses SVG gradients to create filled area effects.
 **Props used:** `svg.defs`, `svg.linear_gradient`, `fill="url(#...)"`.
 
 ```python
-def area_chart_with_gradient():
+def area_chart_with_gradient() -> rx.Component:
     series = [
         ("desktop", "Desktop", "--chart-1"),
         ("mobile", "Mobile", "--chart-2"),
     ]
 
-    def create_gradient(var_name):
+    def create_gradient(var_name) -> rx.Component:
         return rx.el.svg.linear_gradient(
             rx.el.svg.stop(
                 stop_color=f"var({var_name})",

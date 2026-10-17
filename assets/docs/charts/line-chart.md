@@ -19,7 +19,7 @@ A simple line chart showing a single quantitative data series over time with nat
 **Props used:** `data_key`, `stroke`, `stroke_width`, `type_`, `dot`, `is_animation_active` on `line`; `data_key`, `axis_line`, `tick_size`, `tick_line`, `tick`, `interval` on `x_axis`.
 
 ```python
-def line_chart_basic():
+def line_chart_basic() -> rx.Component:
     return rx.el.div(
         rx.el.div(
             rx.el.h3("Line Chart", class_name="text-lg font-semibold"),
@@ -84,7 +84,7 @@ Uses linear point-to-point interpolation paths rather than a smoothed natural cu
 **Props used:** `type_="linear"` on `line`.
 
 ```python
-def line_chart_linear():
+def line_chart_linear() -> rx.Component:
     return rx.el.div(
         rx.el.div(
             rx.el.h3("Line Chart - Linear", class_name="text-lg font-semibold"),
@@ -149,7 +149,7 @@ Adds standard baseline numeric annotations directly above each individual data n
 **Props used:** `label_list` inside `line` component container; `position`, `offset`, `fill`, `font_size` on `label_list`.
 
 ```python
-def line_chart_label():
+def line_chart_label() -> rx.Component:
     return rx.el.div(
         rx.el.div(
             rx.el.h3("Line Chart - Label", class_name="text-lg font-semibold"),
@@ -221,7 +221,7 @@ Plots multiple independent data tracks simultaneously on a single shared grid ti
 **Props used:** Multiple `line` components; `data_key`, `stroke` configurations mapping unique values.
 
 ```python
-def line_chart_multiple():
+def line_chart_multiple() -> rx.Component:
     return rx.el.div(
         rx.el.div(
             rx.el.h3("Line Chart - Multiple", class_name="text-lg font-semibold"),
@@ -294,7 +294,7 @@ Combines data tracking nodes with custom semantic text bindings extracted dynami
 **Props used:** `label_list` rendering a specific secondary `data_key` attribute from data rows.
 
 ```python
-def line_chart_custom_label():
+def line_chart_custom_label() -> rx.Component:
     return rx.el.div(
         rx.el.div(
             rx.el.h3("Line Chart - Title Label", class_name="text-lg font-semibold"),
@@ -360,7 +360,7 @@ Cleans up layout clutter by hiding dots entirely to emphasize clean structural t
 **Props used:** `dot=False` on `line`.
 
 ```python
-def line_chart_minimal():
+def line_chart_minimal() -> rx.Component:
     return rx.el.div(
         rx.el.div(
             rx.el.h3("Line Chart - Minimal", class_name="text-lg font-semibold"),
@@ -418,7 +418,7 @@ Demonstrates time-series layout optimization combining multi-day boundaries with
 **Props used:** `min_tick_gap`, `interval="preserveStartEnd"` on `x_axis`.
 
 ```python
-def line_chart_interactive():
+def line_chart_interactive() -> rx.Component:
     return rx.el.div(
         rx.el.div(
             rx.el.h3("Line Chart - Interactive", class_name="text-lg font-semibold"),
@@ -486,7 +486,7 @@ Integrates multiple line series data layouts with a custom styled responsive inl
 **Props used:** Pure python `*[]` list comprehensions alongside semantic tracking containers mapping series identifications.
 
 ```python
-def line_chart_footer_legend():
+def line_chart_footer_legend() -> rx.Component:
     return rx.el.div(
         rx.el.div(
             rx.el.div(
