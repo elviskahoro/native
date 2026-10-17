@@ -140,6 +140,7 @@ convention = "google"
   "TRY300",
   "BLE001",
   "INP001",
+  "E501",
 ]
 
 [lint.flake8-annotations]
