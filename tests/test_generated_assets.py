@@ -99,9 +99,7 @@ class TestMarkdownGeneration:
         output = expected_markdown_output_path(md_file)
         if not output.exists():
             pytest.skip("Output file missing — covered by test_output_file_exists")
-        assert output.stat().st_size > 0, (
-            f"Generated file is empty: {output.relative_to(ROOT_DIR)}"
-        )
+        assert output.stat().st_size > 0, f"Generated file is empty: {output.relative_to(ROOT_DIR)}"
 
     @pytest.mark.parametrize(
         "md_file",
@@ -126,9 +124,9 @@ class TestMarkdownGeneration:
 
     def test_output_directory_exists(self) -> None:
         """The assets/docs/ output directory itself must exist."""
-        assert MARKDOWN_OUTPUT_DIR.exists() and MARKDOWN_OUTPUT_DIR.is_dir(), (
-            f"Output directory missing: {MARKDOWN_OUTPUT_DIR.relative_to(ROOT_DIR)}"
-        )
+        assert (
+            MARKDOWN_OUTPUT_DIR.exists() and MARKDOWN_OUTPUT_DIR.is_dir()
+        ), f"Output directory missing: {MARKDOWN_OUTPUT_DIR.relative_to(ROOT_DIR)}"
 
     def test_no_extra_output_files(self) -> None:
         """
@@ -172,9 +170,7 @@ class TestSocialCardGeneration:
         card_path = SOCIAL_OUTPUT_DIR / filename
         if not card_path.exists():
             pytest.skip("Card missing — covered by test_pages_config_card_exists")
-        assert card_path.stat().st_size > 0, (
-            f"Social card is empty: {card_path.relative_to(ROOT_DIR)}"
-        )
+        assert card_path.stat().st_size > 0, f"Social card is empty: {card_path.relative_to(ROOT_DIR)}"
 
     @pytest.mark.parametrize(
         "md_file",
@@ -199,9 +195,7 @@ class TestSocialCardGeneration:
         card_path = expected_social_card_path(md_file)
         if not card_path.exists():
             pytest.skip("Card missing — covered by test_doc_social_card_exists")
-        assert card_path.stat().st_size > 0, (
-            f"Social card is empty: {card_path.relative_to(ROOT_DIR)}"
-        )
+        assert card_path.stat().st_size > 0, f"Social card is empty: {card_path.relative_to(ROOT_DIR)}"
 
     @pytest.mark.parametrize(
         "md_file",
@@ -221,6 +215,6 @@ class TestSocialCardGeneration:
         with card_path.open("rb") as fh:
             header = fh.read(12)
 
-        assert header[:4] == b"RIFF" and header[8:12] == b"WEBP", (
-            f"File does not appear to be a valid WEBP: {card_path.relative_to(ROOT_DIR)}"
-        )
+        assert (
+            header[:4] == b"RIFF" and header[8:12] == b"WEBP"
+        ), f"File does not appear to be a valid WEBP: {card_path.relative_to(ROOT_DIR)}"

@@ -227,7 +227,7 @@ def convert_to_markdown(content: str) -> str:
                 obj, preferred_name = entry
 
                 target = type(obj) if isinstance(obj, ComponentNamespace) else obj
-                file = Path(inspect.getfile(cast(object, target))).stem
+                file = Path(inspect.getfile(cast("object", target))).stem
 
                 return (
                     f"```python\nfrom components.ui.{file} import {preferred_name}\n```"
@@ -259,7 +259,7 @@ def convert_to_markdown(content: str) -> str:
 
                 obj, _ = entry
 
-                source = inspect.getsource(cast(object, obj))
+                source = inspect.getsource(cast("object", obj))
 
                 return f"```python\n{source.strip()}\n```"
 
