@@ -110,6 +110,7 @@ Two rules are worth keeping regardless of theme, since they fix rendering quirks
 ```python
 from components.markdown import render_markdown
 
+
 def page() -> rx.Component:
     return render_markdown("""
 # Welcome
@@ -185,6 +186,7 @@ One way to handle it is to post-process the generated HTML and wrap each `<table
 
 ```python
 from bs4 import BeautifulSoup
+
 
 def wrap_tables(html: str) -> str:
     soup = BeautifulSoup(html, "html.parser")

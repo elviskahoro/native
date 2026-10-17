@@ -1,5 +1,6 @@
 from pathlib import Path
 
+from reflex.components.component import Component
 from reflex.event import call_script
 from reflex_base.vars.base import Var
 from reflex_components_core.el import a, div, h3, h4, p, span
@@ -45,7 +46,7 @@ def parse_frontmatter(content: str) -> tuple[dict, str]:
     return metadata, rest_of_content.lstrip()
 
 
-def link_card(name: str, href: str, description: str = ""):
+def link_card(name: str, href: str, description: str = "") -> Component:
     return a(
         div(
             # Title Stack
@@ -111,7 +112,7 @@ def get_links(source_dir: Path, url_prefix: str):
     ]
 
 
-def section(title: str, description: str, links):
+def section(title: str, description: str, links) -> Component:
     return div(
         div(
             h3(title, class_name="text-lg font-bold tracking-tight"),
@@ -130,7 +131,7 @@ def section(title: str, description: str, links):
     )
 
 
-def no_results():
+def no_results() -> Component:
     return div(
         div(
             div(
@@ -252,7 +253,7 @@ def filter_script(value: Var) -> Var:
         ),
     ),
 )
-def docs_page():
+def docs_page() -> Component:
     return div(
         section(
             "Getting Started",

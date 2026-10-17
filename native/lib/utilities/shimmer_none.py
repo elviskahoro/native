@@ -1,7 +1,7 @@
 import reflex as rx
 
 
-def shimmer_none():
+def shimmer_none() -> rx.Component:
     return rx.el.div(
         rx.el.p("Generating response...", class_name="shimmer md:shimmer-none"),
         rx.el.p("shimmer md:shimmer-none", class_name="font-mono text-xs"),

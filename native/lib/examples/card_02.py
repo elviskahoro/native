@@ -7,7 +7,7 @@ from native.templates.masonary import masonry_card
 
 
 @masonry_card(label="General")
-def card_02():
+def card_02() -> rx.Component:
 
     return card.root(
         card.header(

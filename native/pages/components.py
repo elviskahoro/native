@@ -1,5 +1,6 @@
 from pathlib import Path
 
+from reflex.components.component import Component
 from reflex.event import call_script
 from reflex_base.vars.base import Var
 from reflex_components_core.el import a, div, h3, h4, p, span
@@ -25,7 +26,7 @@ UTILITIES = [
 ]
 
 
-def link_card(name: str, href: str, count: int):
+def link_card(name: str, href: str, count: int) -> Component:
     return a(
         div(
             div(
@@ -101,7 +102,7 @@ def get_chart_links():
     ]
 
 
-def section(title: str, description: str, links):
+def section(title: str, description: str, links) -> Component:
     return div(
         div(
             h3(title, class_name="text-lg font-bold tracking-tight"),
@@ -120,7 +121,7 @@ def section(title: str, description: str, links):
     )
 
 
-def no_results():
+def no_results() -> Component:
     return div(
         div(
             div("No components found", class_name="font-sans text-sm font-medium"),
@@ -239,7 +240,7 @@ def filter_script(value: Var) -> Var:
         ),
     ),
 )
-def components_page():
+def components_page() -> Component:
     return div(
         section(
             "UI Components",

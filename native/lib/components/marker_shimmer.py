@@ -3,7 +3,7 @@ import reflex as rx
 from components.ui.marker import marker
 
 
-def marker_shimmer():
+def marker_shimmer() -> rx.Component:
     return rx.el.div(
         marker.root(
             marker.content("Thinking...", class_name="shimmer"),

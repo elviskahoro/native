@@ -106,9 +106,7 @@ You can keep more than one preset in the same app. Here is a tighter one for cha
 For a one-off change, skip the preset and set a value on the container:
 
 ```python
-rx.el.div(
-  class_name="typeset [--typeset-flow:1.75em]"
-)
+rx.el.div(class_name="typeset [--typeset-flow:1.75em]")
 ```
 
 # Custom Themes
@@ -160,10 +158,7 @@ Dark mode already follows your theme colors. If the text feels a little tight on
 Tables stay real tables and wrap to fit. To scroll a wide one horizontally instead, wrap it in `typeset-scroll`:
 
 ```python
-rx.el.div(
-    rx.el.table(...),
-    class_name="typeset-scroll"
-)
+rx.el.div(rx.el.table(...), class_name="typeset-scroll")
 ```
 
 Do this in your renderer's table component or a small rehype plugin. It works for any wide block, not just tables.
@@ -173,10 +168,7 @@ Do this in your renderer's table component or a small rehype plugin. It works fo
 Typeset lives in the `components` layer and uses `:where()` for its element selectors. Tailwind utilities on an element win without `!important`:
 
 ```python
-rx.el.div(
-  rx.el.p(class_name="text-lg"),
-  class_name="typeset typeset-docs"
-)
+rx.el.div(rx.el.p(class_name="text-lg"), class_name="typeset typeset-docs")
 ```
 
 Plain CSS can override Typeset with a normal selector too.
@@ -187,9 +179,9 @@ To keep a component out of Typeset, add `not-typeset` or `data-not-typeset`:
 
 ```python
 rx.el.div(
-  rx.el.p("Styled prose"),
-  card.root("Untouched component", class_name="not-typeset"),
-  class_name="typeset"
+    rx.el.p("Styled prose"),
+    card.root("Untouched component", class_name="not-typeset"),
+    class_name="typeset",
 )
 ```
 

@@ -181,7 +181,7 @@ def reset_confirm() -> rx.Component:
     )
 
 
-def _sidebar_desktop():
+def _sidebar_desktop() -> rx.Component:
     return rx.el.aside(
         rx.el.div(
             button(
@@ -280,7 +280,7 @@ def _sidebar_desktop():
     )
 
 
-def sidebar():
+def sidebar() -> rx.Component:
     return rx.el.div(
         _sidebar_desktop(),
         class_name=(
@@ -290,7 +290,7 @@ def sidebar():
     )
 
 
-def preview_space():
+def preview_space() -> rx.Component:
     return rx.el.div(
         rx.el.div(
             rx.el.div(
@@ -341,7 +341,7 @@ def preview_space():
     )
 
 
-def source_space():
+def source_space() -> rx.Component:
     return rx.el.div(
         rx.el.div(
             get_code(),
@@ -372,7 +372,7 @@ def source_space():
     )
 
 
-def create_page():
+def create_page() -> rx.Component:
     return rx.el.div(
         rx.el.div(
             navbar(),

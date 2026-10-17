@@ -12,7 +12,7 @@ data = [
 ]
 
 
-def area_chart_linear_type():
+def area_chart_linear_type() -> rx.Component:
     return rx.el.div(
         rx.el.div(
             rx.el.h3(

@@ -16,7 +16,7 @@ items = [
 ]
 
 
-def attachment_group_demo():
+def attachment_group_demo() -> rx.Component:
     return rx.el.div(
         attachment.group(
             [

@@ -147,11 +147,11 @@ STATUS_CONFIG = {
 }
 
 
-def main_kpi_section():
+def main_kpi_section() -> rx.Component:
     return kpi_card_01()
 
 
-def main_chart_section():
+def main_chart_section() -> rx.Component:
     return rx.el.div(
         bar_chart_02(),
         class_name="w-full border border-input/90 rounded-2xl p-4",
@@ -241,7 +241,7 @@ def render_row(inv: dict) -> rx.Component:
     )
 
 
-def main_table_section():
+def main_table_section() -> rx.Component:
 
     return rx.el.div(
         table.search(
@@ -285,7 +285,7 @@ def main_table_section():
     )
 
 
-def main():
+def main() -> rx.Component:
     return rx.el.main(
         rx.el.h1("Overview", class_name="text-2xl font-semibold"),
         main_kpi_section(),
@@ -295,7 +295,7 @@ def main():
     )
 
 
-def sidebar_header():
+def sidebar_header() -> rx.Component:
     return rx.el.div(
         rx.el.span("Acme", class_name="font-semibold text-lg"),
         class_name="flex items-center gap-2 px-4 h-10 shrink-0 border-b border-input/90",
@@ -310,14 +310,14 @@ def _sidebar_item(label: str, icon: str) -> rx.Component:
     )
 
 
-def sidebar_items():
+def sidebar_items() -> rx.Component:
     return rx.el.div(
         *[_sidebar_item(i["label"], i["icon"]) for i in NAV_ITEMS],
         class_name="flex flex-col gap-1 py-2",
     )
 
 
-def sidebar_footer():
+def sidebar_footer() -> rx.Component:
     return rx.el.div(
         rx.el.div(
             "AC",
@@ -338,7 +338,7 @@ def sidebar_footer():
     )
 
 
-def sidebar():
+def sidebar() -> rx.Component:
     return rx.el.aside(
         sidebar_header(),
         sidebar_items(),
@@ -348,7 +348,7 @@ def sidebar():
     )
 
 
-def dashboard_01():
+def dashboard_01() -> rx.Component:
     return rx.el.div(
         sidebar(),
         main(),

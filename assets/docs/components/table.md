@@ -901,7 +901,7 @@ table.row(
 A `<th>` header cell. Passing `sort_key` turns it into a clickable sortable column, wiring up the click handler and the chevron sort-direction indicators automatically. Omit it for a plain, non-sortable header.
 
 ```python
-table.head("Client")                          # plain
+table.head("Client")  # plain
 table.head("Amount", sort_key="amount", class_name="text-right")  # sortable
 ```
 

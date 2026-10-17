@@ -4,7 +4,7 @@ from components.ui.checkbox import checkbox
 from components.ui.field import field
 
 
-def checkbox_basic():
+def checkbox_basic() -> rx.Component:
     return rx.el.div(
         field.root(
             checkbox.root(

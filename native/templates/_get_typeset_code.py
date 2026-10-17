@@ -26,7 +26,7 @@ def get_code_section(
     has_copy: bool = False,
     copy_id: str | None = None,
     on_copy_click: EventSpec | None = None,
-):
+) -> rx.Component:
 
     if has_copy:
         copy_btn = button(
@@ -74,7 +74,7 @@ if (btn) {{
 """
 
 
-def typeset_get_code():
+def typeset_get_code() -> rx.Component:
     return rx.el.div(
         get_code_section(
             title="1. Create typeset.css",

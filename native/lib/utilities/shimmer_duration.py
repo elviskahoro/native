@@ -1,7 +1,7 @@
 import reflex as rx
 
 
-def shimmer_duration():
+def shimmer_duration() -> rx.Component:
     return rx.el.div(
         rx.el.div(
             rx.el.p("Generating response...", class_name="shimmer"),

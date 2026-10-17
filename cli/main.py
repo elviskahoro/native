@@ -106,7 +106,7 @@ def generate_theme_css(seed: str) -> str:
     if not decoded:
         return ""
 
-    def build(dark):
+    def build(dark) -> str:
         return format_css(rebuild_theme({**decoded, "darkMode": dark}))
 
     return f":root {{\n{build(False)}\n}}\n\n.dark {{\n{build(True)}\n}}"

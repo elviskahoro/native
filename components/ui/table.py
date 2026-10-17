@@ -393,7 +393,10 @@ class TableRow(Tr, CoreComponent):
 class TableHead(Th, CoreComponent):
     @classmethod
     def create(
-        cls, *children: Any, sort_key: str | None = None, **props: Any,
+        cls,
+        *children: Any,
+        sort_key: str | None = None,
+        **props: Any,
     ) -> Component:
         cls.set_class_name(ClassNames.HEAD, props)
         if sort_key:

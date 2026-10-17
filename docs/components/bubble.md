@@ -110,21 +110,14 @@ bubble.reactions(
     rx.el.span("🔥"),
     rx.el.span("+8"),
     role="img",
-    aria_label="Reactions: thumbs up, fire, and 8 more"
+    aria_label="Reactions: thumbs up, fire, and 8 more",
 )
 ```
 
 When reactions are interactive, render buttons instead and give icon-only buttons an `aria_label`.
 
 ```python
-bubble.reactions(
-    button(
-        ...,
-        aria_label="Thumbs up",
-        variant="secondary",
-        size="sm"
-    )
-)
+bubble.reactions(button(..., aria_label="Thumbs up", variant="secondary", size="sm"))
 ```
 
 ## Interactive Bubbles
@@ -134,11 +127,10 @@ When a bubble is clickable, render it as a real `<button>` or `<a>`. `bubble.-*`
 ```python
 bubble.root(
     bubble.content(
-        "I forgot my password",
-        rx.el.button(type="button", on_click=on_reply)
+        "I forgot my password", rx.el.button(type="button", on_click=on_reply)
     ),
     variant="muted",
-    align="end"
+    align="end",
 )
 ```
 

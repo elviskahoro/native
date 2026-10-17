@@ -47,7 +47,7 @@ ACTIVITY = [
 ]
 
 
-def sidebar_header():
+def sidebar_header() -> rx.Component:
     return rx.el.div(
         hi("DashboardSquare01Icon", class_name="size-5 shrink-0"),
         rx.el.span("Acme", class_name="font-semibold text-base"),
@@ -70,14 +70,14 @@ def _sidebar_item(label: str, icon: str, active: bool = False) -> rx.Component:
     )
 
 
-def sidebar_items():
+def sidebar_items() -> rx.Component:
     return rx.el.div(
         *[_sidebar_item(i["label"], i["icon"], i["active"]) for i in NAV_ITEMS],
         class_name="flex flex-col gap-1 p-2",
     )
 
 
-def sidebar_footer():
+def sidebar_footer() -> rx.Component:
     return rx.el.div(
         avatar.root(
             avatar.image(
@@ -102,7 +102,7 @@ def sidebar_footer():
     )
 
 
-def sidebar():
+def sidebar() -> rx.Component:
     return rx.el.aside(
         sidebar_header(),
         sidebar_items(),
@@ -112,7 +112,7 @@ def sidebar():
     )
 
 
-def navbar():
+def navbar() -> rx.Component:
     return rx.el.div(
         rx.el.div(
             hi("Search01Icon", class_name="size-4 shrink-0 text-muted-foreground"),
@@ -171,14 +171,14 @@ def _stat_card(label: str, value: str, delta: str) -> rx.Component:
     )
 
 
-def main_stats_section():
+def main_stats_section() -> rx.Component:
     return rx.el.div(
         *[_stat_card(s["label"], s["value"], s["delta"]) for s in STATS],
         class_name="grid gap-4 sm:grid-cols-2 md:grid-cols-3",
     )
 
 
-def main_chart_section():
+def main_chart_section() -> rx.Component:
     return rx.el.div(
         rx.el.div(
             rx.el.p("Performance", class_name="font-medium"),
@@ -223,7 +223,7 @@ def _activity_row(item: dict) -> rx.Component:
     )
 
 
-def main_activity_section():
+def main_activity_section() -> rx.Component:
     return rx.el.div(
         rx.el.p("Recent Activity", class_name="font-medium mb-4"),
         rx.el.div(
@@ -234,7 +234,7 @@ def main_activity_section():
     )
 
 
-def main_performance_section():
+def main_performance_section() -> rx.Component:
     return rx.el.div(
         main_chart_section(),
         main_activity_section(),
@@ -242,7 +242,7 @@ def main_performance_section():
     )
 
 
-def main():
+def main() -> rx.Component:
     return rx.el.main(
         navbar(),
         rx.el.div(
@@ -273,7 +273,7 @@ def main():
     )
 
 
-def dashboard_02():
+def dashboard_02() -> rx.Component:
     return rx.el.div(
         sidebar(),
         main(),

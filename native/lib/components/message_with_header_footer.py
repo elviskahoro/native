@@ -4,7 +4,7 @@ from components.ui.bubble import bubble
 from components.ui.message import message
 
 
-def message_header_footer():
+def message_header_footer() -> rx.Component:
     return rx.el.div(
         message.root(
             message.content(

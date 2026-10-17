@@ -700,9 +700,7 @@ def attachment_trigger_dialog_demo():
 `attachment.action` is usually icon-only, so give each one an `aria-label` describing the action and its target.
 
 ```python
-attachment.action(
-    hi("Cancel01Icon"), aria_label="Remove market-research.pdf"
-)
+attachment.action(hi("Cancel01Icon"), aria_label="Remove market-research.pdf")
 ```
 
 ## Label the trigger

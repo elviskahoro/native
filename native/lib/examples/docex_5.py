@@ -12,7 +12,7 @@ data = [
 ]
 
 
-def chart_example_with_custom_legends():
+def chart_example_with_custom_legends() -> rx.Component:
 
     return rx.el.div(
         rx.recharts.bar_chart(

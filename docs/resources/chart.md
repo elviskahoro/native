@@ -67,9 +67,7 @@ You can now build your chart using Recharts components.
 Let's add a grid to the chart.
 
 ```python
-rx.recharts.cartesian_grid(
-    horizontal=True, vertical=False, class_name="opacity-30"
-)
+rx.recharts.cartesian_grid(horizontal=True, vertical=False, class_name="opacity-30")
 ```
 
 --DEMO(chart_example_with_grid)--
@@ -136,9 +134,7 @@ rx.el.div(
     rx.foreach(
         ["Desktop", "Mobile"],
         lambda device, index: rx.el.div(
-            rx.el.div(
-                class_name=f"h-3 w-3 rounded-sm bg-chart-{index + 1}"
-            ),
+            rx.el.div(class_name=f"h-3 w-3 rounded-sm bg-chart-{index + 1}"),
             rx.el.p(device, class_name="text-xs text-foreground"),
             class_name="flex flex-row items-center gap-x-2",
         ),

@@ -53,7 +53,7 @@ def _typeset_select(
     )
 
 
-def _sidebar_desktop():
+def _sidebar_desktop() -> rx.Component:
     return rx.el.aside(
         rx.el.div(
             _typeset_select(
@@ -126,7 +126,7 @@ def _sidebar_desktop():
     )
 
 
-def sidebar():
+def sidebar() -> rx.Component:
     return rx.el.div(
         _sidebar_desktop(),
         class_name=(
@@ -205,7 +205,7 @@ def _sample_content() -> rx.Component:
     )
 
 
-def preview_space():
+def preview_space() -> rx.Component:
     return rx.el.div(
         rx.el.div(
             _sample_content(),
@@ -215,7 +215,7 @@ def preview_space():
     )
 
 
-def source_space():
+def source_space() -> rx.Component:
     return rx.el.div(
         rx.el.div(
             typeset_get_code(),
@@ -231,7 +231,7 @@ def source_space():
     )
 
 
-def typeset_page():
+def typeset_page() -> rx.Component:
     return rx.el.div(
         navbar(),
         rx.el.div(

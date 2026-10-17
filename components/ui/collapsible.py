@@ -20,7 +20,10 @@ class ClassNames:
 class CollapsibleRoot(CoreComponent):
     @classmethod
     def create(
-        cls, *children: Any, default_open: bool = False, **props: Any,
+        cls,
+        *children: Any,
+        default_open: bool = False,
+        **props: Any,
     ) -> Component:
         props["data-slot"] = "collapsible"
         if default_open:

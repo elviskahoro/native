@@ -12,7 +12,7 @@ data = [
 ]
 
 
-def chart_example_with_custom_tooltip():
+def chart_example_with_custom_tooltip() -> rx.Component:
 
     return rx.recharts.bar_chart(
         rx.recharts.cartesian_grid(

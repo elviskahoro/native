@@ -1,7 +1,7 @@
 import reflex as rx
 
 
-def list():
+def list() -> rx.Component:
     return rx.el.ul(
         rx.el.li("Not all those who wander are lost."),
         rx.el.li("Even darkness must pass."),

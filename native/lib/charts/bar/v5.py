@@ -48,7 +48,7 @@ formatted_data = [
 SelectedType = ClientStateVar.create("bar_selected", "mobile")
 
 
-def bar_chart_dynamic():
+def bar_chart_dynamic() -> rx.Component:
 
     return rx.el.div(
         rx.el.div(

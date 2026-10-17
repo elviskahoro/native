@@ -32,17 +32,13 @@ Use semantic tokens instead of hardcoded values.
 Prefer:
 
 ```python
-rx.el.div(
-    class_name="bg-background text-foreground"
-)
+rx.el.div(class_name="bg-background text-foreground")
 ```
 
 over:
 
 ```python
-rx.el.div(
-    class_name="bg-white text-black"
-)
+rx.el.div(class_name="bg-white text-black")
 ```
 
 Semantic tokens allow:
@@ -107,9 +103,7 @@ inside Reflex components.
 Example:
 
 ```python
-rx.el.div(
-    class_name="bg-background text-foreground"
-)
+rx.el.div(class_name="bg-background text-foreground")
 ```
 
 ---
@@ -304,19 +298,13 @@ When styling Buridan Native components:
 Prefer:
 
 ```python
-native.button(
-    "Save",
-    variant="primary"
-)
+native.button("Save", variant="primary")
 ```
 
 over manually styling:
 
 ```python
-rx.el.button(
-    "Save",
-    class_name="bg-primary text-primary-foreground"
-)
+rx.el.button("Save", class_name="bg-primary text-primary-foreground")
 ```
 
 unless creating custom UI.
@@ -328,9 +316,7 @@ unless creating custom UI.
 For custom layouts and additional structure:
 
 ```python
-rx.el.div(
-    class_name="bg-background text-foreground"
-)
+rx.el.div(class_name="bg-background text-foreground")
 ```
 
 Use Tailwind utilities with semantic tokens.
@@ -338,9 +324,7 @@ Use Tailwind utilities with semantic tokens.
 Avoid:
 
 ```python
-rx.el.div(
-    class_name="bg-[#ffffff]"
-)
+rx.el.div(class_name="bg-[#ffffff]")
 ```
 
 because it bypasses the theme system.
@@ -383,9 +367,7 @@ Expose:
 Use:
 
 ```python
-rx.el.div(
-    class_name="bg-warning text-warning-foreground"
-)
+rx.el.div(class_name="bg-warning text-warning-foreground")
 ```
 
 ---
@@ -402,9 +384,7 @@ from reflex.plugins.shared_tailwind import TailwindConfig
 config = rx.Config(
     plugins=[
         rx.plugins.TailwindV4Plugin(
-            config=TailwindConfig(
-                plugins=["@tailwindcss/typography"]
-            )
+            config=TailwindConfig(plugins=["@tailwindcss/typography"])
         ),
     ],
 )
@@ -419,9 +399,7 @@ Do not add plugins unless required.
 Ensure global theme CSS is loaded by the application:
 
 ```python
-app = rx.App(
-    stylesheets=["globals.css"]
-)
+app = rx.App(stylesheets=["globals.css"])
 ```
 
 ---

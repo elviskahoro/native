@@ -5,7 +5,7 @@ from components.ui.bubble import bubble
 from components.ui.message import message
 
 
-def message_with_group():
+def message_with_group() -> rx.Component:
     return rx.el.div(
         message.group(
             message.root(

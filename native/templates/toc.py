@@ -66,7 +66,7 @@ def _create_markdown_toc_links(url: str, toc_data: list[dict]) -> rx.Component:
     )
 
 
-def _create_external_tool_links(url: str):
+def _create_external_tool_links(url: str) -> rx.Component:
     """Create links for viewing documentation in external tools."""
     fmt_url = "https://native.buridan.dev/" + url
     prompt = f"""I'm looking at this buridan/native documentation: {fmt_url}.
@@ -79,7 +79,7 @@ def _create_external_tool_links(url: str):
         tooltip_content: str,
         href: str,
         icon_size: str = "size-4",
-    ):
+    ) -> rx.Component:
         return rx.el.a(
             rx.el.image(
                 icon_light,
@@ -126,7 +126,7 @@ def _create_external_tool_links(url: str):
     )
 
 
-def table_of_content(url: str, toc_data: list[dict]):
+def table_of_content(url: str, toc_data: list[dict]) -> rx.Component:
     """Render table of contents.
 
     Args:

@@ -6,7 +6,7 @@ from components.ui.bubble import bubble
 from components.ui.message import message
 
 
-def message_with_attachment():
+def message_with_attachment() -> rx.Component:
     return rx.el.div(
         message.root(
             message.content(

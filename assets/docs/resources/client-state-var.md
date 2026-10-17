@@ -15,17 +15,17 @@ Use a boolean ClientStateVar to drive UI visibility or style changes instantly.
 ```python
 is_expanded = ClientStateVar.create("is_expanded", False)
 
+
 def toggle_component():
     return rx.vstack(
         rx.button(
-            "Toggle Content",
-            on_click=is_expanded.set_value(not is_expanded.value)
+            "Toggle Content", on_click=is_expanded.set_value(not is_expanded.value)
         ),
         rx.cond(
             is_expanded.value,
             rx.text("Hidden content is now visible!"),
-            rx.text("Content is hidden.")
-        )
+            rx.text("Content is hidden."),
+        ),
     )
 ```
 
@@ -36,17 +36,15 @@ Manage input draft state or real-time validation locally before pushing a final,
 ```python
 draft_input = ClientStateVar.create("draft_input", "")
 
+
 def form_component():
     return rx.vstack(
-        rx.input(
-            value=draft_input.value,
-            on_change=draft_input.set_value
-        ),
+        rx.input(value=draft_input.value, on_change=draft_input.set_value),
         rx.button(
             "Submit",
             # Send the client-side draft to the backend for processing
-            on_click=draft_input.retrieve(BackendState.process_input)
-        )
+            on_click=draft_input.retrieve(BackendState.process_input),
+        ),
     )
 ```
 
@@ -56,6 +54,7 @@ Control UI state flow without triggering backend re-renders, perfect for tabbed 
 
 ```python
 active_tab = ClientStateVar.create("active_tab", "home")
+
 
 def tab_system():
     return rx.vstack(
@@ -67,8 +66,8 @@ def tab_system():
             active_tab.value,
             ("home", rx.text("Welcome to the home page.")),
             ("profile", rx.text("User profile settings.")),
-            rx.text("404 - Unknown Tab")
-        )
+            rx.text("404 - Unknown Tab"),
+        ),
     )
 ```
 
@@ -79,6 +78,7 @@ This advanced pattern shows how to handle editable UI states on the frontend whi
 ```python
 EditSessionName = ClientStateVar.create("EditSessionName", False)
 
+
 class SessionState(rx.State):
     def save_name(self, session_id: str, new_name: str):
         # Backend logic to persist the change
@@ -88,8 +88,9 @@ class SessionState(rx.State):
         # Retrieve client-side text content via JS and pass to backend
         return rx.call_script(
             f'document.getElementById("{session_id}").innerText',
-            callback=lambda val: self.save_name(session_id, val)
+            callback=lambda val: self.save_name(session_id, val),
         )
+
 
 def session_editor(session_id: str, name: str):
     return rx.text(

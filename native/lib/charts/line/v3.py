@@ -12,7 +12,7 @@ data = [
 ]
 
 
-def line_chart_label():
+def line_chart_label() -> rx.Component:
     return rx.el.div(
         rx.el.div(
             rx.el.h3("Line Chart - Label", class_name="text-lg font-semibold"),

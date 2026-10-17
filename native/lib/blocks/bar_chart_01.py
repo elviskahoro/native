@@ -74,7 +74,7 @@ def _chart(show_y_axis: bool) -> rx.Component:
     )
 
 
-def bar_chart_01():
+def bar_chart_01() -> rx.Component:
     return rx.el.div(
         rx.el.div(
             rx.el.h3(

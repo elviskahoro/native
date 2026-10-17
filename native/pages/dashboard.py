@@ -1,3 +1,4 @@
+from reflex.components.component import Component
 from reflex.event import call_script
 from reflex_components_core.el import div
 
@@ -11,7 +12,7 @@ from native.templates.sublayout import sub_layout_decorator
     description="Build responsive dashboards for analytics, monitoring, and data-driven applications using composable UI components.",
     search=div(),
 )
-def dashboard_page():
+def dashboard_page() -> Component:
     return div(
         dashboard_example(
             "dashboard_01",

@@ -90,22 +90,15 @@ Use `rx.el.*` for:
 Examples:
 
 ```python
-rx.el.div(
-    rx.el.h1("Dashboard"),
-    rx.el.p("Welcome back")
-)
+rx.el.div(rx.el.h1("Dashboard"), rx.el.p("Welcome back"))
 ```
 
 ```python
-rx.el.section(
-    native.card(...)
-)
+rx.el.section(native.card(...))
 ```
 
 ```python
-rx.el.header(
-    rx.el.nav(...)
-)
+rx.el.header(rx.el.nav(...))
 ```
 
 Common elements include:
@@ -136,17 +129,11 @@ For layouts and page composition, prefer `rx.el.*` unless Buridan Native provide
 Examples:
 
 ```python
-rx.el.div(
-    sidebar,
-    content
-)
+rx.el.div(sidebar, content)
 ```
 
 ```python
-rx.el.section(
-    header,
-    body
-)
+rx.el.section(header, body)
 ```
 
 Use Native layout primitives when they exist.
@@ -156,19 +143,13 @@ Do not create unnecessary wrapper components for simple layout.
 Prefer:
 
 ```python
-rx.el.div(
-    native.card(...),
-    native.button(...)
-)
+rx.el.div(native.card(...), native.button(...))
 ```
 
 over:
 
 ```python
-DashboardContainer(
-    DashboardCard(),
-    DashboardButton()
-)
+DashboardContainer(DashboardCard(), DashboardButton())
 ```
 
 unless the pattern is reused and has meaningful behavior.
@@ -208,10 +189,7 @@ Use `rx.el.*` for:
 Example:
 
 ```python
-rx.el.form(
-    native.input(...),
-    native.button(...)
-)
+rx.el.form(native.input(...), native.button(...))
 ```
 
 ---

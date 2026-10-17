@@ -126,7 +126,10 @@ class MenuItem(CoreComponent):
 
     @classmethod
     def create(
-        cls, *children: Any, close_on_click: bool = True, **props: Any,
+        cls,
+        *children: Any,
+        close_on_click: bool = True,
+        **props: Any,
     ) -> rx.Component:
         props["data-slot"] = "menu-item"
         cls.set_class_name(ClassNames.ITEM, props)

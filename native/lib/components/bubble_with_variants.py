@@ -3,7 +3,7 @@ import reflex as rx
 from components.ui.bubble import bubble
 
 
-def bubble_with_variants():
+def bubble_with_variants() -> rx.Component:
     return rx.el.div(
         bubble.root(
             bubble.content("This is the default primary bubble."),

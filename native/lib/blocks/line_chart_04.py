@@ -64,7 +64,7 @@ def _chart(show_y_axis: bool) -> rx.Component:
     )
 
 
-def line_chart_04():
+def line_chart_04() -> rx.Component:
     return card.root(
         card.header(
             card.title("Solar & Inverters"),

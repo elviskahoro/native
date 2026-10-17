@@ -6,7 +6,7 @@ from components.ui.button import button
 from native.templates._copy_btn import create_copy_button, generate_component_id
 
 
-def demo(component: rx.Component, source: str):
+def demo(component: rx.Component, source: str) -> rx.Component:
     demo_id = generate_component_id()
     copy_button, _ = create_copy_button(content=source)
 

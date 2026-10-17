@@ -51,10 +51,7 @@ Incorporate warning styles into individual items for irreversible actions.
 Instantiates a positioning context container built around a native HTML `<details>` disclosure component. Includes automated JavaScript listeners for document keydowns (Escape) and window click-away dismissals.
 
 ```python
-menu.root(
-    menu.trigger("Open Menu"),
-    menu.content(...)
-)
+menu.root(menu.trigger("Open Menu"), menu.content(...))
 ```
 
 | Prop         | Type  | Default          | Description                                                           |
@@ -83,11 +80,7 @@ menu.trigger("Click me")
 The relative positioning wrapper box holding the collection of links or action rows.
 
 ```python
-menu.content(
-    menu.item("Item 1"),
-    side="bottom",
-    align="start"
-)
+menu.content(menu.item("Item 1"), side="bottom", align="start")
 ```
 
 | Prop          | Type                                        | Default    | Description                                                           |
@@ -157,10 +150,7 @@ menu.group_label("Workspace Actions")
 A right-aligned utility container used to cleanly position semantic keyboard shortcuts or button prompt hints inside a `menu.item`.
 
 ```python
-menu.item(
-    "Save Project",
-    menu.shortcut("Ctrl + S")
-)
+menu.item("Save Project", menu.shortcut("Ctrl + S"))
 ```
 
 | Prop         | Type  | Default | Description                                             |

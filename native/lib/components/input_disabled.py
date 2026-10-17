@@ -3,7 +3,7 @@ import reflex as rx
 from components.ui.input import input
 
 
-def input_disabled():
+def input_disabled() -> rx.Component:
     return rx.el.div(
         rx.el.p("Disabled Input", class_name="text-sm font-medium mb-2"),
         input(

@@ -12,7 +12,7 @@ data = [
 ]
 
 
-def bar_chart_multiple():
+def bar_chart_multiple() -> rx.Component:
     return rx.el.div(
         rx.el.div(
             rx.el.h3(

@@ -32,7 +32,7 @@ def load_blocks(prefix: str) -> list[tuple[str, object, str]]:
     return blocks
 
 
-def section(prefix: str, title: str, description: str, blocks):
+def section(prefix: str, title: str, description: str, blocks) -> rx.Component:
     is_visible = (active_block_filter.value == "all") | (
         active_block_filter.value == prefix
     )
@@ -74,7 +74,7 @@ BLOCK_GROUPS = [
 ]
 
 
-def build_section(prefix: str, title: str, description: str):
+def build_section(prefix: str, title: str, description: str) -> rx.Component:
     blocks = [
         div(demo(component=component_fn(), source=source))
         for name, component_fn, source in load_blocks(prefix)
@@ -83,7 +83,7 @@ def build_section(prefix: str, title: str, description: str):
     return section(prefix, title, description, blocks)
 
 
-def filter_button(label: str, value: str):
+def filter_button(label: str, value: str) -> rx.Component:
     is_active = active_block_filter.value == value
     return button(
         label,
@@ -94,7 +94,7 @@ def filter_button(label: str, value: str):
     )
 
 
-def filter_blocks():
+def filter_blocks() -> rx.Component:
     return div(
         div(
             hi("FilterMailIcon", class_name="size-4 shrink-0"),
@@ -119,7 +119,7 @@ def filter_blocks():
     description="Clean, modern building blocks for Reflex dashboards. Copy and paste into your apps. Open Source. Extensible.",
     search=div(),
 )
-def blocks_page():
+def blocks_page() -> rx.Component:
     return div(
         filter_blocks(),
         *[

@@ -39,7 +39,10 @@ class ClassNames:
 class RadioGroupRoot(CoreComponent):
     @classmethod
     def create(
-        cls, *children: Any, disabled: bool = False, **props: Any,
+        cls,
+        *children: Any,
+        disabled: bool = False,
+        **props: Any,
     ) -> rx.Component:
         custom_classes = props.pop("class_name", "")
         props["data-slot"] = "radio-group"
@@ -53,7 +56,11 @@ class RadioGroupRoot(CoreComponent):
 class RadioGroupItem(CoreComponent):
     @classmethod
     def create(
-        cls, *children: Any, name: str, value: str, **props: Any,
+        cls,
+        *children: Any,
+        name: str,
+        value: str,
+        **props: Any,
     ) -> rx.Component:
         custom_classes = props.pop("class_name", "")
 
