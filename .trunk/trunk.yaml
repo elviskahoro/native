@@ -307,85 +307,15 @@ merge:
   # Re-verify after any pipeline rename:
   #   gh pr checks <pr-number> --json name --jq '.[].name'
   #
-  # Per Trunk's docs, this list is one of three ways to define what the queue
-  # waits on while a queued PR is testing (GitHub branch protection
-  # required-checks are the default; a Trunk UI override is the third); it
-  # does not control which PRs are admitted to the queue. With branch
-  # protection plan-blocked here, this override is the queue's entire
-  # wait-set configuration.
-  #
-  # The two RWX entries are posted by RWX (.rwx/trunk-check.yml and
-  # .rwx/tests-bazel.yml) as commit statuses, not check-runs -- verified via
-  # the statuses API on PR and trunk-merge/* draft heads, 2026-10-16 -- named
-  # "RWX: <file> (pull request)" for pull_request events and "RWX: <file>
-  # (push)" for push events, different names in different contexts. The
-  # names below are the pull_request status names, which is what the merge
-  # queue gates on when a PR is queued.
-  #
-  # pullfrog-approval is a check run posted by the pullfrog GitHub App when
-  # the Pullfrog review run it dispatches per PR finishes -- "Review #N" on
-  # PR open, "Review new commits on #N" on pushes -- distinct from the
-  # "pullfrog" job check of the run itself. Requiring it closes the
-  # fast-merge gap: #1113-#1116 merged seconds after creation, before the
-  # ~6-7 minute review finished, cancelling the run and leaving no verdict,
-  # and #991 merged over an explicit FAILURE posted on its test draft
-  # (#1090). The queue tests in Draft PR mode and the app reviews those
-  # trunk-merge/* drafts too, so every queued PR now holds for pullfrog's
-  # verdict on the merge.
-  #
-  # Two Pullfrog console toggles are prerequisites for this gate to fire at
-  # all (console -> Automations -> Review PRs; both default Off, so a fresh
-  # app install starts with the gate inert): "Add Pullfrog's approval verdict
-  # as a Check on pull requests" -- without it the pullfrog-approval check
-  # never posts -- and "Include draft PRs" -- without it the app skips the
-  # queue's trunk-merge/* drafts, so no verdict posts on the merge and every
-  # queued PR stall-times out. PRs already in flight when a toggle is found
-  # Off stay stuck until timeout -- dequeue them and requeue after fixing the
-  # toggle, rather than waiting out the stall. Both toggles verified On
-  # empirically 2026-10-16: a verdict
-  # check posted on this PR's own head, and on queue drafts #1090/#1100 on
-  # 2026-10-15. The deprecated `status_checks: enabled` workflow input
-  # overrides both toggles; this repo's workflow_dispatch-only pullfrog.yml
-  # does not use it, so the console is the live config. Re-check the console
-  # alongside the name re-verification after any pullfrog app change.
-  #
-  # Known gaps, all fail-closed (the PR times out of the queue instead of
-  # merging unreviewed): the app does not review
-  # dependabot-authored PRs, so those cannot pass the queue and keep their
-  # existing direct-merge path (gating them too needs a pullfrog-app
-  # setting); a PR head is not re-reviewed after pullfrog's own "Fix CI"
-  # commits (#1108) -- that head keeps no verdict, so push any new commit
-  # (or re-trigger the review) before queueing or direct-merging, though a
-  # queued run still reviews the merge draft itself; and a pullfrog-side
-  # rename of the check fails silently (timeouts, no error) -- re-verify
-  # the name per the header rule after touching the app. A spurious FAILURE
-  # verdict on a draft ejects an otherwise-green PR -- requeue it
-  # (`trunk merge <pr>`) or use break-glass. The cost is latency: every
-  # queue run now waits out pullfrog's ~6-7 minute review of its draft, on
-  # top of CI. Break-glass for a pullfrog outage: remove this entry, or
-  # admin direct-merge past the queue. GitHub branch protection cannot
-  # backstop any of this: private repo on the free org plan,
-  # protection/rulesets APIs 403, so the queue is the only enforcement
-  # point (#1117).
-  #
-  # "Entire Gates" comes from the Entire GitHub App and is the exact check-run name
-  # observed on queue PR #1100 and bot PR #1031; it depends on that app reporting.
-  # The docs job names were observed on docs PR #1110 and bot PR #1031.
-  # Docs checks reports its named job statuses on every PR and skips only its
-  # validation steps when none of its paths changed. Do NOT require a workflow
-  # filtered by `pull_request.paths`; it would deadlock the queue. Same for the
-  # workflow_run-triggered "Triage CI failure".
-  #
-  # Fork PRs get no Bazel coverage (tests-bazel skips them entirely via is-fork
-  # guard -- an accepted tradeoff, matching GHA's own degraded fork behavior).
+  # Every entry has a producer in this repo: Trunk Check
+  # (.github/workflows/trunk-check.yml), Unit tests (tests.yml), Generate &
+  # Verify Docs and Social Cards (validate-assets.yml), Entire Gates (Entire
+  # GitHub App) and pullfrog-approval (pullfrog GitHub App verdict check).
+  # Do NOT require a workflow filtered by `pull_request.paths`; it would
+  # deadlock the queue.
   required_statuses:
-    - "RWX: trunk-check.yml (pull request)"
-    - "RWX: tests-bazel.yml (pull request)"
+    - Trunk Check
+    - Unit tests
+    - Generate & Verify Docs and Social Cards
     - Entire Gates
-    - Docs validate + broken links
-    - CLI reference drift + page lint
-    # Re-verify this name after any pullfrog app change (header rule):
-    #   gh pr checks <pr-number> --json name --jq '.[].name'
-    # Unquoted on purpose: yamllint's quoted-strings rule (only-when-needed)
-    # rejects the quoted form -- nothing here needs escaping.
     - pullfrog-approval

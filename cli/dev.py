@@ -226,6 +226,10 @@ def run_reflex(env: str, pages: list[str] | None) -> str | None:
 
     port = None
 
+    if process.stdout is None:
+        msg = "reflex subprocess has no stdout pipe"
+        raise RuntimeError(msg)
+
     for line in process.stdout:
         print(line, end="")
 
