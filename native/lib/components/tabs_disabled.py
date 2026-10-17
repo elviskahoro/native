@@ -1,4 +1,4 @@
-from reflex.components.component import Component
+from reflex import Component
 
 from components.ui.tabs import tabs
 

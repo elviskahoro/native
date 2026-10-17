@@ -1,4 +1,4 @@
-from reflex.components.component import Component
+from reflex import Component
 
 from components.ui.field import field
 from components.ui.textarea import textarea

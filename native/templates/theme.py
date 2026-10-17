@@ -1,4 +1,4 @@
-from reflex.components.component import Component
+from reflex import Component
 from reflex_base.event import call_script
 from reflex_components_core.el import svg
 
