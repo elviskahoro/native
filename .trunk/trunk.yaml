@@ -211,12 +211,6 @@ lint:
       paths:
         - "*.ipynb"
 
-    # Trunk's pyrefly sandbox does not install reflex, so imports of
-    # reflex submodules are reported as missing-import.
-    - linters: [pyrefly]
-      paths:
-        - native/**
-
     # Documentation MDX mixes JSX components with fenced code blocks, which
     # markdownlint misreads as inconsistent code-block styles (MD046).
     - linters: [markdownlint, markdownlint-cli2]
