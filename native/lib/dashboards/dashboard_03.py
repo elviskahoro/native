@@ -5,7 +5,7 @@ from components.ui.avatar import avatar
 from components.ui.button import button
 from native.lib.charts.area.v8 import area_chart_with_gradient
 
-NAV_ITEMS = [
+NAV_ITEMS: list[dict[str, str | bool]] = [
     {"label": "Dashboard", "icon": "DashboardSquare01Icon", "active": True},
     {"label": "Projects", "icon": "Folder01Icon", "active": False},
     {"label": "Analytics", "icon": "ChartBarLineIcon", "active": False},
@@ -20,7 +20,7 @@ ACTIVE_PROJECTS = [
     "Analytics Rebuild",
 ]
 
-BREADCRUMB_ITEMS = [
+BREADCRUMB_ITEMS: list[dict[str, str | None]] = [
     {"label": "Acme Inc", "icon": "SquareIcon"},
     {"label": "Marketing Site", "icon": None},
     {"label": "Preview", "icon": None},

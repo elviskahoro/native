@@ -5,6 +5,7 @@ import re
 import shutil
 import sys
 from pathlib import Path
+from typing import cast
 
 # Add project root
 ROOT_DIR = Path(__file__).parent.parent
@@ -167,7 +168,7 @@ def get_dependencies(name: str) -> list[str]:
 #     return ordered
 
 
-def read_component_files(name: str) -> list[tuple[str, str]]:
+def read_component_files(name: str) -> list[str]:
     output = []
 
     for dep in get_dependencies(name):
@@ -226,7 +227,7 @@ def convert_to_markdown(content: str) -> str:
                 obj, preferred_name = entry
 
                 target = type(obj) if isinstance(obj, ComponentNamespace) else obj
-                file = Path(inspect.getfile(target)).stem
+                file = Path(inspect.getfile(cast(object, target))).stem
 
                 return (
                     f"```python\nfrom components.ui.{file} import {preferred_name}\n```"
@@ -258,7 +259,7 @@ def convert_to_markdown(content: str) -> str:
 
                 obj, _ = entry
 
-                source = inspect.getsource(obj)
+                source = inspect.getsource(cast(object, obj))
 
                 return f"```python\n{source.strip()}\n```"
 

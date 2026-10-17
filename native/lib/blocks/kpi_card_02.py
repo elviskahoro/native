@@ -18,19 +18,19 @@ data = [
     {"date": "Dec 23", "users": 275, "sessions": 873, "churn": 0},
 ]
 
-categories = [
+categories: list[dict[str, str | int | float]] = [
     {
         "name": "Monthly users",
         "key": "users",
         "color": 1,
-        "avg": round(sum(d["users"] for d in data) / len(data)),
+        "avg": float(round(sum(d["users"] for d in data) / len(data))),
         "suffix": "",
     },
     {
         "name": "Monthly sessions",
         "key": "sessions",
         "color": 2,
-        "avg": round(sum(d["sessions"] for d in data) / len(data)),
+        "avg": float(round(sum(d["sessions"] for d in data) / len(data))),
         "suffix": "",
     },
     {

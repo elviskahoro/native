@@ -18,7 +18,7 @@ def build_index() -> dict[str, list[str]]:
         "components": ["button", "input"]
     }.
     """
-    sections = {}
+    sections: dict[str, list[str]] = {}
 
     for file in DOCS_DIR.glob("**/*.md"):
         rel = file.relative_to(DOCS_DIR)
@@ -86,7 +86,7 @@ def resolve_pages(
 
     Returns None (and prints errors) if anything couldn't be resolved.
     """
-    name_to_paths = {}
+    name_to_paths: dict[str, list[str]] = {}
     for section, pages in sections.items():
         for page in pages:
             name_to_paths.setdefault(page, []).append(f"{section}/{page}")
@@ -202,7 +202,7 @@ def select_pages_fuzzy(sections: dict[str, list[str]]) -> list[str] | None:
     return pages
 
 
-def run_reflex(env: str, pages: list[str] | None) -> int:
+def run_reflex(env: str, pages: list[str] | None) -> str | None:
     """Runs Reflex and prints correct URLs ONLY after the actual port is known."""
     if env == "dev":
         os.environ["BURIDAN_DEV_MODE"] = "true"

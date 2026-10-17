@@ -32,7 +32,12 @@ def load_blocks(prefix: str) -> list[tuple[str, object, str]]:
     return blocks
 
 
-def section(prefix: str, title: str, description: str, blocks: list[rx.Component]) -> rx.Component:
+def section(
+    prefix: str,
+    title: str,
+    description: str,
+    blocks: list[rx.Component],
+) -> rx.Component:
     is_visible = (active_block_filter.value == "all") | (
         active_block_filter.value == prefix
     )

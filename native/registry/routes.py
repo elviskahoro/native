@@ -1,4 +1,5 @@
 from pathlib import Path
+from typing import Any
 
 from native.engine import constants
 from native.engine.utils import parse_frontmatter
@@ -68,7 +69,7 @@ DOC_SECTIONS = [
 ]
 
 
-def build_all_routes() -> dict[str, list[dict]]:
+def build_all_routes() -> dict[str, list[dict[str, Any]]]:
     result = {}
 
     for section, base_path, sort_key, extras in DOC_SECTIONS:

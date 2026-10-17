@@ -126,7 +126,21 @@ convention = "google"
 # public component API (`input`, bool flags) and use random demo data.
 "native/lib/**" = ["A001", "A004", "FBT", "S311", "DTZ007"]
 # Build/maintenance scripts run directly (not imported as packages), not shipped runtime.
-"scripts/**" = ["EM", "TRY003", "PTH", "EXE001", "D", "PLR0912", "PLR0915", "PLR0911", "E402", "S105", "TRY300", "BLE001", "INP001"]
+"scripts/**" = [
+  "EM",
+  "TRY003",
+  "PTH",
+  "EXE001",
+  "D",
+  "PLR0912",
+  "PLR0915",
+  "PLR0911",
+  "E402",
+  "S105",
+  "TRY300",
+  "BLE001",
+  "INP001",
+]
 
 [lint.flake8-annotations]
 # `*args: Any` / `**kwargs: Any` is the correct annotation for genuinely variadic pass-through.

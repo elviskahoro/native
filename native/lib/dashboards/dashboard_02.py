@@ -5,7 +5,7 @@ from components.ui.avatar import avatar
 from components.ui.badge import badge
 from native.lib.charts.area.v8 import area_chart_with_gradient
 
-NAV_ITEMS = [
+NAV_ITEMS: list[dict[str, str | bool]] = [
     {"label": "Overview", "icon": "DashboardSquare01Icon", "active": True},
     {"label": "Analytics", "icon": "ChartBarLineIcon", "active": False},
     {"label": "Projects", "icon": "FolderIcon", "active": False},
