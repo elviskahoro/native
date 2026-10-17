@@ -2,7 +2,7 @@ import functools
 from collections.abc import Callable
 from typing import Any
 
-from reflex import Component
+from reflex.components.component import Component
 from reflex_components_core.el import Div, Main, div, h1, main, p, section
 
 from native.templates.footer import _footer

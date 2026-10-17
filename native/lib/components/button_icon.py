@@ -1,4 +1,4 @@
-from reflex import Component
+from reflex.components.component import Component
 
 from components.core.hugeicon import hi
 from components.ui.button import button

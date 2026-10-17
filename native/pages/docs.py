@@ -1,6 +1,6 @@
 from pathlib import Path
 
-from reflex import Component
+from reflex.components.component import Component
 from reflex.event import call_script
 from reflex_base.vars.base import Var
 from reflex_components_core.el import a, div, h3, h4, p, span

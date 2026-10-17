@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 
-from reflex import Component
+from reflex.components.component import Component
 from reflex.event import call_script
 from reflex_components_core.el import Div, Header, a, div, header, p
 
