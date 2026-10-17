@@ -137,9 +137,11 @@ class NativeSwitch(CoreComponent):
                 rx.el.span(class_name=cn(ClassNames.THUMB, thumb_class_name)),
                 class_name=cn(ClassNames.TRACK, track_class_name),
             ),
-            rx.el.span(label_text, class_name=ClassNames.LABEL)
-            if label_text
-            else rx.fragment(),
+            (
+                rx.el.span(label_text, class_name=ClassNames.LABEL)
+                if label_text
+                else rx.fragment()
+            ),
             **props,
         )
 
