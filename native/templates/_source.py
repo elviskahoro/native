@@ -34,7 +34,7 @@ def file_codeblock(file_path: str, source: str) -> rx.Component:
     )
 
 
-def source(files: list[str]) -> rx.Component:
+def source(files: list[tuple[str, str]]) -> rx.Component:
     return div(
         div(
             h1(
