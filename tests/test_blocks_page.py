@@ -13,7 +13,7 @@ from __future__ import annotations
 
 import re
 
-import native.pages.blocks as B
+from native.pages import blocks
 
 
 def _disk_prefixes():
@@ -21,7 +21,7 @@ def _disk_prefixes():
     ``<prefix>_<digits>.py`` naming convention (excludes ``__init__.py``)."""
     prefixes = set()
     pattern = re.compile(r"^([a-z_]+)_(\d+)\.py$")
-    for path in B.BLOCKS_PATH.glob("*.py"):
+    for path in blocks.BLOCKS_PATH.glob("*.py"):
         match = pattern.match(path.name)
         if match:
             prefixes.add(match.group(1))
@@ -32,4 +32,4 @@ def test_block_groups_match_block_prefixes_on_disk():
     """Every block prefix present on disk must be declared in
     ``BLOCK_GROUPS`` (and vice versa) so every block category is rendered on
     the showcase page."""
-    assert _disk_prefixes() == {group[0] for group in B.BLOCK_GROUPS}
+    assert _disk_prefixes() == {group[0] for group in blocks.BLOCK_GROUPS}
