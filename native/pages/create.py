@@ -397,8 +397,12 @@ def create_page() -> rx.Component:
                 style: {json.dumps(STYLE_REGISTRY)},
                 font: {json.dumps(FONT_REGISTRY)},
             }};
-            // if (window.preview) window.preview.applyAll();
-            if (window.preview) window.preview.syncAll();
+            if (window.preview) {{
+                var code = new URLSearchParams(window.location.search).get("preset");
+                if (!(code && window.preview.applyPresetCode(code))) {{
+                    window.preview.syncAll();
+                }}
+            }}
             """,
             ),
             rx.call_script(
