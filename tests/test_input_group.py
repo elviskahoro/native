@@ -50,7 +50,7 @@ def test_addon_focus_handler_targets_shared_control_slot():
     "factory",
     [input_group.input, input_group.textarea],
     ids=["input", "textarea"],
-)
+)  # pyright: ignore[reportUntypedFunctionDecorator]
 def test_control_carries_shared_data_slot(factory):
     """Both ``input_group.input`` and ``input_group.textarea`` must render a
     control carrying ``data-slot="input-group-control"`` in its DOM attributes.
