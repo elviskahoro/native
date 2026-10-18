@@ -535,7 +535,8 @@ def cmd_apply(preset: str) -> None:
     )
     if not config:
         print(
-            f"Error: Invalid preset ID '{preset}'. Get a valid preset from https://buridan-ui.com/create",
+            f"Error: Invalid preset ID '{preset}'. Get a valid preset from https://buridan.reflex.run/create",
+            file=sys.stderr,
         )
         sys.exit(1)
 
@@ -645,12 +646,12 @@ def main() -> None:
 
     apply_p = sub.add_parser(
         "apply",
-        help="Apply a theme preset (from buridan-ui.com/create)",
+        help="Apply a theme preset (from buridan.reflex.run/create)",
     )
     apply_p.add_argument(
         "--preset",
         required=True,
-        help="Preset ID e.g. b0 or b2D0wqNxT",
+        help="Preset ID e.g. b0 or b1000",
     )
 
     add_p = sub.add_parser("add", help="Add components to your project")
