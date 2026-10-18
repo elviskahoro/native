@@ -2,7 +2,7 @@
 
 Guards against the off-by-one breakpoint bug where the "Get Code"
 panel (``#source-space``) became unreachable on viewports in the
-Tailwind ``lg``–``xl`` band (1024px ≤ width < 1280px): the panel used
+Tailwind ``lg``-``xl`` band (1024px ≤ width < 1280px): the panel used
 ``xl:flex`` as its only desktop always-visible override while the
 "Get Code/Preview" toggle button was ``lg:hidden``, leaving the
 [1024, 1280)px range with neither a visible panel nor a toggle to
@@ -61,7 +61,7 @@ def test_source_space_is_always_visible_at_lg_not_xl():
         "desktop always-visible override must activate at lg breakpoint"
     )
     assert "xl:flex" not in tokens, (
-        "xl:flex reintroduces the 1024–1279px dead band: the panel would "
+        "xl:flex reintroduces the 1024-1279px dead band: the panel would "
         "only reappear at 1280px while the lg:hidden toggle vanishes at 1024px"
     )
 
@@ -94,5 +94,5 @@ def test_typeset_desktop_layout_and_source_panel_share_lg_breakpoint():
     assert "xl:flex" not in source_tokens, (
         "an xl:flex override on source-space is inconsistent with the "
         "lg:flex-row wrapper and lg:hidden toggle and reintroduces the "
-        "1024–1279px dead band"
+        "1024-1279px dead band"
     )
