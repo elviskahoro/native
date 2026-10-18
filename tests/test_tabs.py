@@ -220,4 +220,3 @@ def test_flat_demo_guard_is_noop_for_outer_only_group():
                 f"{label}: click {trigger['id']} did not yield a single active trigger"
             )
             assert trigger["active"] == "true"
-            _simulate_mount(dom)
