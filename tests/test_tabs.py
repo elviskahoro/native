@@ -1,5 +1,3 @@
-import pytest
-
 from components.ui.tabs import tabs
 
 DEMO_MODULES = {
@@ -161,17 +159,22 @@ def test_guard_preserves_nested_highlight_after_outer_click():
     outer_home = _find_by_id(dom, "outer-home")
     inner_prof = _find_by_id(dom, "inner-prof")
     inner_sec = _find_by_id(dom, "inner-sec")
+    assert outer_home is not None
+    assert inner_prof is not None
+    assert inner_sec is not None
     assert inner_prof["active"] == "true"
     assert inner_sec["active"] == "false"
     _simulate_click(dom, outer_home, with_guard=True)
     assert outer_home["active"] == "true"
     outer_settings = _find_by_id(dom, "outer-settings")
+    assert outer_settings is not None
     assert outer_settings["active"] == "false"
     assert inner_prof["active"] == "true", (
         "outer click must not clobber inner highlight"
     )
     assert inner_sec["active"] == "false"
     inner_root = _closest(inner_prof, "tabs", _index_parents(dom))
+    assert inner_root is not None
     assert inner_root["value"] == "profile", (
         "outer click must not change inner root value"
     )
@@ -182,36 +185,39 @@ def test_nested_inner_group_remains_independently_switchable_with_guard():
     dom = _dom_tree(nested)
     _simulate_mount(dom)
     outer_settings = _find_by_id(dom, "outer-settings")
+    assert outer_settings is not None
     _simulate_click(dom, outer_settings, with_guard=True)
     inner_sec = _find_by_id(dom, "inner-sec")
     inner_prof = _find_by_id(dom, "inner-prof")
+    assert inner_sec is not None
+    assert inner_prof is not None
     assert inner_prof["active"] == "true"
     _simulate_click(dom, inner_sec, with_guard=True)
     assert inner_sec["active"] == "true"
     assert inner_prof["active"] == "false"
     outer_root = _closest(outer_settings, "tabs", _index_parents(dom))
+    assert outer_root is not None
     assert outer_root["value"] == "settings"
 
 
-@pytest.mark.parametrize("label", list(DEMO_MODULES))
-def test_flat_demo_guard_is_noop_for_outer_only_group(label):
+def test_flat_demo_guard_is_noop_for_outer_only_group():
     import importlib
 
-    module_path, fn_name = DEMO_MODULES[label]
-    mod = importlib.import_module(module_path)
-    comp = getattr(mod, fn_name)()
-    dom = _dom_tree(comp)
-    _simulate_mount(dom)
-    triggers = _all_triggers(dom)
-    for trigger in triggers:
-        _simulate_click(dom, trigger, with_guard=True)
-        expected = {
-            t["id"]: ("true" if t["value"] == trigger["value"] else "false")
-            for t in triggers
-        }
-        snapshot_after = {t["id"]: t["active"] for t in triggers}
-        assert snapshot_after == expected, (
-            f"{label}: click {trigger['id']} did not yield a single active trigger"
-        )
-        assert trigger["active"] == "true"
+    for label, (module_path, fn_name) in DEMO_MODULES.items():
+        mod = importlib.import_module(module_path)
+        comp = getattr(mod, fn_name)()
+        dom = _dom_tree(comp)
         _simulate_mount(dom)
+        triggers = _all_triggers(dom)
+        for trigger in triggers:
+            _simulate_click(dom, trigger, with_guard=True)
+            expected = {
+                t["id"]: ("true" if t["value"] == trigger["value"] else "false")
+                for t in triggers
+            }
+            snapshot_after = {t["id"]: t["active"] for t in triggers}
+            assert snapshot_after == expected, (
+                f"{label}: click {trigger['id']} did not yield a single active trigger"
+            )
+            assert trigger["active"] == "true"
+            _simulate_mount(dom)
