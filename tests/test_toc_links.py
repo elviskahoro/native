@@ -8,9 +8,10 @@ em-dashes, parentheses) produced a dead-click href that resolved to no
 element (e.g. `#accordion.root` vs the rendered `id="accordionroot"`).
 
 The fix makes python-markdown the single source of truth: toc ids come from
-`native.engine.parser.extract_toc_data` (a whole-body `markdown.markdown`
-pass), and `native.templates.toc._create_markdown_toc_links` uses them
-verbatim. These tests guard against re-introducing the divergence.
+`native.engine.parser.extract_toc_data` (per-chunk `markdown.markdown`
+passes that mirror how `parse_and_render` serves the page), and
+`native.templates.toc._create_markdown_toc_links` uses them verbatim. These
+tests guard against re-introducing the divergence.
 """
 
 from __future__ import annotations
@@ -55,20 +56,6 @@ def _served_headings(md_path: Path) -> list[dict[str, str]]:
             text = html.unescape(re.sub(r"<[^>]+>", "", m.group(3))).strip()
             out.append({"id": m.group(2), "text": text})
     return out
-
-
-def _is_expected_noop(entry_id: str, served: list[dict[str, str]]) -> bool:
-    """An out-of-scope cross-chunk duplicate-id no-op: the entry id is a
-    dedup-suffixed variant (`<base>_<N>`) whose base id appears more than once
-    in the served DOM. Such suffixed ids are absent from the served DOM
-    because parse_and_render renders per-chunk (no cross-chunk dedup); fixing
-    that is a separate parser.py-side defect, tracked as out of scope.
-    """
-    m = re.match(r"^(.*)_(\d+)$", entry_id)
-    if not m:
-        return False
-    base = m.group(1)
-    return sum(1 for s in served if s["id"] == base) > 1
 
 
 # ---------------------------------------------------------------------------
@@ -166,6 +153,28 @@ def test_extract_toc_data_dedups_duplicate_headings_within_document() -> None:
     assert [e["text"] for e in toc] == ["Dev", "Dev"]
 
 
+def test_extract_toc_data_dedup_restarts_per_chunk_like_served_dom() -> None:
+    """Cross-chunk repeats must keep the id the served DOM actually has.
+
+    python-markdown deduplicates repeated heading ids per render call, and
+    parse_and_render renders each --TOKEN-- chunk independently, so a
+    heading repeated across chunks serves plain `dev` twice. A whole-body
+    TOC pass used to emit `dev_1`, a sidebar href that resolves to no
+    element.
+    """
+    body = "## Dev\n\nfirst\n\n--DEMO(button)--\n\n## Dev\n\nsecond\n"
+    toc_ids = [e["id"] for e in extract_toc_data(body)]
+    served_ids: list[str] = []
+    for piece in parse_and_render(body):
+        payload = getattr(piece.dangerouslySetInnerHTML, "_var_value", None)
+        if not payload or "__html" not in payload:
+            continue
+        served_ids.extend(
+            m.group(2) for m in _HEADING_RE.finditer(payload["__html"])
+        )
+    assert toc_ids == served_ids == ["dev", "dev"]
+
+
 def test_extract_toc_data_preserves_heading_order_and_levels() -> None:
     body = "# One\n\n## Two\n\n# Three\n\n## Four\n"
     toc = extract_toc_data(body)
@@ -218,7 +227,7 @@ def test_every_sidebar_href_resolves_in_served_dom(md_file: Path) -> None:
         if eid in served_first_text:
             if served_first_text[eid] != entry["text"]:
                 misdirects.append((entry["text"], eid, served_first_text[eid]))
-        elif not _is_expected_noop(eid, served):
+        else:
             unexpected_noops.append((entry["text"], eid))
 
     assert not unexpected_noops, (
