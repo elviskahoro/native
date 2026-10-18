@@ -10,6 +10,11 @@ DOCS = ROOT / "docs/components"
 
 DEMO_RE = re.compile(r"--DEMO\([^)]*\)--")
 
+EXPECTED_BUTTON_DEMOS = 12
+EXPECTED_BUTTON_GROUP_DEMOS = 6
+EXPECTED_INPUT_DEMOS = 6
+EXPECTED_INPUT_GROUP_DEMOS = 9
+
 
 def _demo_count(slug: str) -> int:
     md = DOCS / f"{slug.replace('-', '_')}.md"
@@ -35,26 +40,26 @@ def test_card_count_matches_detail_page_demos():
         if count != demos:
             mismatches.append(f"{slug}: card={count} demos={demos}")
     assert not mismatches, "card counts disagree with detail-page demos:\n" + "\n".join(
-        mismatches
+        mismatches,
     )
 
 
 def test_button_card_count_excludes_button_group():
     cards = _cards()
-    assert cards["button"] == 12
-    assert cards["button-group"] == 6
-    assert cards["button"] != 18
+    assert cards["button"] == EXPECTED_BUTTON_DEMOS
+    assert cards["button-group"] == EXPECTED_BUTTON_GROUP_DEMOS
+    assert cards["button"] != EXPECTED_BUTTON_DEMOS + EXPECTED_BUTTON_GROUP_DEMOS
 
 
 def test_input_card_count_excludes_input_group():
     cards = _cards()
-    assert cards["input"] == 6
-    assert cards["input-group"] == 9
-    assert cards["input"] != 15
+    assert cards["input"] == EXPECTED_INPUT_DEMOS
+    assert cards["input-group"] == EXPECTED_INPUT_GROUP_DEMOS
+    assert cards["input"] != EXPECTED_INPUT_DEMOS + EXPECTED_INPUT_GROUP_DEMOS
 
 
 def test_no_prefixed_sibling_double_counting():
-    stems = sorted(p.stem for p in UI.glob("*.py"))
+    stems = sorted(p.stem for p in UI.glob("*.py") if p.stem != "__init__")
     cards = _cards()
     for a in stems:
         a_slug = a.replace("_", "-")
@@ -94,7 +99,7 @@ def test_get_links_returns_one_card_per_entry():
 def test_module_component_links_nonempty_from_repo_root():
     import native.pages.components as page
 
-    cwd = os.getcwd()
+    cwd = Path.cwd()
     os.chdir(ROOT)
     try:
         importlib.reload(page)

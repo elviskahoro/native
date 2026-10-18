@@ -48,13 +48,18 @@ def link_card(name: str, href: str, count: int) -> Component:
     )
 
 
-def get_component_entries(source_dir: Path, examples_dir: Path) -> list[tuple[str, str, int]]:
+def get_component_entries(
+    source_dir: Path,
+    examples_dir: Path,
+) -> list[tuple[str, str, int]]:
     entries = []
 
-    component_stems = [f.stem for f in source_dir.glob("*.py")]
+    component_stems = [f.stem for f in source_dir.glob("*.py") if f.stem != "__init__"]
 
     for file in source_dir.glob("*.py"):
         stem = file.stem
+        if stem == "__init__":
+            continue
         name = stem.replace("_", " ").title()
         slug = stem.replace("_", "-")
 
