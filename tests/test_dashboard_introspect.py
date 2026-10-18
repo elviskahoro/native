@@ -22,8 +22,8 @@ import pytest
 
 from native.registry.dashboard_introspect import (
     DEPENDENCY_BUCKETS,
-    _classify_import,
-    _extract_dependencies,
+    _classify_import,  # pyright: ignore[reportPrivateUsage]
+    _extract_dependencies,  # pyright: ignore[reportPrivateUsage]
     load_dashboard_example,
 )
 
@@ -53,7 +53,7 @@ def test_dependency_buckets_only_use_known_bucket_names():
 # ---------------------------------------------------------------------------
 
 
-@pytest.mark.parametrize(
+@pytest.mark.parametrize(  # pyright: ignore[reportUntypedFunctionDecorator]
     "case",
     [
         # Charts route to components (the fix; previously returned None).
@@ -69,7 +69,7 @@ def test_dependency_buckets_only_use_known_bucket_names():
         ("reflex", None),
         ("reflex_components_core.el", None),
     ],
-    ids=lambda case: f"{case[0]}->{case[1]}",
+    ids=lambda case: f"{case[0]}->{case[1]}",  # pyright: ignore[reportUnknownLambdaType]
 )
 def test_classify_import(case: tuple[str, str | None]):
     module_path, expected = case
@@ -130,7 +130,7 @@ def test_extract_dependencies_ignores_plain_import_statements():
 # ---------------------------------------------------------------------------
 
 
-@pytest.mark.parametrize("dashboard_id", ["dashboard_02", "dashboard_03"])
+@pytest.mark.parametrize("dashboard_id", ["dashboard_02", "dashboard_03"])  # pyright: ignore[reportUntypedFunctionDecorator]
 def test_dashboards_02_03_chart_routes_to_components(dashboard_id: str):
     """``area_chart_with_gradient`` lives under ``native/lib/charts/`` and is
     the central rendered element of dashboards 02 and 03, so it must appear in
@@ -160,7 +160,7 @@ def test_dashboard_01_chart_stays_in_blocks_not_components():
 # ---------------------------------------------------------------------------
 
 
-@pytest.mark.parametrize("dashboard_id", ["dashboard_02", "dashboard_03"])
+@pytest.mark.parametrize("dashboard_id", ["dashboard_02", "dashboard_03"])  # pyright: ignore[reportUntypedFunctionDecorator]
 def test_load_dashboard_example_includes_chart_badge(dashboard_id: str, monkeypatch):
     """End-to-end guard for the user-visible defect: the public API consumed
     by ``native/templates/_dashboard_example.py`` must surface
