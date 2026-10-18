@@ -96,7 +96,7 @@ def _clean_arg(raw_arg: str) -> str:
     return (raw_arg or "").strip().strip("'\"[]{}").lower()
 
 
-def _render_install(name: str) -> rx.Component:
+def _render_install(name: str) -> tuple[str, list[tuple[str, str]]] | rx.Component:
     all_deps = get_all_dependencies(name)
     if not all_deps:
         return rx.el.p(f"Installation payload empty for {name}")
@@ -127,8 +127,8 @@ def render_token(cmd: str, raw_arg: str) -> rx.Component:
     if "source" in cmd:
         from native.templates._source import source
 
-        name, files = _render_install(raw_arg)
-        return source(files)
+        result = _render_install(name)
+        return result if not isinstance(result, tuple) else source(result[1])
 
     entry = _LIVE_REGISTRY.get(name)
     if not entry:
