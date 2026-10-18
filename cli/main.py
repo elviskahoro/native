@@ -533,6 +533,7 @@ def cmd_apply(preset: str) -> None:
     if not config:
         print(
             f"Error: Invalid preset ID '{preset}'. Get a valid preset from https://buridan.reflex.run/create",
+            file=sys.stderr,
         )
         sys.exit(1)
 
