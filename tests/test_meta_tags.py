@@ -43,7 +43,7 @@ def _tags_by_key(
     matching how a consumer resolves a meta tag.
     """
     return {
-        tag.get("property") or tag.get("name"): tag["content"]
+        (tag["property"] if "property" in tag else tag["name"]): tag["content"]
         for tag in generate_site_meta_tags(title, url, description, social_card)
     }
 
@@ -67,14 +67,14 @@ URL_CASES = [
 
 
 class TestUrlNormalization:
-    @pytest.mark.parametrize("url_input, expected", URL_CASES)
+    @pytest.mark.parametrize(("url_input", "expected"), URL_CASES)
     def test_og_url_and_twitter_url_are_well_formed(self, url_input, expected):
         tags = _tags_by_key(url_input)
         assert tags["og:url"] == expected
         assert tags["twitter:url"] == expected
 
-    @pytest.mark.parametrize("url_input, expected", URL_CASES)
-    def test_host_is_not_corrupted(self, url_input, expected):
+    @pytest.mark.parametrize(("url_input", "_expected"), URL_CASES)
+    def test_host_is_not_corrupted(self, url_input, _expected):
         """The host must be exactly `native.buridan.dev`.
 
         Before the fix, a missing leading slash caused the first path segment
