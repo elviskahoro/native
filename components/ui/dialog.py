@@ -2,8 +2,7 @@ import uuid
 
 import reflex as rx
 from reflex.components.component import ComponentNamespace
-from reflex_components_core.el import Dialog as BaseDialog
-from reflex_components_core.el import Div
+from reflex_components_core.el import Dialog as BaseDialog, Div
 
 from ..core.core import CoreComponent, cn
 
@@ -68,8 +67,8 @@ class DialogTrigger(CoreComponent):
 
 
 class DialogPopup(BaseDialog, CoreComponent):
-    on_close: rx.EventHandler[lambda: []] = None
-    on_cancel: rx.EventHandler[lambda: []] = None
+    on_close: rx.EventHandler = None
+    on_cancel: rx.EventHandler = None
 
     @classmethod
     def create(

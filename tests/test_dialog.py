@@ -4,10 +4,10 @@ from reflex_components_core.el.elements.other import Dialog
 from components.ui.dialog import DialogPopup, dialog
 
 
-class _DialogState(rx.State):
+class _DialogState(rx.State):  # pyright: ignore [reportUntypedBaseClass]
     open: bool = True
 
-    def set_open(self, value: bool) -> None:
+    def set_open(self, *, value: bool) -> None:
         self.open = value
 
 
