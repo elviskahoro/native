@@ -1,3 +1,20 @@
+"""Regression coverage for the dialog popup crash when ``dismissible=False``
+or ``on_open_change=...`` was passed to ``dialog.popup(...)``.
+
+Both options previously raised at component-construction time:
+
+    ValueError: The Dialog does not take in an 'on_cancel' event trigger
+    ValueError: The Dialog does not take in an 'on_close' event trigger
+
+because ``DialogPopup`` wired ``on_cancel`` / ``on_close`` into ``props`` and
+passed them to ``rx.el.dialog(...)``, whose underlying element does not declare
+those triggers. The tests pin the four contracts the fix restored:
+``DialogPopup`` declares ``on_close`` / ``on_cancel`` as class-level triggers,
+the popup renders a native ``<dialog>`` with ``data-slot="dialog-content"``,
+``dismissible=False`` wires ``on_cancel`` only, and ``on_open_change=`` wires
+``on_close`` only. See bug #4 and PR #23.
+"""
+
 import reflex as rx
 from reflex_components_core.el.elements.other import Dialog
 
