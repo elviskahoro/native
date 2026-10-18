@@ -187,7 +187,7 @@ def main() -> None:
             entries[name] = extract_composition_source(path)
             if not args.skip_import_validation:
                 validate_by_importing(path, repo_root)
-        except Exception as e:  # noqa: BLE001 -- we want to report *any* failure per-file and continue
+        except Exception as e:
             errors.append(f"{path.name}: {e}")
 
     if errors:

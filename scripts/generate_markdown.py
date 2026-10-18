@@ -10,7 +10,7 @@ from pathlib import Path
 ROOT_DIR = Path(__file__).parent.parent
 sys.path.append(str(ROOT_DIR))
 
-from reflex.components.component import ComponentNamespace  # noqa: E402
+from reflex.components.component import ComponentNamespace
 
 from native.registry.components import COMPONENT_REGISTRY
 

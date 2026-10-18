@@ -1,0 +1,24 @@
+# Pyrefly configuration (strict).
+#
+# Under Trunk, the pyrefly plugin passes `--search-path ${workspace}` and
+# `--python-interpreter-path ${workspace}/.venv/bin/python` explicitly because
+# Trunk runs linters from a sandboxed tmp dir.
+project-includes = [
+  "native/**/*.py",
+  "cli/**/*.py",
+  "components/**/*.py",
+  "scripts/**/*.py",
+  "tests/**/*.py",
+  "rxconfig.py",
+]
+project-excludes = ["tmp/**", "worktrees/**", ".web/**", "node_modules/**", ".venv/**"]
+search-path = ["."]
+python-interpreter-path = ".venv/bin/python"
+permissive-ignores = false
+untyped-def-behavior = "check-and-infer-return-type"
+
+[errors]
+implicit-any = true
+unannotated-parameter = true
+unannotated-return = true
+unused-ignore = true

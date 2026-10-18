@@ -22,7 +22,7 @@ import pathlib
 import re
 from pathlib import Path
 
-import markdown  # noqa: E402
+import markdown
 import reflex as rx
 from bs4 import BeautifulSoup
 
