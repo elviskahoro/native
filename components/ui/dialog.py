@@ -2,7 +2,8 @@ import uuid
 
 import reflex as rx
 from reflex.components.component import ComponentNamespace
-from reflex_components_core.el import Dialog as BaseDialog, Div
+from reflex_components_core.el import Dialog as BaseDialog
+from reflex_components_core.el import Div
 
 from ..core.core import CoreComponent, cn
 
