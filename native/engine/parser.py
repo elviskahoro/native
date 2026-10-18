@@ -21,8 +21,9 @@ import importlib
 import inspect
 import pathlib
 import re
+from collections.abc import Iterator
 from pathlib import Path
-from typing import Iterator, TypedDict
+from typing import TypedDict
 
 import markdown  # noqa: E402
 import reflex as rx

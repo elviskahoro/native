@@ -166,12 +166,12 @@ def test_extract_toc_data_dedup_restarts_per_chunk_like_served_dom() -> None:
     toc_ids = [e["id"] for e in extract_toc_data(body)]
     served_ids: list[str] = []
     for piece in parse_and_render(body):
+        if type(piece).__name__ != "Html":
+            continue
         payload = getattr(piece.dangerouslySetInnerHTML, "_var_value", None)
         if not payload or "__html" not in payload:
             continue
-        served_ids.extend(
-            m.group(2) for m in _HEADING_RE.finditer(payload["__html"])
-        )
+        served_ids.extend(m.group(2) for m in _HEADING_RE.finditer(payload["__html"]))
     assert toc_ids == served_ids == ["dev", "dev"]
 
 
