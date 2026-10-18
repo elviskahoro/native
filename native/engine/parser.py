@@ -127,7 +127,7 @@ def render_token(cmd: str, raw_arg: str) -> rx.Component:
     if "source" in cmd:
         from native.templates._source import source
 
-        result = _render_install(raw_arg)
+        result = _render_install(name)
         return result if not isinstance(result, tuple) else source(result[1])
 
     entry = _LIVE_REGISTRY.get(name)
