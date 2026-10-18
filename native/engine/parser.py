@@ -21,6 +21,7 @@ import importlib
 import inspect
 import pathlib
 import re
+from collections.abc import Iterator
 from pathlib import Path
 from typing import TypedDict
 
@@ -222,13 +223,39 @@ class TocEntry(TypedDict):
     id: str
 
 
+def _markdown_chunks(content: str) -> Iterator[str]:
+    """Yield the plain-markdown spans between --TOKEN-- markers, in order.
+
+    ``parse_and_render`` renders exactly these spans as HTML chunks, so any
+    other consumer of the rendered output (the TOC) must chunk the same way:
+    python-markdown deduplicates repeated heading ids per render call, so a
+    whole-body pass disagrees with the per-chunk served DOM whenever a
+    heading repeats across chunks.
+    """
+    cursor = 0
+    for match in _TOKEN_MATCH_RE.finditer(content):
+        start, end = match.span()
+        if start > cursor:
+            yield content[cursor:start]
+        cursor = end
+    if cursor < len(content):
+        yield content[cursor:]
+
+
 def extract_toc_data(body: str) -> list[TocEntry]:
-    """Build TOC entries from python-markdown's whole-body rendered heading ids."""
-    rendered = markdown.markdown(body, extensions=_MD_EXTENSIONS)
+    """Build TOC entries from the same per-chunk rendering that serves the page.
+
+    Each --TOKEN---delimited chunk is rendered with python-markdown exactly
+    as ``parse_and_render`` serves it, so heading-id deduplication
+    (``dev``, ``dev_1``, ...) restarts per chunk the same way it does in
+    the served DOM and every TOC id resolves to a real element.
+    """
     toc_data: list[TocEntry] = []
-    for match in _HEADING_RE.finditer(rendered):
-        level = int(match.group(1))
-        heading_id = match.group(2)
-        text = html.unescape(re.sub(r"<[^>]+>", "", match.group(3))).strip()
-        toc_data.append({"level": level, "text": text, "id": heading_id})
+    for chunk in _markdown_chunks(body):
+        rendered = markdown.markdown(chunk, extensions=_MD_EXTENSIONS)
+        for match in _HEADING_RE.finditer(rendered):
+            level = int(match.group(1))
+            heading_id = match.group(2)
+            text = html.unescape(re.sub(r"<[^>]+>", "", match.group(3))).strip()
+            toc_data.append({"level": level, "text": text, "id": heading_id})
     return toc_data

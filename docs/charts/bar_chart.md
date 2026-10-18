@@ -28,7 +28,7 @@ A horizontal bar chart layout ideal for ranking categories or displaying long te
 
 --DEMO(bar_chart_horizontal)--
 
-## Legend
+## With Legend
 
 A stacked vertical bar chart with built-in legend rendering for multi-series comparisons.
 
