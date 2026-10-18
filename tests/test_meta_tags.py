@@ -67,13 +67,13 @@ URL_CASES = [
 
 
 class TestUrlNormalization:
-    @pytest.mark.parametrize(("url_input", "expected"), URL_CASES)
+    @pytest.mark.parametrize(("url_input", "expected"), URL_CASES)  # pyright: ignore[reportUntypedFunctionDecorator]
     def test_og_url_and_twitter_url_are_well_formed(self, url_input, expected):
         tags = _tags_by_key(url_input)
         assert tags["og:url"] == expected
         assert tags["twitter:url"] == expected
 
-    @pytest.mark.parametrize(("url_input", "_expected"), URL_CASES)
+    @pytest.mark.parametrize(("url_input", "_expected"), URL_CASES)  # pyright: ignore[reportUntypedFunctionDecorator]
     def test_host_is_not_corrupted(self, url_input, _expected):
         """The host must be exactly `native.buridan.dev`.
 
@@ -113,7 +113,7 @@ class TestDocsLibraryMetaTags:
     matches the route the Reflex router serves (`/{doc.url}`).
     """
 
-    @pytest.mark.parametrize("doc", _ALL_DOCS, ids=_doc_id)
+    @pytest.mark.parametrize("doc", _ALL_DOCS, ids=_doc_id)  # pyright: ignore[reportUntypedFunctionDecorator]
     def test_doc_canonical_url_is_well_formed(self, doc):
         tags = _tags_by_key(doc.url, title=doc.url, description=doc.description)
         expected = f"{BURIDAN_URL}/{doc.url}"
