@@ -79,38 +79,6 @@ def build_live_registry(dirs: list[str]) -> dict[str, tuple[object, str]]:
     return registry
 
 
-# def build_live_registry(dirs: list[str]) -> dict[str, tuple[object, str]]:
-#     registry = {}
-
-#     for folder in dirs:
-#         base = ROOT_DIR / folder
-
-#         if not base.exists():
-#             continue
-
-#         for py_file in base.rglob("*.py"):
-#             if py_file.name.startswith("__"):
-#                 continue
-
-#             module_name = ".".join(py_file.relative_to(ROOT_DIR).with_suffix("").parts)
-
-#             try:
-#                 module = importlib.import_module(module_name)
-#             except Exception as e:
-#                 print(f"Could not import {module_name}: {e}")
-#                 continue
-
-#             for name, obj in vars(module).items():
-#                 if name.startswith("_"):
-#                     continue
-
-#                 if inspect.isfunction(obj) or inspect.isclass(obj) or callable(obj):
-#                     if getattr(obj, "__module__", None) == module_name:
-#                         registry[name.lower()] = (obj, name)
-
-#     return registry
-
-
 LIVE_REGISTRY = build_live_registry(DYNAMIC_LOAD_DIRS)
 
 
@@ -144,27 +112,6 @@ def get_dependencies(name: str) -> list[str]:
     resolve(name)
 
     return ordered
-
-
-# def get_dependencies(name: str):
-#     ordered = []
-
-#     def resolve(component):
-#         data = COMPONENT_REGISTRY.get(component.lower())
-
-#         if not data:
-#             return
-
-#         for dep in data.get("dependencies", []):
-#             if dep not in ordered:
-#                 resolve(dep)
-
-#         if component not in ordered:
-#             ordered.append(component)
-
-#     resolve(name)
-
-#     return ordered
 
 
 def read_component_files(name: str) -> list[str]:
@@ -231,20 +178,6 @@ def convert_to_markdown(content: str) -> str:
                 return (
                     f"```python\nfrom components.ui.{file} import {preferred_name}\n```"
                 )
-
-            # if cmd == "usage":
-            #     entry = LIVE_REGISTRY.get(name)
-
-            #     if not entry:
-            #         return f"\n> Component `{name}` not found\n"
-
-            #     obj, preferred_name = entry
-
-            #     file = Path(inspect.getfile(obj)).stem
-
-            #     return (
-            #         f"```python\nfrom components.ui.{file} import {preferred_name}\n```"
-            #     )
 
             # -----------------------------
             # DEMO

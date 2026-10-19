@@ -117,7 +117,7 @@ convention = "google"
 [lint.per-file-ignores]
 # Test modules: assert is pytest's mechanism; fixtures/params are untyped by
 # convention and message strings in raises are test-local.
-"tests/**" = ["S101", "INP001", "ANN", "EM", "TRY003", "PT018", "D"]
+"tests/**" = ["S101", "INP001", "ANN", "EM", "TRY003", "PT018", "D", "PLR0913"]
 # Component source is copied verbatim into user projects by the CLI
 # (shadcn-style), so sibling imports must stay relative.
 "components/**" = ["TID252"]
@@ -135,6 +135,7 @@ convention = "google"
 "cli/**" = ["T201"]
 "scripts/**" = [
   "T201",
+  "C901",
   "EM",
   "TRY003",
   "PTH",
