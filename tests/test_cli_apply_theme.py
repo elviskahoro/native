@@ -355,6 +355,30 @@ class TestSpliceThemeBlock:
         assert "@import url(x);" in twice
         assert ".x{color:red}" in twice
 
+    def test_sentinel_end_before_start_falls_through_safely(self) -> None:
+        # A corrupted file with the end sentinel before the start sentinel must
+        # not crash (ValueError from str.index); it falls through to the
+        # non-destructive fallback that prepends the new theme.
+        current = (
+            f"{THEME_END_SENTINEL}\n.x {{ color: red; }}\n{THEME_START_SENTINEL}\n"
+            ":root { --old: 1; }\n"
+        )
+        out = splice_theme_block(current, _theme())
+        # the new managed theme is present
+        assert THEME_START_SENTINEL in out
+        assert THEME_END_SENTINEL in out
+        # the user CSS survives (non-destructive fallback)
+        assert ".x { color: red; }" in out
+
+    def test_sentinel_start_without_end_falls_through_safely(self) -> None:
+        # A file with only the start sentinel (end missing) must not crash and
+        # must fall through to the non-destructive fallback.
+        current = f"{THEME_START_SENTINEL}\n:root {{ --old: 1; }}\n.x {{ color: red; }}"
+        out = splice_theme_block(current, _theme())
+        assert THEME_START_SENTINEL in out
+        assert THEME_END_SENTINEL in out
+        assert ".x { color: red; }" in out
+
 
 # ── cmd_apply (end-to-end against a temp Reflex project) ──────────────────────
 
