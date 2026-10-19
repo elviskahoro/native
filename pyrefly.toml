@@ -11,7 +11,13 @@ project-includes = [
   "tests/**/*.py",
   "rxconfig.py",
 ]
-project-excludes = ["tmp/**", "worktrees/**", ".web/**", "node_modules/**", ".venv/**"]
+project-excludes = [
+  "tmp/**",
+  "worktrees/**",
+  ".web/**",
+  "node_modules/**",
+  ".venv/**",
+]
 search-path = ["."]
 python-interpreter-path = ".venv/bin/python"
 permissive-ignores = false
