@@ -2,7 +2,7 @@ import os
 from pathlib import Path
 
 from native.engine import constants
-from native.engine.parser import extract_toc, parse_and_render
+from native.engine.parser import extract_toc_data, parse_and_render
 from native.engine.utils import parse_frontmatter
 
 
@@ -54,14 +54,14 @@ def generate_docs_library() -> list[constants.DocDataStruct]:
 
         md_data, md_content = parse_frontmatter(md_content)
 
-        # Extract headings for TOC via the same render path as the page
-        toc_data = extract_toc(md_content)
+        # Extract headings for TOC from THIS file's content
+        toc_data = extract_toc_data(md_content)
 
         doc = constants.DocDataStruct(
             url=url_path,
             description=md_data.get("description", ""),
             component=parse_and_render(md_content),
-            table_of_content=toc_data,
+            table_of_content=toc_data,  # type: ignore[reportArgumentType]
         )
 
         docs.append(doc)

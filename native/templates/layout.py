@@ -26,7 +26,7 @@ def layout_decorator(
                     div(
                         div(
                             div(
-                                *(logos if logos else []),
+                                *(logos or []),
                                 class_name="mx-auto flex justify-center",
                             ),
                             h1(
@@ -38,7 +38,7 @@ def layout_decorator(
                                 class_name="text-md mx-auto max-w-2xl text-center text-pretty text-muted-foreground",
                             ),
                             div(
-                                *(ctas if ctas else []),
+                                *(ctas or []),
                                 class_name="flex w-full items-center justify-center gap-2 pt-8 **:data-[slot=button]:shadow-none",
                             ),
                             class_name="mx-auto flex flex-1 flex-col mt-10 mb-16",

@@ -16,13 +16,16 @@ the other:
       real object to call and/or introspect for source.
 """
 
+import html
 import importlib
 import inspect
 import pathlib
 import re
+from collections.abc import Iterator
 from pathlib import Path
+from typing import TypedDict
 
-import markdown  # noqa: E402
+import markdown
 import reflex as rx
 from bs4 import BeautifulSoup
 
@@ -96,7 +99,7 @@ def _clean_arg(raw_arg: str) -> str:
     return (raw_arg or "").strip().strip("'\"[]{}").lower()
 
 
-def _render_install(name: str) -> rx.Component:
+def _render_install(name: str) -> tuple[str, list[tuple[str, str]]] | rx.Component:
     all_deps = get_all_dependencies(name)
     if not all_deps:
         return rx.el.p(f"Installation payload empty for {name}")
@@ -106,7 +109,7 @@ def _render_install(name: str) -> rx.Component:
         for f_path in COMPONENT_REGISTRY.get(dep, {}).get("files", []):
             try:
                 files_data.append((f_path, Path(f_path).read_text().strip()))
-            except OSError:
+            except OSError:  # first unreadable file aborts the render
                 return rx.el.p(f"Error reading file dependency path: {f_path}")
 
     return name, files_data
@@ -127,18 +130,15 @@ def render_token(cmd: str, raw_arg: str) -> rx.Component:
     if "source" in cmd:
         from native.templates._source import source
 
-        name, files = _render_install(raw_arg)
-        return source(files)
+        result = _render_install(name)
+        return result if not isinstance(result, tuple) else source(result[1])
 
     entry = _LIVE_REGISTRY.get(name)
     if not entry:
         # Placeholder for render_parse_error
         return rx.el.div(
             f"Error: Reference Target '{name}' not found",
-            class_name=(
-                "text-destructive font-mono text-sm my-2 p-2 "
-                "border border-destructive/20 bg-destructive/5 rounded"
-            ),
+            class_name="text-destructive font-mono text-sm my-2 p-2 border border-destructive/20 bg-destructive/5 rounded",
         )
 
     obj, _preferred_name = entry
@@ -214,52 +214,48 @@ def parse_and_render(content: str) -> list[rx.Component]:
     return pieces
 
 
-def _collect_headings(html: str, toc_data: list[dict[str, str | int]]) -> None:
-    soup = BeautifulSoup(html, "html.parser")
-    for heading in soup.find_all(["h1", "h2"]):
-        text = heading.get_text().strip()
-        toc_data.append(
-            {
-                "text": text,
-                "id": heading.get("id") or text,
-                "level": int(heading.name[1]),
-            },
-        )
+_HEADING_RE = re.compile(r'<h([12])\s+id="([^"]+)"[^>]*>(.*?)</h\1>', re.DOTALL)
 
 
-def extract_toc(content: str) -> list[dict[str, str | int]]:
-    """Build the in-page table of contents for a docs markdown body.
+class TocEntry(TypedDict):
+    level: int
+    text: str
+    id: str
 
-    Headings are collected by rendering each markdown chunk between
-    --TOKEN-- delimiters with the same extensions used to render the page,
-    then parsing the resulting HTML for <h1>/<h2>. Rendering per-chunk (not
-    one full-document pass) keeps heading ids in lock-step with
-    parse_and_render: python-markdown's toc extension disambiguates duplicate
-    headings within a single markdown.markdown() call, so duplicates that
-    straddle a --TOKEN-- boundary get the same id here and on the rendered
-    page. fenced_code ensures '#' lines inside code blocks are never treated
-    as headings.
+
+def _markdown_chunks(content: str) -> Iterator[str]:
+    """Yield the plain-markdown spans between --TOKEN-- markers, in order.
+
+    ``parse_and_render`` renders exactly these spans as HTML chunks, so any
+    other consumer of the rendered output (the TOC) must chunk the same way:
+    python-markdown deduplicates repeated heading ids per render call, so a
+    whole-body pass disagrees with the per-chunk served DOM whenever a
+    heading repeats across chunks.
     """
-    toc_data: list[dict[str, str | int]] = []
     cursor = 0
-
     for match in _TOKEN_MATCH_RE.finditer(content):
         start, end = match.span()
         if start > cursor:
-            chunk = content[cursor:start]
-            if chunk.strip():
-                _collect_headings(
-                    markdown.markdown(chunk, extensions=_MD_EXTENSIONS),
-                    toc_data,
-                )
+            yield content[cursor:start]
         cursor = end
-
     if cursor < len(content):
-        chunk = content[cursor:]
-        if chunk.strip():
-            _collect_headings(
-                markdown.markdown(chunk, extensions=_MD_EXTENSIONS),
-                toc_data,
-            )
+        yield content[cursor:]
 
+
+def extract_toc_data(body: str) -> list[TocEntry]:
+    """Build TOC entries from the same per-chunk rendering that serves the page.
+
+    Each --TOKEN---delimited chunk is rendered with python-markdown exactly
+    as ``parse_and_render`` serves it, so heading-id deduplication
+    (``dev``, ``dev_1``, ...) restarts per chunk the same way it does in
+    the served DOM and every TOC id resolves to a real element.
+    """
+    toc_data: list[TocEntry] = []
+    for chunk in _markdown_chunks(body):
+        rendered = markdown.markdown(chunk, extensions=_MD_EXTENSIONS)
+        for match in _HEADING_RE.finditer(rendered):
+            level = int(match.group(1))
+            heading_id = match.group(2)
+            text = html.unescape(re.sub(r"<[^>]+>", "", match.group(3))).strip()
+            toc_data.append({"level": level, "text": text, "id": heading_id})
     return toc_data

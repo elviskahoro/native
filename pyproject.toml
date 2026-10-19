@@ -47,17 +47,6 @@ dev = [
   "inquirerpy",
 ]
 
-[tool.ruff]
-line-length = 88
-target-version = "py311"
-
-[tool.ruff.lint]
-select = ["E", "F", "I", "UP", "B"]
-
-[tool.ruff.format]
-quote-style = "double"
-indent-style = "space"
-
 [project.scripts]
 buridan = "cli.main:main"
 dev = "cli.dev:main"

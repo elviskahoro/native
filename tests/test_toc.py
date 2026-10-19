@@ -1,7 +1,7 @@
 """Tests for the docs in-page table of contents.
 
 ``native.engine.generator.generate_docs_library`` builds each page's TOC via
-``native.engine.parser.extract_toc``, which renders each markdown chunk with the
+``native.engine.parser.extract_toc_data``, which renders each markdown chunk with the
 same python-markdown extensions used to render the page and collects the
 resulting <h1>/<h2>. This file guards the contract that was previously broken
 by a raw-text regex that captured ``#``/``##`` lines *inside fenced code blocks*
@@ -14,13 +14,13 @@ from __future__ import annotations
 import pathlib
 
 import markdown  # pyright: ignore[reportMissingModuleSource]
-import pytest  # pyrefly: ignore[missing-import]
-from bs4 import BeautifulSoup  # pyrefly: ignore[missing-import]
+import pytest
+from bs4 import BeautifulSoup
 
 from native.engine.generator import generate_docs_library
 from native.engine.parser import (
     _MD_EXTENSIONS,  # pyright: ignore[reportPrivateUsage]
-    extract_toc,
+    extract_toc_data,
 )
 from native.engine.utils import parse_frontmatter
 
@@ -33,7 +33,7 @@ def test_only_code_block_with_hashes_returns_empty() -> None:
     entries — fenced code is never treated as headings.
     """
     body = "```python\n# Not a heading one\n## Not a heading two\nx = 1\n```\n"
-    assert extract_toc(body) == []
+    assert extract_toc_data(body) == []
 
 
 def test_ids_are_python_markdown_slugs() -> None:
@@ -42,7 +42,7 @@ def test_ids_are_python_markdown_slugs() -> None:
     heading text that toc.py would otherwise re-slugify naively.
     """
     body = "# Basic Table\n## `table.root`\n## Row selection (opt-in convention)\n"
-    toc = extract_toc(body)
+    toc = extract_toc_data(body)
     assert [e["id"] for e in toc] == [
         "basic-table",
         "tableroot",
@@ -59,7 +59,7 @@ def test_chunked_duplicate_across_token_keeps_page_id() -> None:
     diverge from the page. (The docs/components/field.md case.)
     """
     body = "## field.root\n\nintro\n\n--DEMO(field_demo)--\n\n## field.root\n"
-    toc = extract_toc(body)
+    toc = extract_toc_data(body)
     assert [e["id"] for e in toc] == ["fieldroot", "fieldroot"]
 
 
@@ -81,7 +81,7 @@ def test_generate_docs_library_toc_has_no_spurious_entries(
 ) -> None:
     """The app-boot entry point (called by native/export.py), in dev mode for
     each affected page, emits a table_of_content with no code-block-capture
-    entries — guards the extract_toc wiring in generate_docs_library.
+    entries — guards the extract_toc_data wiring in generate_docs_library.
     """
     monkeypatch.setenv("BURIDAN_DEV_MODE", "true")
     monkeypatch.setenv("BURIDAN_DEV_PAGES", slug)
@@ -118,16 +118,16 @@ def _full_doc_render_headings(body: str) -> list[tuple[str, int]]:
     ids=[str(p.relative_to(DOCS_DIR)) for p in _DOCS],
 )
 def test_toc_matches_rendered_headings(md_file: pathlib.Path) -> None:
-    """Every docs file's extract_toc (text, level) list equals the heading list
+    """Every docs file's extract_toc_data (text, level) list equals the heading list
     of an independent full-document python-markdown render (a different code
-    path than extract_toc's chunked render). Catches any code-block capture,
+    path than extract_toc_data's chunked render). Catches any code-block capture,
     missed/extra/out-of-order heading, or level mismatch across all docs.
     """
     body = parse_frontmatter(md_file.read_text(encoding="utf-8"))[1]
     expected = _full_doc_render_headings(body)
-    actual = [(e["text"], e["level"]) for e in extract_toc(body)]
+    actual = [(e["text"], e["level"]) for e in extract_toc_data(body)]
     assert actual == expected, (
-        f"{md_file.relative_to(ROOT_DIR)}: extract_toc (text, level) list "
+        f"{md_file.relative_to(ROOT_DIR)}: extract_toc_data (text, level) list "
         f"diverges from an independent full-doc python-markdown render.\n"
         f"expected: {expected}\nactual:   {actual}"
     )

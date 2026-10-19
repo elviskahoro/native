@@ -32,20 +32,24 @@ select = [
   "EXE",
   "F",
   "FA",
+  "FAST",
   "FBT",
   "FLY",
   "FIX",
+  "FURB",
   "G",
   "I",
   "ICN",
   "INP",
   "INT",
   "ISC",
+  "LOG",
   "N",
   "NPY",
   "PIE",
   "PGH",
   "PD",
+  "PERF",
   "PL",
   "PLE",
   "PLR",
@@ -59,11 +63,13 @@ select = [
   "RUF",
   "S",
   "SLF",
+  "SLOT",
   "SIM",
   "TCH",
   "TD",
   "TID",
   "T10",
+  "T20",
   "TRY",
   "W",
   "UP",
@@ -71,7 +77,6 @@ select = [
 ignore = [
   "ANN101",
   "B008",
-  "C901",
   "D100",
   "D101",
   "D102",
@@ -86,7 +91,6 @@ ignore = [
   "D417",
   "E401",
   "E501",
-  "ERA001",
   "F403",
   "F405",
   "F541",
@@ -94,9 +98,7 @@ ignore = [
   "FIX002",
   "PIE807",
   "PLC0415",
-  "PLR0913",
   "N815",
-  "RUF100",
   "UP037",
 ]
 
@@ -106,13 +108,16 @@ combine-as-imports = true
 force-wrap-aliases = true
 order-by-type = true
 
+[lint.flake8-tidy-imports]
+ban-relative-imports = "all"
+
 [lint.pydocstyle]
 convention = "google"
 
 [lint.per-file-ignores]
 # Test modules: assert is pytest's mechanism; fixtures/params are untyped by
 # convention and message strings in raises are test-local.
-"tests/**" = ["S101", "INP001", "ANN", "EM", "TRY003", "PT018", "D"]
+"tests/**" = ["S101", "INP001", "ANN", "EM", "TRY003", "PT018", "D", "PLR0913"]
 # Component source is copied verbatim into user projects by the CLI
 # (shadcn-style), so sibling imports must stay relative.
 "components/**" = ["TID252"]
@@ -126,7 +131,11 @@ convention = "google"
 # public component API (`input`, bool flags) and use random demo data.
 "native/lib/**" = ["A001", "A004", "FBT", "S311", "DTZ007"]
 # Build/maintenance scripts run directly (not imported as packages), not shipped runtime.
+# CLI entry points and build scripts print to the terminal by design.
+"cli/**" = ["T201"]
 "scripts/**" = [
+  "T201",
+  "C901",
   "EM",
   "TRY003",
   "PTH",
