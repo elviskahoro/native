@@ -47,23 +47,23 @@ def _input_peer(comp: object) -> object:
     )
 
 
-def _label_custom_attrs(comp: object) -> dict:
+def _label_custom_attrs(comp: object) -> dict[str, object]:
     return dict(getattr(comp, "custom_attrs", {}) or {})
 
 
-def _input_custom_attrs(comp: object) -> dict:
+def _input_custom_attrs(comp: object) -> dict[str, object]:
     return dict(getattr(_input_peer(comp), "custom_attrs", {}) or {})
 
 
-def _input_event_triggers(comp: object) -> dict:
+def _input_event_triggers(comp: object) -> dict[str, object]:
     return dict(getattr(_input_peer(comp), "event_triggers", {}) or {})
 
 
-def _label_event_triggers(comp: object) -> dict:
+def _label_event_triggers(comp: object) -> dict[str, object]:
     return dict(getattr(comp, "event_triggers", {}) or {})
 
 
-def _label_style(comp: object) -> dict:
+def _label_style(comp: object) -> dict[str, object]:
     return dict(getattr(comp, "style", {}) or {})
 
 
@@ -104,7 +104,7 @@ KNOWN_INPUT_PROPS_CASES = [
     KNOWN_INPUT_PROPS_CASES,
     ids=KNOWN_INPUT_PROPS_CASES,
 )  # pyright: ignore[reportUntypedFunctionDecorator]
-def test_known_input_props_route_to_input_peer_not_label(prop):
+def test_known_input_props_route_to_input_peer_not_label(prop: str) -> None:
     """Every ``KNOWN_INPUT_PROPS`` entry must reach the inner ``<input>`` peer and
     not be absorbed by the wrapping ``<label>``. Guards against the whitelist
     regressing back to an incomplete fixed set (the original bug)."""
@@ -130,7 +130,7 @@ def test_known_input_props_route_to_input_peer_not_label(prop):
     )
 
 
-def test_known_input_props_class_is_complete_per_docs():
+def test_known_input_props_class_is_complete_per_docs() -> None:
     """``ClassNames.KNOWN_INPUT_PROPS`` must include at least the props the docs
     explicitly cite plus the input attributes the bug report found missing, so
     the pass-through sentence (`required`, `value`, etc.) stays honored."""
@@ -162,7 +162,7 @@ EVENT_TRIGGER_CASES = ["on_change", "on_focus", "on_blur", "on_key_down", "on_ke
     EVENT_TRIGGER_CASES,
     ids=EVENT_TRIGGER_CASES,
 )  # pyright: ignore[reportUntypedFunctionDecorator]
-def test_input_event_triggers_forward_to_input_without_crash(event):
+def test_input_event_triggers_forward_to_input_without_crash(event: str) -> None:
     """Every ``on_*`` event the inner ``rx.el.input`` accepts must forward to the
     input peer instead of crashing. ``on_key_down`` previously raised
     ``ValueError: The Label does not take in an `on_key_down` event trigger`` because
@@ -192,7 +192,9 @@ ARIA_DATA_CASES = [
     ARIA_DATA_CASES,
     ids=[c[0] for c in ARIA_DATA_CASES],
 )  # pyright: ignore[reportUntypedFunctionDecorator]
-def test_aria_and_data_attrs_route_to_input_custom_attrs(kwarg, value, attr):
+def test_aria_and_data_attrs_route_to_input_custom_attrs(
+    kwarg: str, value: object, attr: str
+) -> None:
     """``aria-*`` and ``data-*`` attributes (snake_case kwargs) must land on the
     inner input peer's ``custom_attrs`` (real DOM attributes on the ``<input>``),
     not the wrapping ``<label>``'s. Misrouting accessibility attributes away from
@@ -207,7 +209,7 @@ def test_aria_and_data_attrs_route_to_input_custom_attrs(kwarg, value, attr):
     )
 
 
-def test_invalid_prop_routes_aria_invalid_to_input_peer():
+def test_invalid_prop_routes_aria_invalid_to_input_peer() -> None:
     """The switch-level ``invalid=True`` convenience prop sets
     ``aria-invalid="true"`` on the inner input control peer (the standard ARIA
     location), not the wrapping ``<label>``; and ``invalid=False`` (the
@@ -223,7 +225,7 @@ def test_invalid_prop_routes_aria_invalid_to_input_peer():
     assert "aria-invalid" not in _label_custom_attrs(default_comp)
 
 
-def test_input_peer_is_first_child_and_is_checkbox():
+def test_input_peer_is_first_child_and_is_checkbox() -> None:
     """The input peer must remain the first child of the label, typed as
     ``checkbox`` with the ``peer sr-only`` class — this is what the track's
     ``peer-focus-visible`` / ``peer-aria-[invalid=true]`` /
@@ -238,7 +240,7 @@ def test_input_peer_is_first_child_and_is_checkbox():
     assert "peer sr-only" in str(getattr(peer, "class_name", ""))
 
 
-def test_switch_level_props_stay_on_label():
+def test_switch_level_props_stay_on_label() -> None:
     """The switch-level props ``size`` (variant), ``data-slot``, and
     ``class_name`` must stay on the wrapping ``<label>`` (the ``group/switch``
     element) and must NOT be forwarded to the input peer. Accidentally forwarding
@@ -259,7 +261,7 @@ def test_switch_level_props_stay_on_label():
     assert "group/switch" not in peer_class
 
 
-def test_track_class_invalid_state_and_dependency_selectors():
+def test_track_class_invalid_state_and_dependency_selectors() -> None:
     """The invalid-state track styling must read from the input peer via the
     ``peer-`` combinator (since ``aria-invalid`` lives on the input), and the
     stale ``group-aria-[invalid=true]/switch:`` selector must NOT be present
@@ -297,7 +299,7 @@ DEMO_MODULES = [
     DEMO_MODULES,
     ids=[m[1] for m in DEMO_MODULES],
 )  # pyright: ignore[reportUntypedFunctionDecorator]
-def test_in_repo_demos_build(module_path, fn_name):
+def test_in_repo_demos_build(module_path: str, fn_name: str) -> None:
     """Every shipped switch demo must still construct cleanly after the
     forwarding rework. The ``switch_invalid`` demo in particular passes
     ``aria_invalid="true"`` (a non-whitelisted prop under the old code) and
@@ -309,7 +311,7 @@ def test_in_repo_demos_build(module_path, fn_name):
     )
 
 
-def test_no_unknown_input_props_swallowed_into_label_css():
+def test_no_unknown_input_props_swallowed_into_label_css() -> None:
     """A broad combination of documented-but-previously-missing input props must
     all reach the input peer, and the label ``style`` (emotion ``css``) dict must
     remain empty. The original bug silently swallowed ``auto_focus`` /
