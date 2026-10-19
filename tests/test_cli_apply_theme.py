@@ -42,8 +42,7 @@ Coverage:
 from __future__ import annotations
 
 import json
-from pathlib import Path
-from typing import Any
+from typing import TYPE_CHECKING, Any
 
 import pytest
 
@@ -57,6 +56,9 @@ from cli.main import (
     managed_theme_block,
     splice_theme_block,
 )
+
+if TYPE_CHECKING:
+    from pathlib import Path
 
 PRESET = "b0"
 PRESET_ALT = "b1000"
@@ -89,7 +91,7 @@ class TestManagedThemeBlock:
 
     def test_sentinels_flank_raw_theme_on_their_own_lines(self) -> None:
         wrapped = managed_theme_block(
-            ":root {\n    --x: 1;\n}\n\n.dark {\n    --x: 2;\n}"
+            ":root {\n    --x: 1;\n}\n\n.dark {\n    --x: 2;\n}",
         )
         lines = wrapped.splitlines()
         assert lines[0] == THEME_START_SENTINEL
@@ -154,7 +156,8 @@ class TestFindLegacyThemePair:
         ],
     )
     def test_one_line_root_block_is_skipped_as_region_start(
-        self, one_liner: str
+        self,
+        one_liner: str,
     ) -> None:
         # The user's one-line :root precedes the CLI pair. The detector must
         # NOT match the one-liner; it must match the CLI's multi-line :root {.
@@ -356,7 +359,7 @@ class TestSpliceThemeBlock:
 # ── cmd_apply (end-to-end against a temp Reflex project) ──────────────────────
 
 
-@pytest.fixture
+@pytest.fixture  # pyright: ignore[reportUntypedFunctionDecorator]
 def project_dir(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> Path:
     """A minimal Reflex project root the CLI accepts (just rxconfig.py)."""
     (tmp_path / "rxconfig.py").write_text("import reflex as rx\napp = rx.App()\n")
@@ -414,13 +417,14 @@ class TestCmdApply:
         assert generate_theme_css(PRESET) not in css
 
     def test_re_apply_preserves_user_root_block_before_theme(
-        self, project_dir: Path
+        self,
+        project_dir: Path,
     ) -> None:
         user_root = ":root { --my-custom-token: hotpink; }"
         assets = project_dir / "assets"
         assets.mkdir(exist_ok=True)
         (assets / "globals.css").write_text(
-            join_css_around_theme(user_root, _theme(), ".x { color: red; }")
+            join_css_around_theme(user_root, _theme(), ".x { color: red; }"),
         )
         cmd_apply(PRESET_ALT)
         css = _globals(project_dir)
@@ -433,7 +437,8 @@ class TestCmdApply:
         assert css.count(THEME_END_SENTINEL) == 1
 
     def test_re_apply_on_legacy_cli_output_preserves_prefix(
-        self, project_dir: Path
+        self,
+        project_dir: Path,
     ) -> None:
         # Backwards compat: a globals.css written by an older CLI (no
         # sentinels) must have only its :root/.dark pair replaced, with the
@@ -443,7 +448,7 @@ class TestCmdApply:
         assets = project_dir / "assets"
         assets.mkdir(exist_ok=True)
         (assets / "globals.css").write_text(
-            _legacy_cli_file(prefix=prefix, suffix=suffix)
+            _legacy_cli_file(prefix=prefix, suffix=suffix),
         )
         cmd_apply(PRESET_ALT)
         css = _globals(project_dir)
@@ -458,7 +463,8 @@ class TestCmdApply:
         assert css.count(":root {") == 1
 
     def test_apply_on_nested_media_root_does_not_corrupt_css(
-        self, project_dir: Path
+        self,
+        project_dir: Path,
     ) -> None:
         # The bug-report case that produced structurally invalid CSS with an
         # orphaned closing brace. The fix must keep the @media block intact
@@ -505,7 +511,8 @@ class TestCmdApply:
         assert manifest["theme"]["preset"] == PRESET
 
     def test_apply_then_re_apply_updates_manifest_preset(
-        self, project_dir: Path
+        self,
+        project_dir: Path,
     ) -> None:
         cmd_apply(PRESET)
         cmd_apply(PRESET_ALT)
@@ -520,7 +527,9 @@ class TestCmdApply:
         assert (project_dir / "assets" / "globals.css").exists()
 
     def test_missing_rxconfig_exits_nonzero(
-        self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+        self,
+        tmp_path: Path,
+        monkeypatch: pytest.MonkeyPatch,
     ) -> None:
         monkeypatch.chdir(tmp_path)
         with pytest.raises(SystemExit) as exc:
@@ -554,7 +563,7 @@ class TestCmdApply:
         # theme is present and above the utilities
         assert THEME_START_SENTINEL in after_apply
         assert after_apply.index(THEME_START_SENTINEL) < after_apply.index(
-            "Shimmer utility"
+            "Shimmer utility",
         )
 
         cmd_apply(PRESET_ALT)
