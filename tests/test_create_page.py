@@ -20,10 +20,10 @@ These tests assert the class-string contract statically (no browser
 required) so the regression cannot silently return.
 """
 
-import reflex as rx  # pyrefly: ignore[missing-import]
+from typing import Any
 
-from native.pages.create import (  # pyright: ignore[reportPrivateUsage]
-    _sidebar_desktop,
+from native.pages.create import (
+    _sidebar_desktop,  # pyright: ignore[reportPrivateUsage]
     create_page,
     preview_space,
     source_space,
@@ -32,11 +32,11 @@ from native.pages.create import (  # pyright: ignore[reportPrivateUsage]
 _CLASS_DELIMS = str.maketrans({'"': " ", "(": " ", ")": " ", ",": " "})
 
 
-def _is_component(node: rx.Component) -> bool:
+def _is_component(node: Any) -> bool:
     return hasattr(node, "children") and hasattr(node, "class_name")
 
 
-def _find_by_id(root: rx.Component, target_id: str) -> rx.Component | None:
+def _find_by_id(root: Any, target_id: str) -> Any:
     """Depth-first search for a Reflex component whose ``id`` equals ``target_id``."""
     if _is_component(root):
         cid = root.id if hasattr(root, "id") else None
@@ -51,7 +51,7 @@ def _find_by_id(root: rx.Component, target_id: str) -> rx.Component | None:
     return None
 
 
-def _class_str(component: rx.Component) -> str:
+def _class_str(component: Any) -> str:
     cls = component.class_name
     return cls if isinstance(cls, str) else str(cls)
 
@@ -168,7 +168,9 @@ def test_create_and_typeset_share_mobile_reachability_contract() -> None:
     sidebars on mobile (no ``hidden lg:flex``) and expose a source panel
     that is revealable via a reachable toggle.
     """
-    from native.pages.typeset import _sidebar_desktop as typeset_sidebar  # pyright: ignore[reportPrivateUsage]
+    from native.pages.typeset import (
+        _sidebar_desktop as typeset_sidebar,  # pyright: ignore[reportPrivateUsage]
+    )
 
     create_tokens = _tokens(_class_str(_sidebar_desktop()))
     typeset_tokens = _tokens(_class_str(typeset_sidebar()))
