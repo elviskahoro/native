@@ -157,7 +157,7 @@ def bar_chart_horizontal() -> rx.Component:
     )
 ```
 
-## Legend
+## With Legend
 
 A stacked vertical bar chart with built-in legend rendering for multi-series comparisons.
 
