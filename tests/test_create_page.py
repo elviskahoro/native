@@ -22,7 +22,12 @@ required) so the regression cannot silently return.
 
 import reflex as rx  # pyrefly: ignore[missing-import]
 
-from native.pages.create import _sidebar_desktop, create_page, source_space  # pyright: ignore[reportPrivateUsage]
+from native.pages.create import (  # pyright: ignore[reportPrivateUsage]
+    _sidebar_desktop,
+    create_page,
+    preview_space,
+    source_space,
+)
 
 _CLASS_DELIMS = str.maketrans({'"': " ", "(": " ", ")": " ", ",": " "})
 
@@ -149,6 +154,12 @@ def test_preview_hides_on_mobile_when_source_shown() -> None:
     assert "group" in _tokens(_class_str(wrapper)), (
         "toggle-wrapper must carry the ``group`` class so its "
         "data-show state drives group-data-[show=true] descendants"
+    )
+
+    preview_tokens = _tokens(_class_str(preview_space()))
+    assert "max-lg:group-data-[show=true]:hidden" in preview_tokens, (
+        "preview must be hidden on mobile when #toggle-wrapper[data-show=true] "
+        "so it steps aside for the source panel"
     )
 
 
