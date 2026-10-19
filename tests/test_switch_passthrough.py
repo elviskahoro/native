@@ -193,7 +193,9 @@ ARIA_DATA_CASES = [
     ids=[c[0] for c in ARIA_DATA_CASES],
 )  # pyright: ignore[reportUntypedFunctionDecorator]
 def test_aria_and_data_attrs_route_to_input_custom_attrs(
-    kwarg: str, value: object, attr: str
+    kwarg: str,
+    value: object,
+    attr: str,
 ) -> None:
     """``aria-*`` and ``data-*`` attributes (snake_case kwargs) must land on the
     inner input peer's ``custom_attrs`` (real DOM attributes on the ``<input>``),
