@@ -1,6 +1,6 @@
 from typing import Any
 
-import reflex as rx  # pyrefly: ignore[missing-import]
+import reflex as rx
 
 from components.ui.tabs import GLOBAL_HANDLERS_JS, tabs
 
