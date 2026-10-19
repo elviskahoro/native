@@ -1,7 +1,8 @@
+from typing import Any
+
 import reflex as rx
 
-from components.ui.tabs import tabs
-from components.ui.tabs import GLOBAL_HANDLERS_JS
+from components.ui.tabs import GLOBAL_HANDLERS_JS, tabs
 
 DEMO_MODULES = {
     "basic": ("native.lib.components.tabs_basic", "tabs_basic"),
@@ -21,7 +22,11 @@ def _walk_components(comp):
             yield from _walk_components(child)
 
 
-def _extract_event_js(comp, trigger_name, needle=None):
+def _extract_event_js(
+    comp: Any,
+    trigger_name: str,
+    needle: str | None = None,
+) -> list[str]:
     out = []
     for node in _walk_components(comp):
         et = getattr(node, "event_triggers", {}) or {}
@@ -42,11 +47,11 @@ def _extract_event_js(comp, trigger_name, needle=None):
     return out
 
 
-def _extract_on_click_js(comp):
+def _extract_on_click_js(comp: Any) -> list[str]:
     return _extract_event_js(comp, "on_click", needle="querySelectorAll")
 
 
-def _extract_on_mount_js(comp):
+def _extract_on_mount_js(comp: Any) -> list[str]:
     return _extract_event_js(comp, "on_mount", needle="addEventListener")
 
 
@@ -170,7 +175,7 @@ def test_on_click_handler_contains_scope_guard():
     assert GUARD_SUBSTRING in handlers[0]
 
 
-def test_global_handler_resolves_trigger_and_value_from_runtime_dom():
+def test_global_handler_resolves_trigger_and_value_from_runtime_dom() -> None:
     """The shared highlight script must not bake a build-time id or the per-item
     value Var into the JS source; it must read both off the runtime DOM so one
     script works for every rendered copy (including rx.foreach items)."""
@@ -209,7 +214,7 @@ def test_global_handler_resolves_trigger_and_value_from_runtime_dom():
     )
 
 
-def test_trigger_does_not_dispatch_internal_highlight_js():
+def test_trigger_does_not_dispatch_internal_highlight_js() -> None:
     """Triggers rendered from rx.foreach share a single create() result, so no
     per-trigger call_script may be injected (it would run identically for every
     copy and bake the Var placeholder for the value)."""
@@ -221,7 +226,7 @@ def test_trigger_does_not_dispatch_internal_highlight_js():
     assert on_mount == [], "tabs.trigger must not emit its own highlight on_mount"
 
 
-def test_trigger_does_not_auto_generate_id_when_not_provided():
+def test_trigger_does_not_auto_generate_id_when_not_provided() -> None:
     """Auto-generating an id in create() bakes one id shared by every foreach
     copy (invalid HTML + getElementById resolves to the first copy). Triggers
     must leave the id unset when the user does not supply one; an explicit id
@@ -234,7 +239,7 @@ def test_trigger_does_not_auto_generate_id_when_not_provided():
     assert getattr(explicit_trigger, "id", None) == "custom-id"
 
 
-def test_distinct_trigger_instances_do_not_share_an_id():
+def test_distinct_trigger_instances_do_not_share_an_id() -> None:
     """Two separately-created triggers (the static-control case) must keep their
     own ids and never accidentally share an auto-generated one."""
     a = tabs.trigger("A", value="a", id="x")
@@ -244,21 +249,24 @@ def test_distinct_trigger_instances_do_not_share_an_id():
     assert getattr(b, "id", None) == "y"
 
 
-def _build_foreach_like_tree(num_groups):
+_NUM_FOREACH_GROUPS = 3
+_FOREACH_TRIGGER_VALUES = ("overview", "analytics", "reports")
+
+
+def _build_foreach_like_tree(num_groups: int) -> dict[str, Any]:
     """Mirror the canonical broken-usage shape: one tabs.root per data item, each
     with the same set of tab triggers + content panels, so each item renders its
     own independently-switchable group (simulating
     rx.foreach(state.items, lambda item: tabs.root(tabs.list(...), ...)))."""
     triggers = ["overview", "analytics", "reports"]
-    roots = []
-    for _ in range(num_groups):
-        roots.append(
-            tabs.root(
-                tabs.list(*(tabs.trigger(t, value=t) for t in triggers)),
-                *(tabs.content(t, value=t) for t in triggers),
-                default_value=triggers[0],
-            )
+    roots = [
+        tabs.root(
+            tabs.list(*(tabs.trigger(t, value=t) for t in triggers)),
+            *(tabs.content(t, value=t) for t in triggers),
+            default_value=triggers[0],
         )
+        for _ in range(num_groups)
+    ]
     return {
         "slot": None,
         "value": None,
@@ -268,20 +276,20 @@ def _build_foreach_like_tree(num_groups):
     }
 
 
-def test_foreach_like_roots_are_independently_switchable():
+def test_foreach_like_roots_are_independently_switchable() -> None:
     r"""The headline failure: tabs built from a data list. After mount, each group
     highlights only its own default trigger, and clicking a trigger inside one
     group activates/deactivates triggers only within that group -- never routing
     the click to another group (which the shared baked-id ``getElementById``
     lookup did) and never setting the root value to a Var-placeholder literal that
     matches no trigger."""
-    dom = _build_foreach_like_tree(3)
+    dom = _build_foreach_like_tree(_NUM_FOREACH_GROUPS)
     _simulate_mount(dom)
     roots = [c for c in dom["children"] if c.get("slot") == "tabs"]
-    assert len(roots) == 3
+    assert len(roots) == _NUM_FOREACH_GROUPS
     for root in roots:
         triggers = _all_triggers(root)
-        assert len(triggers) == 3
+        assert len(triggers) == len(_FOREACH_TRIGGER_VALUES)
         assert [t["active"] for t in triggers] == ["true", "false", "false"], (
             "each group highlights only its own default trigger after mount"
         )
@@ -302,7 +310,7 @@ def test_foreach_like_roots_are_independently_switchable():
         )
 
 
-def test_root_on_mount_preserves_user_supplied_handler():
+def test_root_on_mount_preserves_user_supplied_handler() -> None:
     """The internal global handler must coexist with user-supplied on_mount on
     the root (merged, not replaced)."""
     user_marker = "console_log_marker_xyz"
@@ -322,7 +330,7 @@ def test_root_on_mount_preserves_user_supplied_handler():
     )
 
 
-def test_trigger_preserves_user_supplied_on_click():
+def test_trigger_preserves_user_supplied_on_click() -> None:
     """User-supplied on_click on a trigger must pass through untouched now that
     the highlight JS is no longer injected per-trigger."""
     user_marker = "user_click_marker_xyz"
@@ -340,7 +348,7 @@ def test_trigger_preserves_user_supplied_on_click():
     )
 
 
-def test_global_handlers_js_module_constant_has_guard():
+def test_global_handlers_js_module_constant_has_guard() -> None:
     """Guard the shipped JS constant directly: it must contain the nested-scope
     guard and the runtime data-value read, and must never contain a build-time
     id lookup, an f-string interpolation placeholder, or a baked string-literal
