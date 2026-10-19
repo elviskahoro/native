@@ -22,7 +22,7 @@ import pathlib
 import re
 from pathlib import Path
 
-import markdown  # noqa: E402
+import markdown
 import reflex as rx
 from bs4 import BeautifulSoup
 
@@ -106,7 +106,7 @@ def _render_install(name: str) -> tuple[str, list[tuple[str, str]]] | rx.Compone
         for f_path in COMPONENT_REGISTRY.get(dep, {}).get("files", []):
             try:
                 files_data.append((f_path, Path(f_path).read_text().strip()))
-            except OSError:
+            except OSError:  # first unreadable file aborts the render
                 return rx.el.p(f"Error reading file dependency path: {f_path}")
 
     return name, files_data

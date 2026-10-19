@@ -1,4 +1,3 @@
-# ruff: noqa: INP001
 """Regression tests for the /create theme-customizer's first-load ``?preset=<code>``
 URL round-trip.
 
@@ -69,7 +68,7 @@ def _decode(code: str) -> dict[str, object] | None:
     )
 
 
-def _on_mount_scripts(component: Any) -> list[str]:  # noqa: ANN401
+def _on_mount_scripts(component: Any) -> list[str]:
     assert "on_mount" in component.event_triggers, (
         "create_page() must wire an on_mount lifecycle hook"
     )

@@ -42,7 +42,7 @@ def sub_layout_decorator(
                                     class_name="flex flex-col items-start gap-3",
                                 ),
                                 div(
-                                    search if search else [],
+                                    search or [],
                                     class_name="relative w-full sm:w-64 sm:shrink-0",
                                 ),
                                 class_name="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between",

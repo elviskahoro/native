@@ -1,4 +1,3 @@
-# noqa: INP001
 """Tests for the SOURCE branch of `native.engine.parser.render_token`.
 
 Regression coverage for a crash where a `--SOURCE(name)--` token naming a
