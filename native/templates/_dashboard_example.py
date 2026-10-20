@@ -6,14 +6,10 @@ from native.registry.dashboard_introspect import load_dashboard_example
 from native.templates._dashboard import dashboard_demo
 
 
-def _dependency_group(label: str, names: list[str]) -> Component:
+def _dependency_group(names: list[str]) -> Component:
     if not names:
         return div()
     return div(
-        # p(
-        #     label,
-        #     class_name="text-xs font-medium text-muted-foreground uppercase tracking-wide",
-        # ),
         div(
             *[
                 badge(
@@ -53,8 +49,8 @@ def dashboard_example(
             div(
                 h3("Dependencies", class_name="text-base font-semibold"),
                 div(
-                    _dependency_group("Components", deps["components"]),
-                    _dependency_group("Blocks", deps["blocks"]),
+                    _dependency_group(deps["components"]),
+                    _dependency_group(deps["blocks"]),
                     class_name="flex flex-row items-center gap-2",
                 ),
                 class_name="hidden lg:block",

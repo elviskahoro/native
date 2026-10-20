@@ -297,7 +297,7 @@ def test_toc_links_use_id_verbatim_no_reslugging() -> None:
         {"text": "Async & Yielding", "id": "async-handlers-yielding", "level": 1},
         {"text": "synthetic", "id": "Mixed CASE With Space.dot", "level": 1},
     ]
-    hrefs = _rendered_hrefs(_create_markdown_toc_links("accordion", entries))
+    hrefs = _rendered_hrefs(_create_markdown_toc_links(entries))
     assert hrefs == [f"#{e['id']}" for e in entries], (
         f"toc links must use entry id verbatim; got {hrefs}"
     )
@@ -313,5 +313,5 @@ def test_toc_links_integral_with_extract_toc_data() -> None:
     )
 
     toc = extract_toc_data("# Async Handlers & Yielding\n\n## accordion.root\n")
-    hrefs = _rendered_hrefs(_create_markdown_toc_links("doc", toc))  # type: ignore[reportArgumentType]
+    hrefs = _rendered_hrefs(_create_markdown_toc_links(toc))  # type: ignore[reportArgumentType]
     assert hrefs == ["#async-handlers-yielding", "#accordionroot"]
