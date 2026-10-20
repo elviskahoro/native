@@ -161,13 +161,6 @@ def select_pages_fuzzy(sections: dict[str, list[str]]) -> list[str] | None:
     choices = []
 
     for section, pages in sections.items():
-        # virtual "select entire section" choice
-        # choices.append(
-        #     Choice(
-        #         value=f"__section__:{section}",
-        #         name=f"[{section}] (entire section)",
-        #     )
-        # )
         for page in pages:
             path = f"{section}/{page}"
             choices.append(Choice(value=path, name=f"  {path}"))
