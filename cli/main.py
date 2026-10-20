@@ -100,11 +100,11 @@ def format_css(config: dict) -> str:
 def generate_theme_css(seed: str) -> str:
     decoded = decode_seed(
         seed,
-        BASE_THEMES,
-        COLOR_THEMES,
-        STYLE_REGISTRY,
-        RADII_OPTIONS,
-        FONT_REGISTRY,
+        base_themes=BASE_THEMES,
+        color_themes=COLOR_THEMES,
+        style_registry=STYLE_REGISTRY,
+        radii_options=RADII_OPTIONS,
+        font_registry=FONT_REGISTRY,
     )
     if not decoded:
         return ""
@@ -527,11 +527,11 @@ def cmd_apply(preset: str) -> None:
 
     config = decode_seed(
         preset,
-        BASE_THEMES,
-        COLOR_THEMES,
-        STYLE_REGISTRY,
-        RADII_OPTIONS,
-        FONT_REGISTRY,
+        base_themes=BASE_THEMES,
+        color_themes=COLOR_THEMES,
+        style_registry=STYLE_REGISTRY,
+        radii_options=RADII_OPTIONS,
+        font_registry=FONT_REGISTRY,
     )
     if not config:
         print(
