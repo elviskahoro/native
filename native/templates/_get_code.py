@@ -40,6 +40,7 @@ def get_code_section(
     title: str,
     description: str,
     component: rx.Component,
+    *,
     has_copy: bool = False,
 ) -> rx.Component:
 
