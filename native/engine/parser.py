@@ -77,7 +77,8 @@ _LIVE_REGISTRY = _build_live_registry(["native/lib", "components/"])
 
 
 def get_all_dependencies(
-    name: str, registry: dict[str, dict] = COMPONENT_REGISTRY
+    name: str,
+    registry: dict[str, dict] = COMPONENT_REGISTRY,
 ) -> list[str]:
     """Recursively resolve install-time dependencies in install order."""
     ordered: list[str] = []
@@ -143,7 +144,7 @@ def render_token(cmd: str, raw_arg: str) -> rx.Component:
             class_name="text-destructive font-mono text-sm my-2 p-2 border border-destructive/20 bg-destructive/5 rounded",
         )
 
-    obj, preferred_name = entry
+    obj, _preferred_name = entry
     if "demo" in cmd:
         source = Path(inspect.getsourcefile(obj)).read_text().strip()
         return demo(obj(), source)

@@ -1,7 +1,9 @@
+from typing import Any
+
 FRONTMATTER_PARTS = 3
 
 
-def parse_frontmatter(content: str) -> tuple[dict, str]:
+def parse_frontmatter(content: str) -> tuple[dict[str, Any], str]:
     """A simple frontmatter parser."""
     metadata = {}
     if not content.startswith("---"):

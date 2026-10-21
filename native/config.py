@@ -24,18 +24,25 @@ def generate_doc_routes(section_folder: str, base_path: str) -> list[dict[str, A
             continue
         relative_path = Path(file_path).relative_to(docs_path).as_posix()
         path_slug = relative_path.replace(".md", "").replace("_", "-")
-        routes.append({
-            "title": metadata["title"],
-            "description": metadata["description"],
-            "url": f"{base_path}{path_slug}",
-            "order": metadata.get("order", 0),
-        })
+        routes.append(
+            {
+                "title": metadata["title"],
+                "description": metadata["description"],
+                "url": f"{base_path}{path_slug}",
+                "order": metadata.get("order", 0),
+            },
+        )
     routes.sort(key=lambda x: x["order"])
     return routes
 
 
-DOC_SECTIONS = [
-    ("getting_started", "docs/getting-started/", "", [{"title": "llms.txt", "url": "llms.txt", "order": "5"}]),
+DOC_SECTIONS: list[tuple[str, str, str, list[dict[str, str]]]] = [
+    (
+        "getting_started",
+        "docs/getting-started/",
+        "",
+        [{"title": "llms.txt", "url": "llms.txt", "order": "5"}],
+    ),
     ("utilities", "docs/utilities/", "title", []),
     ("resources", "docs/resources/", "title", []),
     ("components", "docs/components/", "title", []),

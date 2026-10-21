@@ -40,7 +40,7 @@ def _read_dashboard_source(dashboard_id: str) -> str:
 # ---------------------------------------------------------------------------
 
 
-def test_dependency_buckets_only_use_known_bucket_names():
+def test_dependency_buckets_only_use_known_bucket_names() -> None:
     """``_extract_dependencies`` initialises its deps dict with only the
     ``components`` and ``blocks`` keys; any bucket value in
     ``DEPENDENCY_BUCKETS`` must be one of those or the lookup would raise
