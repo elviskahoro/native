@@ -230,7 +230,7 @@ def run_reflex(env: str, pages: list[str] | None) -> str | None:
                     for page in pages:
                         print(f"{base_url}/{page}")
 
-            except Exception:
+            except IndexError:
                 pass
 
     return port
