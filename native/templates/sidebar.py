@@ -3,7 +3,7 @@ from dataclasses import dataclass
 import reflex as rx
 
 from components.ui.button import button
-from native.registry import routes
+from native.engine import routes
 
 HIGHLIGHT_SCRIPT = """
     const currentPath = window.location.pathname.substring(1);
