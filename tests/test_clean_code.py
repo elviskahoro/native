@@ -14,9 +14,7 @@ def get_file_comments(file_path: Path) -> list[tuple[int, str]]:
         try:
             tokens = tokenize.tokenize(f.readline)
             for token in tokens:
-                if token.type == tokenize.COMMENT and not token.string.startswith(
-                    "# noqa:",
-                ):
+                if token.type == tokenize.COMMENT:
                     line_num = token.start[0]
                     comments.append((line_num, token.string.strip()))
         except tokenize.TokenError:
