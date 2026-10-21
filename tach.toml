@@ -22,7 +22,7 @@ exclude = [
 
 [[modules]]
 path = "cli"
-depends_on = ["components", "native.registry"]
+depends_on = ["components", "native.registry", "native.registry.components"]
 
 [[modules]]
 path = "components"
@@ -34,11 +34,15 @@ depends_on = ["components", "native.templates"]
 
 [[modules]]
 path = "native.registry"
-depends_on = ["native.engine", "components"]
+depends_on = ["components"]
+
+[[modules]]
+path = "native.registry.components"
+depends_on = []
 
 [[modules]]
 path = "native.engine"
-depends_on = ["native.templates", "native.registry"]
+depends_on = ["native.templates", "native.registry.components", "native"]
 
 [[modules]]
 path = "native.hooks"
@@ -50,7 +54,7 @@ depends_on = ["native.templates", "components", "native.registry", "native.lib"]
 
 [[modules]]
 path = "native.templates"
-depends_on = ["components"]
+depends_on = ["components", "native.engine"]
 
 [[modules]]
 path = "native"
@@ -63,4 +67,4 @@ depends_on = [
 
 [[modules]]
 path = "scripts"
-depends_on = ["native.registry"]
+depends_on = ["native.engine", "native.registry.components"]
