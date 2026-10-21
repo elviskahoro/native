@@ -11,16 +11,16 @@ if str(cli_dir) not in sys.path:
     sys.path.insert(0, str(cli_dir))
 
 
-@pytest.fixture
-def resolve_pages_func() -> Any:  # type: ignore[misc]
+@pytest.fixture  # type: ignore[misc]
+def resolve_pages_func() -> Any:
     """Import and return resolve_pages function."""
     from dev import resolve_pages as rp  # pyrefly: ignore[missing-import]
 
     return rp
 
 
-@pytest.fixture
-def sample_sections() -> dict[str, list[str]]:  # type: ignore[misc]
+@pytest.fixture  # type: ignore[misc]
+def sample_sections() -> dict[str, list[str]]:
     """Sample sections structure for testing."""
     return {
         "components": ["button", "input", "dropdown"],
