@@ -2,7 +2,7 @@ from reflex.components.component import Component
 from reflex_components_core.el import div, h3, p
 
 from components.ui.badge import badge
-from native.registry.dashboard_introspect import load_dashboard_example
+from native.templates.dashboard_introspect import load_dashboard_example
 from native.templates._dashboard import dashboard_demo
 
 

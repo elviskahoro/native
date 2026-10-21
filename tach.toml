@@ -2,9 +2,9 @@
 # Strict module boundaries (root_module forbid, exact edges), adapted from the
 # gtm-sdk reference setup. Edges were seeded with `tach sync`.
 source_roots = ["."]
-# Known cycle: native.registry <-> native.engine <-> native.templates.
-# Flip to true once it is broken up (tracked in a GitHub issue).
-forbid_circular_dependencies = false
+# Circular dependency was broken up in 9cd4e86 (native/templates/routes.py).
+# Enforce to prevent future circular imports.
+forbid_circular_dependencies = true
 root_module = "forbid"
 exact = true
 exclude = [
@@ -50,7 +50,7 @@ depends_on = ["native.templates", "components", "native.registry", "native.lib"]
 
 [[modules]]
 path = "native.templates"
-depends_on = ["components", "native.registry"]
+depends_on = ["components"]
 
 [[modules]]
 path = "native"

@@ -1,4 +1,4 @@
-"""Tests for native.registry.dashboard_introspect.
+"""Tests for native.templates.dashboard_introspect.
 
 The introspect module powers the "Dependencies" badge row on the /dashboards
 page: it walks each dashboard file's ``from X import Y`` statements, buckets
@@ -20,7 +20,7 @@ from pathlib import Path
 
 import pytest
 
-from native.registry.dashboard_introspect import (
+from native.templates.dashboard_introspect import (
     DEPENDENCY_BUCKETS,
     _classify_import,  # pyright: ignore[reportPrivateUsage]
     _extract_dependencies,  # pyright: ignore[reportPrivateUsage]
