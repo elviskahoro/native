@@ -1,0 +1,7 @@
+does this make sense in this context? I feel like we should maybe relax that rule for reflex components since they are UI!
+
+---
+
+let's do this:
+  - Only FBT003 for components/**: I'd go with this. It's the rule that conflicts with Reflex's call style. It keeps FBT001 and FBT002, which catch boolean
+    positional parameters in our own function signatures. We can still fix those, as #118 did for native/templates.
