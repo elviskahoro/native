@@ -64,7 +64,6 @@ def cn(*classes: Var | str | tuple | list | None) -> Var:
 ```
 
 ```python
-import uuid
 from typing import Any
 
 import reflex as rx
@@ -100,7 +99,63 @@ class ClassNames:
     CONTENT = "flex-1 text-sm outline-none hidden"
 
 
+GLOBAL_HANDLERS_JS = """
+(function () {
+    if (!window.__tabsGlobalHandlersAttached) {
+        window.__tabsGlobalHandlersAttached = true;
+        document.addEventListener('click', function (e) {
+            var target = e.target;
+            var trigger = target && target.closest
+                ? target.closest('[data-slot="tabs-trigger"]')
+                : null;
+            if (!trigger) return;
+            var root = trigger.closest('[data-slot="tabs"]');
+            if (!root) return;
+            var value = trigger.getAttribute('data-value');
+            root.dataset.value = value;
+            root.querySelectorAll('[data-slot="tabs-trigger"]').forEach(function (t) {
+                if (t.closest('[data-slot="tabs"]') !== root) return;
+                t.setAttribute(
+                    'data-active',
+                    t.getAttribute('data-value') === value ? 'true' : 'false'
+                );
+            });
+        });
+    }
+    document.querySelectorAll('[data-slot="tabs-trigger"]').forEach(function (t) {
+        var root = t.closest('[data-slot="tabs"]');
+        if (!root) return;
+        var rootValue = root.dataset.value;
+        t.setAttribute(
+            'data-active',
+            t.getAttribute('data-value') === rootValue ? 'true' : 'false'
+        );
+    });
+})();
+"""
+
+
 class TabsRoot(Div, CoreComponent):
+    """The main tabs container and active-state owner.
+
+    ``create`` attaches a single delegated document ``click`` listener on mount
+    (guarded by ``window.__tabsGlobalHandlersAttached`` so it is only attached
+    once per page) plus a one-shot mount pass that marks every trigger against its
+    own root's ``data-value``. The listener resolves the clicked trigger from the
+    runtime DOM event target and reads its rendered ``data-value`` attribute, so
+    the same script powers active-tab highlight for every Tabs instance on the
+    page -- including triggers produced by ``rx.foreach`` or a single trigger
+    instance placed in multiple positions.
+
+    This deliberately avoids keys/bakes that run once at template-build time
+    inside ``create()``: a build-time element id would be shared across every
+    rendered copy (duplicate DOM ids + ``getElementById`` resolving to the first
+    copy), and interpolating the per-item ``value`` Var into the JS source would
+    bake the Var's placeholder name as a string literal that matches no trigger.
+    Both failure modes are structural to ``rx.foreach`` usage and are fixed here
+    by reading everything off the runtime DOM at click/mount time.
+    """
+
     @classmethod
     def create(cls, *children: Any, **props: Any) -> Div:
         custom_classes = props.pop("class_name", "")
@@ -110,6 +165,15 @@ class TabsRoot(Div, CoreComponent):
         props["data-slot"] = "tabs"
         props["data-orientation"] = orientation
         props["data-value"] = default_value
+
+        user_on_mount = props.pop("on_mount", None)
+        mount_handlers = [rx.call_script(GLOBAL_HANDLERS_JS)]
+        if user_on_mount is not None:
+            if isinstance(user_on_mount, list):
+                mount_handlers.extend(user_on_mount)
+            else:
+                mount_handlers.append(user_on_mount)
+        props["on_mount"] = mount_handlers
 
         return super().create(
             *children,
@@ -135,6 +199,16 @@ class TabsList(Div, CoreComponent):
 
 
 class TabsTrigger(CoreComponent):
+    """A clickable tabs navigation button.
+
+    Active-tab highlight is driven entirely by the delegated click listener that
+    ``tabs.root`` attaches on mount (see ``components/ui/tabs.py``). The trigger
+    itself carries no build-time id or inline JS, so it is safe to render many of
+    them from a single ``create()`` call -- including inside ``rx.foreach`` or by
+    placing one trigger instance in multiple positions -- without producing
+    duplicate DOM ids or baking a per-item ``value`` Var into the JS source.
+    """
+
     @classmethod
     def create(cls, *children: Any, **props: Any) -> rx.Component:
         custom_classes = props.pop("class_name", "")
@@ -143,55 +217,6 @@ class TabsTrigger(CoreComponent):
         props["data-slot"] = "tabs-trigger"
         props["data-value"] = value
         props["type"] = "button"
-
-        trigger_id = props.get("id") or f"tabs-trigger-{uuid.uuid4().hex[:8]}"
-        props["id"] = trigger_id
-
-        user_on_click = props.pop("on_click", None)
-        user_on_mount = props.pop("on_mount", None)
-
-        js_on_click = f"""
-        (function() {{
-            var trigger = document.getElementById('{trigger_id}');
-            if (!trigger) return;
-            var root = trigger.closest('[data-slot="tabs"]');
-            if (!root) return;
-
-            root.dataset.value = '{value}';
-            root.querySelectorAll('[data-slot="tabs-trigger"]').forEach(function(t) {{
-                if (t.closest('[data-slot="tabs"]') !== root) return;
-                t.setAttribute('data-active', t.getAttribute('data-value') === '{value}' ? 'true' : 'false');
-            }});
-        }})()
-        """
-
-        js_on_mount = f"""
-        (function() {{
-            var trigger = document.getElementById('{trigger_id}');
-            if (!trigger) return;
-            var root = trigger.closest('[data-slot="tabs"]');
-            if (!root) return;
-
-            var initialValue = root.dataset.value;
-            trigger.setAttribute('data-active', trigger.getAttribute('data-value') === initialValue ? 'true' : 'false');
-        }})()
-        """
-
-        click_handlers = [rx.call_script(js_on_click)]
-        if user_on_click is not None:
-            if isinstance(user_on_click, list):
-                click_handlers.extend(user_on_click)
-            else:
-                click_handlers.append(user_on_click)
-        props["on_click"] = click_handlers
-
-        mount_handlers = [rx.call_script(js_on_mount)]
-        if user_on_mount is not None:
-            if isinstance(user_on_mount, list):
-                mount_handlers.extend(user_on_mount)
-            else:
-                mount_handlers.append(user_on_mount)
-        props["on_mount"] = mount_handlers
 
         cls.set_class_name(cn(ClassNames.TRIGGER, custom_classes), props)
         return rx.el.button(*children, **props)
@@ -430,7 +455,7 @@ tabs.list(
 
 ## tabs.trigger
 
-The clickable button elements used to switch active states. They safely merge internal client-side JS actions with optional user-supplied events.
+The clickable button elements used to switch active states. Active-tab highlight is driven by a single delegated click listener that `tabs.root` attaches on mount, so user-supplied `on_click` / `on_mount` handlers are passed through untouched.
 
 ```python
 tabs.trigger(
@@ -444,7 +469,7 @@ tabs.trigger(
 | ------------ | ----------------------------------------- | --------------------- |
 | `value`      | `str`                                     | _Required_            |
 | `class_name` | `str`                                     | `""`                  |
-| `id`         | `str`                                     | _Auto-generated UUID_ |
+| `id`         | `str`                                     | _None_                |
 | `disabled`   | `bool`                                    | `False`               |
 | `on_click`   | `Union[EventHandler, list[EventHandler]]` | `None`                |
 | `on_mount`   | `Union[EventHandler, list[EventHandler]]` | `None`                |
