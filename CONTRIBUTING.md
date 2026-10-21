@@ -104,7 +104,7 @@ uv run pytest
 
 ## Style Guidelines
 
-We use `ruff` for linting and formatting. Ensure your code complies with our configuration defined in `pyproject.toml`.
+We use `ruff` for linting and formatting. Ensure your code complies with our configuration defined in `.trunk/configs/ruff.toml`.
 
 ## Submitting Changes
 
