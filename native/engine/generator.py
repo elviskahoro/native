@@ -1,4 +1,3 @@
-import logging
 import os
 from pathlib import Path
 
@@ -6,15 +5,13 @@ from native.engine import constants
 from native.engine.parser import extract_toc_data, parse_and_render
 from native.engine.utils import parse_frontmatter
 
-logger = logging.getLogger(__name__)
-
 
 def generate_docs_library() -> list[constants.DocDataStruct]:
     docs = []
     dev_mode = os.environ.get("BURIDAN_DEV_MODE") == "true"
 
     if not constants.DOCS_BASE_DIR.exists():
-        logger.warning(f"Docs base directory not found: {constants.DOCS_BASE_DIR}")
+        print(f"Warning: Docs base directory not found: {constants.DOCS_BASE_DIR}")
         return []
 
     # Create a mapping from URL slug to file path for all markdown files
@@ -29,21 +26,21 @@ def generate_docs_library() -> list[constants.DocDataStruct]:
 
     md_files_to_process = []
     if dev_mode:
-        logger.info("Development Mode Enabled")
+        print("--- Development Mode Enabled ---")
         pages_str = os.environ.get("BURIDAN_DEV_PAGES", "")
         if not pages_str:
-            logger.warning("BURIDAN_DEV_PAGES is not set. Loading no pages.")
+            print("Warning: BURIDAN_DEV_PAGES is not set. Loading no pages.")
             return []
 
         page_slugs = [slug.strip() for slug in pages_str.split(",")]
-        logger.info(f"Loading specified pages: {page_slugs}")
-        logger.info("Loading specified URLs:")
+        print(f"Loading specified pages: {page_slugs}")
+        print("Loading specified URLs:")
         for slug in page_slugs:
-            logger.info(f"http://localhost:3000/docs/{slug}")
+            print(f"http://localhost:3000/docs/{slug}")
             if slug in slug_to_path_map:
                 md_files_to_process.append(slug_to_path_map[slug])
             else:
-                logger.warning(f"Markdown file not found for slug: {slug}")
+                print(f"Warning: Markdown file not found for slug: {slug}")
     else:
         md_files_to_process = all_md_files
 

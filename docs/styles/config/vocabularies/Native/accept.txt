@@ -1,5 +1,6 @@
 addon|addons
 APIs
+Buridan
 area_chart
 args
 Async
@@ -11,7 +12,10 @@ callout
 cartesian_grid
 chart_tooltip
 class_name
+CLI
 collapsible|Collapsibles
+composable
+config
 css
 CTAs
 datagrids
@@ -32,7 +36,6 @@ line_chart
 LLMs
 lockfile
 multiline
-nad
 npm
 oklch
 performant
@@ -64,7 +67,6 @@ typographies
 unstyled
 upsert|upserts
 uv
-utlize
 viewport
 x_axis
 y_axis

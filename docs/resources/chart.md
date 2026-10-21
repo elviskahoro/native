@@ -181,7 +181,7 @@ rx.recharts.bar(data_key="mobile", fill="#2563eb")
 rx.recharts.bar(data_key="mobile", fill="oklch(0.5 0.2 240)")
 ```
 
-You can also include colors in your data structure and utlize `rx.foreach` for more concise codebase.
+You can also include colors in your data structure and utilize `rx.foreach` for more concise codebase.
 
 ```python
 data = [

@@ -154,10 +154,7 @@ def select_env() -> str | None:
 
 
 def select_pages_fuzzy(sections: dict[str, list[str]]) -> list[str] | None:
-    """Fuzzy search + multi-select over all pages, plus a virtual
-    "whole section" entry so you can grab an entire section without
-    tabbing through every page in it individually.
-    """
+    """Fuzzy search + multi-select over all pages."""
     choices = []
 
     for section, pages in sections.items():
@@ -172,25 +169,17 @@ def select_pages_fuzzy(sections: dict[str, list[str]]) -> list[str] | None:
         choices=choices,
         multiselect=True,
         max_height="70%",
-        instruction="(type name, section name, or 'entire section')",
+        instruction="(type a page or section/page path)",
     ).execute()
 
     if not result:
         return None
 
-    # expand any "__section__:x" picks into their full page list
     pages = []
     seen = set()
 
     for item in result:
-        if item.startswith("__section__:"):
-            section = item.split(":", 1)[1]
-            for page in sections.get(section, []):
-                path = f"{section}/{page}"
-                if path not in seen:
-                    seen.add(path)
-                    pages.append(path)
-        elif item not in seen:
+        if item not in seen:
             seen.add(item)
             pages.append(item)
 
