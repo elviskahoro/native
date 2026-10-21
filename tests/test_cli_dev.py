@@ -1,4 +1,5 @@
 """Tests for cli/dev.py resolve_pages function."""
+
 import sys
 from pathlib import Path
 from typing import Any
@@ -11,7 +12,7 @@ if str(cli_dir) not in sys.path:
 
 
 @pytest.fixture
-def resolve_pages_func() -> Any:
+def resolve_pages_func() -> Any:  # type: ignore[misc]
     """Import and return resolve_pages function."""
     from dev import resolve_pages as rp  # pyrefly: ignore[missing-import]
 
@@ -19,7 +20,7 @@ def resolve_pages_func() -> Any:
 
 
 @pytest.fixture
-def sample_sections() -> dict[str, list[str]]:
+def sample_sections() -> dict[str, list[str]]:  # type: ignore[misc]
     """Sample sections structure for testing."""
     return {
         "components": ["button", "input", "dropdown"],
