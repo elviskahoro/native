@@ -39,7 +39,7 @@ def create_copy_button(url: str) -> rx.Component:
     )
 
 
-def _create_markdown_toc_links(url: str, toc_data: list[dict]) -> rx.Component:
+def _create_markdown_toc_links(toc_data: list[dict]) -> rx.Component:
 
     if not toc_data:
         return rx.el.div()
@@ -76,9 +76,9 @@ def _create_external_tool_links(url: str) -> rx.Component:
     def external_tool_item(
         icon_light: str,
         icon_dark: str,
-        tooltip_content: str,
+        _tooltip_content: str,
         href: str,
-        icon_size: str = "size-4",
+        _icon_size: str = "size-4",
     ) -> rx.Component:
         return rx.el.a(
             rx.el.image(
@@ -98,26 +98,26 @@ def _create_external_tool_links(url: str) -> rx.Component:
         external_tool_item(
             icon_light="/svg/markdown/md_light.svg",
             icon_dark="/svg/markdown/md_dark.svg",
-            tooltip_content="View Markdown",
+            _tooltip_content="View Markdown",
             href=f"/{url}.md",
-            icon_size="size-5",
+            _icon_size="size-5",
         ),
         external_tool_item(
             icon_light="/svg/openai/ai_light.svg",
             icon_dark="/svg/openai/ai_dark.svg",
-            tooltip_content="Open in ChatGPT",
+            _tooltip_content="Open in ChatGPT",
             href=f"https://chatgpt.com/?q={prompt}",
         ),
         external_tool_item(
             icon_light="/svg/claude/claude_light.svg",
             icon_dark="/svg/claude/claude_dark.svg",
-            tooltip_content="Open in Claude",
+            _tooltip_content="Open in Claude",
             href=f"https://claude.ai/new?q={prompt}",
         ),
         external_tool_item(
             icon_light="/svg/reflex/reflex_light.svg",
             icon_dark="/svg/reflex/reflex_dark.svg",
-            tooltip_content="Open in Reflex",
+            _tooltip_content="Open in Reflex",
             href=f"https://build.reflex.dev/?prompt={prompt}",
         ),
         rx.el.p("︲", class_name="text-muted-foreground/50 font-thin hidden lg:flex"),
@@ -156,7 +156,7 @@ def table_of_content(url: str, toc_data: list[dict]) -> rx.Component:
                         class_name="text-xs text-muted-foreground font-medium pb-2",
                     ),
                     rx.el.div(
-                        _create_markdown_toc_links(url, toc_data),
+                        _create_markdown_toc_links(toc_data),
                         rx.el.div(class_name="py-2"),
                         class_name=(
                             "w-full flex flex-col "

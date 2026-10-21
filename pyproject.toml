@@ -34,7 +34,7 @@ Issues = "https://github.com/LineIndent/native/issues"
 
 [dependency-groups]
 dev = [
-  "reflex==0.9.10.post1",
+  "reflex==0.10.0",
   "pillow>=12.2.0",
   "PyYAML>=6.0.3",
   "questionary>=2.1.1",
@@ -46,17 +46,6 @@ dev = [
   "pytest>=9.1.1",
   "inquirerpy",
 ]
-
-[tool.ruff]
-line-length = 88
-target-version = "py311"
-
-[tool.ruff.lint]
-select = ["E", "F", "I", "UP", "B"]
-
-[tool.ruff.format]
-quote-style = "double"
-indent-style = "space"
 
 [project.scripts]
 buridan = "cli.main:main"

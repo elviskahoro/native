@@ -1,9 +1,12 @@
 # Tach module boundary enforcement -- seeded empty.
-# Structure adapted from the gtm-sdk reference setup (tach.toml there maps
-# its full module graph with root_module = "forbid"). No modules are declared
-# here yet, so `tach check` is trivially green; declare modules and their
-# depends_on edges over time to start enforcing architecture boundaries.
+# Strict module boundaries (root_module forbid, exact edges), adapted from the
+# gtm-sdk reference setup. Edges were seeded with `tach sync`.
 source_roots = ["."]
+# Known cycle: native.registry <-> native.engine <-> native.templates.
+# Flip to true once it is broken up (tracked in a GitHub issue).
+forbid_circular_dependencies = false
+root_module = "forbid"
+exact = true
 exclude = [
   "tests/**",
   "docs/**",
@@ -16,4 +19,48 @@ exclude = [
   ".venv/**",
   "ai/**",
 ]
-modules = []
+
+[[modules]]
+path = "cli"
+depends_on = ["components", "native.registry"]
+
+[[modules]]
+path = "components"
+depends_on = []
+
+[[modules]]
+path = "native.lib"
+depends_on = ["components", "native.templates"]
+
+[[modules]]
+path = "native.registry"
+depends_on = ["native.engine", "components"]
+
+[[modules]]
+path = "native.engine"
+depends_on = ["native.templates", "native.registry"]
+
+[[modules]]
+path = "native.hooks"
+depends_on = []
+
+[[modules]]
+path = "native.pages"
+depends_on = ["native.templates", "components", "native.registry", "native.lib"]
+
+[[modules]]
+path = "native.templates"
+depends_on = ["components", "native.registry"]
+
+[[modules]]
+path = "native"
+depends_on = [
+  "native.hooks",
+  "native.engine",
+  "native.templates",
+  "native.pages",
+]
+
+[[modules]]
+path = "scripts"
+depends_on = ["native.registry"]
