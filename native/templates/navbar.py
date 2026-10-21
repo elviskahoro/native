@@ -7,7 +7,7 @@ from reflex_components_core.el import Div, Header, a, div, header, p
 from components.core.hugeicon import hi
 from components.ui.button import button, button_variants
 from components.ui.menu import menu
-from native.registry import routes
+from native.templates import routes
 from native.templates.github import github
 from native.templates.theme import theme_toggle_button
 

@@ -76,22 +76,24 @@ def _build_live_registry(dirs: list[str]) -> dict[str, tuple[object, str]]:
 _LIVE_REGISTRY = _build_live_registry(["native/lib", "components/"])
 
 
-def get_all_dependencies(name: str, registry: dict = COMPONENT_REGISTRY) -> list[str]:
-    """Recursively resolve install-time dependencies in install order."""
-    ordered: list[str] = []
+def get_all_dependencies(
+	name: str, registry: dict[str, dict] = COMPONENT_REGISTRY
+) -> list[str]:
+	"""Recursively resolve install-time dependencies in install order."""
+	ordered: list[str] = []
 
-    def resolve(comp_name: str) -> None:
-        comp = registry.get(comp_name.lower())
-        if not comp:
-            return
-        for dep in comp.get("dependencies", []):
-            if dep not in ordered:
-                resolve(dep)
-        if comp_name not in ordered:
-            ordered.append(comp_name)
+	def resolve(comp_name: str) -> None:
+		comp = registry.get(comp_name.lower())
+		if not comp:
+			return
+		for dep in comp.get("dependencies", []):
+			if dep not in ordered:
+				resolve(dep)
+		if comp_name not in ordered:
+			ordered.append(comp_name)
 
-    resolve(name)
-    return ordered
+	resolve(name)
+	return ordered
 
 
 def _clean_arg(raw_arg: str) -> str:
@@ -116,37 +118,36 @@ def _render_install(name: str) -> tuple[str, list[tuple[str, str]]] | rx.Compone
 
 
 def render_token(cmd: str, raw_arg: str) -> rx.Component:
-    name = _clean_arg(raw_arg)
+	name = _clean_arg(raw_arg)
 
-    if cmd == "install":
-        return _render_install(name)
+	if cmd == "install":
+		return _render_install(name)
 
-    if "intro" in cmd:
-        return intro(raw_arg)
+	if "intro" in cmd:
+		return intro(raw_arg)
 
-    if cmd == "usage":
-        return usage(raw_arg)
+	if cmd == "usage":
+		return usage(raw_arg)
 
-    if "source" in cmd:
-        from native.templates._source import source
+	if "source" in cmd:
+		from native.templates._source import source
 
-        result = _render_install(name)
-        return result if not isinstance(result, tuple) else source(result[1])
+		result = _render_install(name)
+		return result if not isinstance(result, tuple) else source(result[1])
 
-    entry = _LIVE_REGISTRY.get(name)
-    if not entry:
-        # Placeholder for render_parse_error
-        return rx.el.div(
-            f"Error: Reference Target '{name}' not found",
-            class_name="text-destructive font-mono text-sm my-2 p-2 border border-destructive/20 bg-destructive/5 rounded",
-        )
+	entry = _LIVE_REGISTRY.get(name)
+	if not entry:
+		# Placeholder for render_parse_error
+		return rx.el.div(
+			f"Error: Reference Target '{name}' not found",
+			class_name="text-destructive font-mono text-sm my-2 p-2 border border-destructive/20 bg-destructive/5 rounded",
+		)
 
-    obj, _preferred_name = entry
-    result = None
-    if "demo" in cmd:
-        source = Path(inspect.getsourcefile(obj)).read_text().strip()
-        result = demo(obj(), source)
-    return result
+	obj, preferred_name = entry
+	if "demo" in cmd:
+		source = Path(inspect.getsourcefile(obj)).read_text().strip()
+		return demo(obj(), source)
+	return rx.el.div()
 
 
 # --------------------------------------------------------------------------

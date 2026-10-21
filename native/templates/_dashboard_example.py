@@ -15,7 +15,6 @@ def _dependency_group(names: list[str]) -> Component:
                 badge(
                     name,
                     class_name="rounded-none",
-                    # class_name="text-xs px-2 py-1 rounded-md bg-muted border border-input",
                 )
                 for name in names
             ],
