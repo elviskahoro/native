@@ -45,35 +45,41 @@ def flatten_vars(obj: dict) -> dict:
     return out
 
 
-def _apply_color_theme(theme: dict, color_id: str, dark: bool) -> None:
+def _apply_color_theme(theme: dict[str, str], color_id: str, *, dark: bool) -> None:
     """Apply color theme variables to theme dict, filtering out chart colors."""
     color = next((c for c in COLOR_THEMES if c["id"] == color_id), None)
     if color:
-        for k, v in flatten_vars(color["dark"] if dark else color["light"]).items():
-            if not k.startswith("--chart-"):
-                theme[k] = v
+        source = color["dark"] if dark else color["light"]
+        theme.update(
+            {
+                k: v
+                for k, v in flatten_vars(source).items()
+                if not k.startswith("--chart-")
+            },
+        )
 
 
-def _apply_chart_theme(theme: dict, chart_id: str, dark: bool) -> None:
+def _apply_chart_theme(theme: dict[str, str], chart_id: str, *, dark: bool) -> None:
     """Apply chart color variables to theme dict."""
     chart = next((c for c in COLOR_THEMES if c["id"] == chart_id), None)
     if chart:
-        for k, v in flatten_vars(chart["dark"] if dark else chart["light"]).items():
-            if k.startswith("--chart-"):
-                theme[k] = v
+        source = chart["dark"] if dark else chart["light"]
+        theme.update(
+            {k: v for k, v in flatten_vars(source).items() if k.startswith("--chart-")},
+        )
 
 
-def _apply_style_theme(theme: dict, style_id: str) -> None:
+def _apply_style_theme(theme: dict[str, str], style_id: str) -> None:
     """Apply style registry variables to theme dict."""
     style = next((s for s in STYLE_REGISTRY if s["id"] == style_id), None)
-    if style:
+    if style and isinstance(style["vars"], dict):
         theme.update(style["vars"])
 
 
-def _apply_font_theme(theme: dict, font_id: str) -> None:
+def _apply_font_theme(theme: dict[str, str], font_id: str) -> None:
     """Apply font registry variables to theme dict."""
     font = next((f for f in FONT_REGISTRY if f["id"] == font_id), None)
-    if font:
+    if font and isinstance(font["vars"], dict):
         theme.update(font["vars"])
 
 
@@ -93,9 +99,9 @@ def rebuild_theme(config: dict) -> dict:
     theme = {**flatten_vars(base["dark"] if dark else base["light"])}
 
     if color_id:
-        _apply_color_theme(theme, color_id, dark)
+        _apply_color_theme(theme, color_id, dark=dark)
     if chart_id:
-        _apply_chart_theme(theme, chart_id, dark)
+        _apply_chart_theme(theme, chart_id, dark=dark)
     if style_id:
         _apply_style_theme(theme, style_id)
     if font_id:
@@ -420,7 +426,8 @@ def _inject_plugins_into_existing(
     call: ast.Call,
 ) -> bool:
     """Inject plugins into an rx.Config call that already has plugins kwarg."""
-    for i in range(call.lineno - 1, call.end_lineno):
+    end = call.end_lineno if call.end_lineno is not None else call.lineno
+    for i in range(call.lineno - 1, end):
         if "plugins=" in lines[i]:
             lines[i] = lines[i].replace(
                 "plugins=[",
@@ -436,7 +443,8 @@ def _inject_plugins_into_new(
     call: ast.Call,
 ) -> bool:
     """Add plugins kwarg to an rx.Config call that doesn't have one."""
-    for i in range(call.lineno - 1, call.end_lineno):
+    end = call.end_lineno if call.end_lineno is not None else call.lineno
+    for i in range(call.lineno - 1, end):
         if "Config(" in lines[i] or "config(" in lines[i]:
             indent = " " * (len(lines[i]) - len(lines[i].lstrip()))
             lines[i] = lines[i].replace(
@@ -451,8 +459,7 @@ def _cleanup_duplicate_plugins(content: str) -> str:
     """Remove duplicate TailwindV4Plugin references after injection."""
     content = content.replace("rx.plugins.TailwindV4Plugin(),", "")
     content = content.replace("rx.plugins.TailwindV4Plugin()", "")
-    content = content.replace(",,", ",")
-    return content
+    return content.replace(",,", ",")
 
 
 def patch_rxconfig(config_path: Path) -> None:
