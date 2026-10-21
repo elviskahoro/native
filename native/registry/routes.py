@@ -1,5 +1,5 @@
-# Re-export route constants from templates.routes for backward compatibility
-from native.templates.routes import (
+# Re-export route constants from engine.routes for backward compatibility
+from native.engine.routes import (
     ALL_ROUTES,
     BASE_UI_COMPONENTS,
     CHARTS_URLS,
