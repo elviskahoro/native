@@ -3,7 +3,7 @@ import sys
 
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
-from native.templates.routes import (
+from native.registry.routes import (
     BASE_UI_COMPONENTS,
     CHARTS_URLS,
     GET_STARTED_URLS,
