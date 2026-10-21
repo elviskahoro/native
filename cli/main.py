@@ -208,7 +208,7 @@ def resolve_dependencies(
         order.append(name)
         return True
 
-    def add_files_and_deps(name: str, key: str) -> None:
+    def add_files_and_deps(key: str) -> None:
         entry = registry[key]
         for f in entry["files"]:
             required_files.add(f)
@@ -223,7 +223,7 @@ def resolve_dependencies(
         name, _ = parse_component_spec(key)
         if not claim(name, key):
             return
-        add_files_and_deps(name, key)
+        add_files_and_deps(key)
 
     # First pass: claim every explicitly-requested component up front, so a
     # pinned version always wins over whatever a dependency graph resolves
@@ -242,7 +242,7 @@ def resolve_dependencies(
     # using resolved[name] — the version that actually won the claim above —
     # not whichever key that particular spec happened to resolve to.
     for name in dict.fromkeys(explicit_names):  # dedupe, keep first-seen order
-        add_files_and_deps(name, resolved[name])
+        add_files_and_deps(resolved[name])
 
     installed_map = {
         name: (parse_component_spec(resolved[name])[1] or "latest") for name in order
