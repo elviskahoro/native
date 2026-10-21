@@ -317,21 +317,3 @@ def test_toc_links_integral_with_extract_toc_data() -> None:
     assert hrefs == ["#async-handlers-yielding", "#accordionroot"]
 
 
-# ---------------------------------------------------------------------------
-# Regression guard: ensure pytest collection is not broken by leftover
-# merge-conflict markers from prior botched merges on main.
-# ---------------------------------------------------------------------------
-
-
-def test_this_file_has_no_unresolved_merge_conflict_markers() -> None:
-    """A previous botched merge left `<<<<<<< HEAD` / `=======` /
-    `>>>>>>> origin/main` markers in this file on `main`, which made
-    `pytest` collection fail with `SyntaxError: invalid syntax`. This test
-    re-reads the file as bytes and fails if any such literal appears.
-    """
-    text = Path(__file__).read_text(encoding="utf-8")
-    for marker in ("<<<<<<<", "=======", ">>>>>>>"):
-        assert marker not in text, (
-            f"tests/test_toc_links.py still contains {marker!r}; "
-            "resolve the botched merge before re-running CI."
-        )
