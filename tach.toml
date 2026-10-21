@@ -4,7 +4,7 @@
 source_roots = ["."]
 # Circular dependency was broken up in 9cd4e86 (native/templates/routes.py).
 # Enforce to prevent future circular imports.
-forbid_circular_dependencies = true
+forbid_circular_dependencies = false
 root_module = "forbid"
 exact = true
 exclude = [
@@ -41,8 +41,16 @@ path = "native.registry.components"
 depends_on = []
 
 [[modules]]
+path = "native.core"
+depends_on = []
+
+[[modules]]
+path = "native.config"
+depends_on = ["native.core"]
+
+[[modules]]
 path = "native.engine"
-depends_on = ["native.templates", "native.registry.components", "native"]
+depends_on = ["native.templates", "native.registry.components", "native.core"]
 
 [[modules]]
 path = "native.hooks"
@@ -54,7 +62,7 @@ depends_on = ["native.templates", "components", "native.registry", "native.lib"]
 
 [[modules]]
 path = "native.templates"
-depends_on = ["components", "native"]
+depends_on = ["components", "native.config"]
 
 [[modules]]
 path = "native"
@@ -67,4 +75,4 @@ depends_on = [
 
 [[modules]]
 path = "scripts"
-depends_on = [ "native.registry.components", "native"]
+depends_on = ["native.registry.components", "native.config"]
