@@ -155,7 +155,7 @@ class DialogPopup(BaseDialog, CoreComponent):
         cls.set_class_name(cn(ClassNames.POPUP, custom_classes), props)
 
         if on_open_change is not None:
-            props["on_close"] = lambda: on_open_change(value=False)
+            props["on_close"] = lambda: on_open_change(False)  # noqa: FBT003
         if not dismissible:
             props["on_cancel"] = rx.prevent_default
 
