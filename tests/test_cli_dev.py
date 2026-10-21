@@ -101,6 +101,7 @@ def test_resolve_ambiguous_bare_name(capsys: pytest.CaptureFixture[str]) -> None
 def test_resolve_with_section_names(sample_sections: dict[str, list[str]]) -> None:
     """Test resolving using section names (--section flag)."""
     result = resolve_pages([], ["components"], sample_sections)
+    assert result is not None
     assert sorted(result) == [
         "components/button",
         "components/dropdown",
@@ -117,6 +118,7 @@ def test_resolve_with_multiple_section_names(
         ["components", "getting-started"],
         sample_sections,
     )
+    assert result is not None
     assert sorted(result) == [
         "components/button",
         "components/dropdown",
@@ -148,6 +150,7 @@ def test_resolve_names_and_sections_combined(
 ) -> None:
     """Test combining both names and section names."""
     result = resolve_pages(["button"], ["getting-started"], sample_sections)
+    assert result is not None
     assert sorted(result) == [
         "components/button",
         "getting-started/installation",
@@ -160,6 +163,7 @@ def test_resolve_deduplication_across_names_and_sections(
 ) -> None:
     """Test deduplication when same page specified in names and sections."""
     result = resolve_pages(["button"], ["components"], sample_sections)
+    assert result is not None
     assert sorted(result) == [
         "components/button",
         "components/dropdown",
