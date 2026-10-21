@@ -49,11 +49,7 @@ def _served_headings(md_path: Path) -> list[dict[str, str]]:
     for piece in parse_and_render(body):
         if type(piece).__name__ != "Html":
             continue
-<<<<<<< HEAD
-        payload = getattr(piece.dangerouslySetInnerHTML, "_var_value", None)
-=======
         payload = getattr(piece.dangerouslySetInnerHTML, "_var_value", None)  # pyrefly: ignore[missing-attribute]
->>>>>>> origin/main
         if not payload or "__html" not in payload:
             continue
         for m in _HEADING_RE.finditer(payload["__html"]):
@@ -172,11 +168,7 @@ def test_extract_toc_data_dedup_restarts_per_chunk_like_served_dom() -> None:
     for piece in parse_and_render(body):
         if type(piece).__name__ != "Html":
             continue
-<<<<<<< HEAD
-        payload = getattr(piece.dangerouslySetInnerHTML, "_var_value", None)
-=======
         payload = getattr(piece.dangerouslySetInnerHTML, "_var_value", None)  # pyrefly: ignore[missing-attribute]
->>>>>>> origin/main
         if not payload or "__html" not in payload:
             continue
         served_ids.extend(m.group(2) for m in _HEADING_RE.finditer(payload["__html"]))
@@ -305,11 +297,7 @@ def test_toc_links_use_id_verbatim_no_reslugging() -> None:
         {"text": "Async & Yielding", "id": "async-handlers-yielding", "level": 1},
         {"text": "synthetic", "id": "Mixed CASE With Space.dot", "level": 1},
     ]
-<<<<<<< HEAD
-    hrefs = _rendered_hrefs(_create_markdown_toc_links("accordion", entries))
-=======
     hrefs = _rendered_hrefs(_create_markdown_toc_links(entries))
->>>>>>> origin/main
     assert hrefs == [f"#{e['id']}" for e in entries], (
         f"toc links must use entry id verbatim; got {hrefs}"
     )
@@ -325,9 +313,5 @@ def test_toc_links_integral_with_extract_toc_data() -> None:
     )
 
     toc = extract_toc_data("# Async Handlers & Yielding\n\n## accordion.root\n")
-<<<<<<< HEAD
-    hrefs = _rendered_hrefs(_create_markdown_toc_links("doc", toc))  # type: ignore[reportArgumentType]
-=======
     hrefs = _rendered_hrefs(_create_markdown_toc_links(toc))  # type: ignore[reportArgumentType]
->>>>>>> origin/main
     assert hrefs == ["#async-handlers-yielding", "#accordionroot"]
