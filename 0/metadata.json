@@ -1,0 +1,38 @@
+{
+  "cli_version": "0.11.4",
+  "checkpoint_id": "01M5G452950FMQ75VATS764HGB",
+  "session_id": "53a5163e-8fe9-4216-98a4-a5a23b4d1fd7",
+  "strategy": "manual-commit",
+  "created_at": "2026-10-21T20:58:58.39386Z",
+  "branch": "conductor/native-issue-63",
+  "checkpoints_count": 1,
+  "files_touched": [
+    "assets/docs/components/dialog.md",
+    "components/ui/dialog.py"
+  ],
+  "agent": "Claude Code",
+  "model": "claude-sonnet-5-5",
+  "turn_id": "0de9b59f1f35",
+  "checkpoint_transcript_start": 301,
+  "transcript_lines_at_start": 301,
+  "compact_transcript_start": 29,
+  "token_usage": {
+    "input_tokens": 18,
+    "cache_creation_tokens": 4643,
+    "cache_read_tokens": 576035,
+    "output_tokens": 2179,
+    "api_call_count": 9
+  },
+  "initial_attribution": {
+    "calculated_at": "2026-10-21T20:58:58.366266Z",
+    "agent_lines": 6,
+    "agent_removed": 2,
+    "human_added": 0,
+    "human_modified": 0,
+    "human_removed": 0,
+    "total_committed": 6,
+    "total_lines_changed": 8,
+    "agent_percentage": 100,
+    "metric_version": 2
+  }
+}
