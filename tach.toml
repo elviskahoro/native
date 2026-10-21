@@ -4,7 +4,7 @@
 source_roots = ["."]
 # Circular dependency was broken up in 9cd4e86 (native/templates/routes.py).
 # Enforce to prevent future circular imports.
-forbid_circular_dependencies = false
+forbid_circular_dependencies = true
 root_module = "forbid"
 exact = true
 exclude = [
