@@ -17,6 +17,7 @@ collapsible|Collapsibles
 composable
 config
 css
+CSS
 CTAs
 datagrids
 dev
@@ -30,6 +31,7 @@ get_var_value
 gitignored
 hsl
 Javascript
+JavaScript
 keydowns
 label_list
 line_chart
