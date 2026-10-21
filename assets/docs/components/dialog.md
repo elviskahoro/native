@@ -76,6 +76,7 @@ from reflex_components_core.el import (
 
 from ..core.core import CoreComponent, cn
 
+
 class ClassNames:
     POPUP = (
         "hidden open:grid m-auto w-full max-w-[calc(100%-2rem)] gap-4 rounded-xl "
