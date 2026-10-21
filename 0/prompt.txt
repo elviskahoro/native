@@ -1,0 +1,3 @@
+create a comprehensive github issue explaining this scenario for my other reflex projects as well:
+https://github.com/elviskahoro/reflex-starter-template
+https://github.com/elviskahoro/buridan-ui

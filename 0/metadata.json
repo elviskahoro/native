@@ -1,0 +1,49 @@
+{
+  "cli_version": "0.11.4",
+  "checkpoint_id": "01M5G4V12GX5YEVHM52ZHBJG66",
+  "session_id": "53a5163e-8fe9-4216-98a4-a5a23b4d1fd7",
+  "strategy": "manual-commit",
+  "created_at": "2026-10-21T21:10:58.237706Z",
+  "branch": "conductor/native-issue-63",
+  "checkpoints_count": 2,
+  "files_touched": [
+    "assets/docs/components/dialog.md"
+  ],
+  "agent": "Claude Code",
+  "model": "claude-sonnet-5-5",
+  "turn_id": "51fe56924540",
+  "checkpoint_transcript_start": 529,
+  "transcript_lines_at_start": 529,
+  "compact_transcript_start": 56,
+  "token_usage": {
+    "input_tokens": 8,
+    "cache_creation_tokens": 3675,
+    "cache_read_tokens": 306926,
+    "output_tokens": 1346,
+    "api_call_count": 4
+  },
+  "session_metrics": {
+    "turn_count": 4
+  },
+  "initial_attribution": {
+    "calculated_at": "2026-10-21T21:10:58.199203Z",
+    "agent_lines": 1,
+    "agent_removed": 0,
+    "human_added": 0,
+    "human_modified": 0,
+    "human_removed": 0,
+    "total_committed": 1,
+    "total_lines_changed": 1,
+    "agent_percentage": 100,
+    "metric_version": 2
+  },
+  "prompt_attributions": [
+    {
+      "checkpoint_number": 1,
+      "user_lines_added": 0,
+      "user_lines_removed": 0,
+      "agent_lines_added": 0,
+      "agent_lines_removed": 0
+    }
+  ]
+}
