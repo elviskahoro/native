@@ -1,0 +1,12 @@
+did we address entire's review finding?
+
+---
+
+let's go with entire's suggestion:
+Entire's own suggestion was # noqa: FBT003, but the repo's test_no_comments_in_components bans
+    comments, so I used a named constant.
+
+---
+
+tell me more about:
+FBT003 only flags boolean literals, so ruff passes under the project config.
