@@ -18,7 +18,7 @@ rx.el.div(class_name="bg-background text-foreground")
 
 # Tailwind V4
 
-We recommend using **Tailwind V4** in your Reflex application as it allows for better syntax use nad avoids duplicating codes. Using Tailwind V4 also allows us to bypass extending `rxconfig.py` with corresponding CSS tokens by utilizing `@theme inline` syntax.
+We recommend using **Tailwind V4** in your Reflex application as it allows for better syntax use and avoids duplicating codes. Using Tailwind V4 also allows us to bypass extending `rxconfig.py` with corresponding CSS tokens by utilizing `@theme inline` syntax.
 
 A basic Tailwind V4 setup in Reflex could look like the following:
 
