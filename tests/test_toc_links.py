@@ -315,5 +315,3 @@ def test_toc_links_integral_with_extract_toc_data() -> None:
     toc = extract_toc_data("# Async Handlers & Yielding\n\n## accordion.root\n")
     hrefs = _rendered_hrefs(_create_markdown_toc_links(toc))  # type: ignore[reportArgumentType]
     assert hrefs == ["#async-handlers-yielding", "#accordionroot"]
-
-
