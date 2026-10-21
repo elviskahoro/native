@@ -132,7 +132,7 @@ convention = "google"
 "native/lib/**" = ["A001", "A004", "FBT", "S311", "DTZ007"]
 # Build/maintenance scripts run directly (not imported as packages), not shipped runtime.
 # CLI entry points and build scripts print to the terminal by design.
-"cli/**" = ["T201"]
+"cli/**" = ["T201", "PLR0913"]
 "scripts/**" = [
   "T201",
   "C901",
