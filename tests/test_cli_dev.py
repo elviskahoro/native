@@ -13,7 +13,7 @@ if str(cli_dir) not in sys.path:
 @pytest.fixture
 def resolve_pages_func() -> Any:
     """Import and return resolve_pages function."""
-    from dev import resolve_pages as rp  # noqa: E402
+    from dev import resolve_pages as rp  # pyrefly: ignore[missing-import]
 
     return rp
 
