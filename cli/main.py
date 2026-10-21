@@ -45,6 +45,44 @@ def flatten_vars(obj: dict) -> dict:
     return out
 
 
+def _apply_color_theme(theme: dict[str, str], color_id: str, *, dark: bool) -> None:
+    """Apply color theme variables to theme dict, filtering out chart colors."""
+    color = next((c for c in COLOR_THEMES if c["id"] == color_id), None)
+    if color:
+        source = color["dark"] if dark else color["light"]
+        theme.update(
+            {
+                k: v
+                for k, v in flatten_vars(source).items()
+                if not k.startswith("--chart-")
+            },
+        )
+
+
+def _apply_chart_theme(theme: dict[str, str], chart_id: str, *, dark: bool) -> None:
+    """Apply chart color variables to theme dict."""
+    chart = next((c for c in COLOR_THEMES if c["id"] == chart_id), None)
+    if chart:
+        source = chart["dark"] if dark else chart["light"]
+        theme.update(
+            {k: v for k, v in flatten_vars(source).items() if k.startswith("--chart-")},
+        )
+
+
+def _apply_style_theme(theme: dict[str, str], style_id: str) -> None:
+    """Apply style registry variables to theme dict."""
+    style = next((s for s in STYLE_REGISTRY if s["id"] == style_id), None)
+    if style and isinstance(style["vars"], dict):
+        theme.update(style["vars"])
+
+
+def _apply_font_theme(theme: dict[str, str], font_id: str) -> None:
+    """Apply font registry variables to theme dict."""
+    font = next((f for f in FONT_REGISTRY if f["id"] == font_id), None)
+    if font and isinstance(font["vars"], dict):
+        theme.update(font["vars"])
+
+
 def rebuild_theme(config: dict) -> dict:
     base_id = config.get("baseId")
     color_id = config.get("colorId")
@@ -61,32 +99,14 @@ def rebuild_theme(config: dict) -> dict:
     theme = {**flatten_vars(base["dark"] if dark else base["light"])}
 
     if color_id:
-        color = next((c for c in COLOR_THEMES if c["id"] == color_id), None)
-        if color:
-            for k, v in flatten_vars(color["dark"] if dark else color["light"]).items():
-                if not k.startswith("--chart-"):
-                    theme[k] = v
-
+        _apply_color_theme(theme, color_id, dark=dark)
     if chart_id:
-        chart = next((c for c in COLOR_THEMES if c["id"] == chart_id), None)
-        if chart:
-            for k, v in flatten_vars(chart["dark"] if dark else chart["light"]).items():
-                if k.startswith("--chart-"):
-                    theme[k] = v
-
+        _apply_chart_theme(theme, chart_id, dark=dark)
     if style_id:
-        style = next((s for s in STYLE_REGISTRY if s["id"] == style_id), None)
-        if style:
-            theme.update(style["vars"])
-
+        _apply_style_theme(theme, style_id)
     if font_id:
-        font = next((f for f in FONT_REGISTRY if f["id"] == font_id), None)
-        if font:
-            theme.update(font["vars"])
+        _apply_font_theme(theme, font_id)
 
-    # radius is None when the decoded preset is inheriting the active
-    # style's own --radius (already applied via style["vars"] above) —
-    # only override it here if an explicit radius was actually chosen.
     if radius:
         theme["--radius"] = radius
 
@@ -384,6 +404,64 @@ def add_components_to_project(
     return True
 
 
+def _find_rx_config_node(tree: ast.AST) -> ast.Call | None:
+    """Find the rx.Config() or rx.config() call node in the AST."""
+    for node in ast.walk(tree):
+        if not isinstance(node, ast.Assign):
+            continue
+        call = node.value
+        if (
+            isinstance(call, ast.Call)
+            and isinstance(call.func, ast.Attribute)
+            and call.func.attr.lower() == "config"
+            and getattr(call.func.value, "id", "") == "rx"
+        ):
+            return call
+    return None
+
+
+def _inject_plugins_into_existing(
+    lines: list[str],
+    snippet: str,
+    call: ast.Call,
+) -> bool:
+    """Inject plugins into an rx.Config call that already has plugins kwarg."""
+    end = call.end_lineno if call.end_lineno is not None else call.lineno
+    for i in range(call.lineno - 1, end):
+        if "plugins=" in lines[i]:
+            lines[i] = lines[i].replace(
+                "plugins=[",
+                f"plugins=[\n{snippet},",
+            )
+            return True
+    return False
+
+
+def _inject_plugins_into_new(
+    lines: list[str],
+    snippet: str,
+    call: ast.Call,
+) -> bool:
+    """Add plugins kwarg to an rx.Config call that doesn't have one."""
+    end = call.end_lineno if call.end_lineno is not None else call.lineno
+    for i in range(call.lineno - 1, end):
+        if "Config(" in lines[i] or "config(" in lines[i]:
+            indent = " " * (len(lines[i]) - len(lines[i].lstrip()))
+            lines[i] = lines[i].replace(
+                "(",
+                f"(\n{indent}    plugins=[\n{snippet}\n{indent}    ],",
+            )
+            return True
+    return False
+
+
+def _cleanup_duplicate_plugins(content: str) -> str:
+    """Remove duplicate TailwindV4Plugin references after injection."""
+    content = content.replace("rx.plugins.TailwindV4Plugin(),", "")
+    content = content.replace("rx.plugins.TailwindV4Plugin()", "")
+    return content.replace(",,", ",")
+
+
 def patch_rxconfig(config_path: Path) -> None:
     """Inject TailwindV4 plugin into rxconfig.py if not already present."""
     content = config_path.read_text()
@@ -398,46 +476,17 @@ def patch_rxconfig(config_path: Path) -> None:
         lines = content.splitlines()
         modified = False
 
-        for node in ast.walk(tree):
-            if not isinstance(node, ast.Assign):
-                continue
-            call = node.value
-            if not (
-                isinstance(call, ast.Call)
-                and isinstance(call.func, ast.Attribute)
-                and call.func.attr.lower() == "config"
-                and getattr(call.func.value, "id", "") == "rx"
-            ):
-                continue
-
+        call = _find_rx_config_node(tree)
+        if call:
             plugins_kw = next((kw for kw in call.keywords if kw.arg == "plugins"), None)
-
             if plugins_kw:
-                for i in range(call.lineno - 1, call.end_lineno):
-                    if "plugins=" in lines[i]:
-                        lines[i] = lines[i].replace(
-                            "plugins=[",
-                            f"plugins=[\n{snippet},",
-                        )
-                        modified = True
-                        break
+                modified = _inject_plugins_into_existing(lines, snippet, call)
             else:
-                for i in range(call.lineno - 1, call.end_lineno):
-                    if "Config(" in lines[i] or "config(" in lines[i]:
-                        indent = " " * (len(lines[i]) - len(lines[i].lstrip()))
-                        lines[i] = lines[i].replace(
-                            "(",
-                            f"(\n{indent}    plugins=[\n{snippet}\n{indent}    ],",
-                        )
-                        modified = True
-                        break
+                modified = _inject_plugins_into_new(lines, snippet, call)
 
             if modified:
                 content = "\n".join(lines)
-                content = content.replace("rx.plugins.TailwindV4Plugin(),", "")
-                content = content.replace("rx.plugins.TailwindV4Plugin()", "")
-                content = content.replace(",,", ",")
-                break
+                content = _cleanup_duplicate_plugins(content)
 
         if not modified:
             if "rx.Config(" in content:
@@ -518,6 +567,65 @@ def cmd_init() -> None:
     print("     buridan add button")
 
 
+def _find_theme_block_end(lines: list[str], start_line: int) -> int:
+    """Find the end line of a CSS block starting at start_line (handles brace tracking)."""
+    brace_depth = 0
+    in_block = False
+    for i, line in enumerate(lines[start_line:], start_line):
+        brace_depth += line.count("{") - line.count("}")
+        if brace_depth > 0:
+            in_block = True
+        if in_block and brace_depth == 0:
+            return i
+    return start_line
+
+
+def _find_dark_theme_end(lines: list[str], start_after_line: int) -> int:
+    """Find the end of .dark { } block starting search after start_after_line."""
+    rest = lines[start_after_line + 1 :]
+    for j, ln in enumerate(rest):
+        if ln.strip().startswith(".dark {"):
+            bd = 0
+            for k, dl in enumerate(
+                lines[start_after_line + 1 + j :],
+                start_after_line + 1 + j,
+            ):
+                bd += dl.count("{") - dl.count("}")
+                if bd == 0 and k > start_after_line + 1 + j:
+                    return k
+            break
+    return start_after_line
+
+
+def _replace_theme_blocks(css_path: Path, theme_css: str) -> None:
+    """Replace :root and .dark theme blocks in globals.css, preserving other content."""
+    if not css_path.exists():
+        css_path.write_text(theme_css)
+        return
+
+    current = css_path.read_text()
+    if ":root {" not in current:
+        css_path.write_text(theme_css + "\n\n" + current)
+        return
+
+    lines = current.splitlines()
+    start_line = next(
+        (i for i, ln in enumerate(lines) if ln.strip().startswith(":root {")),
+        None,
+    )
+
+    if start_line is None:
+        css_path.write_text(theme_css + "\n\n" + current)
+        return
+
+    end_line = _find_theme_block_end(lines, start_line)
+    end_line = _find_dark_theme_end(lines, end_line)
+
+    after = "\n".join(lines[end_line + 1 :]).lstrip("\n")
+    new_css = theme_css + ("\n\n" + after if after else "")
+    css_path.write_text(new_css)
+
+
 def cmd_apply(preset: str) -> None:
     root = Path.cwd()
 
@@ -545,50 +653,7 @@ def cmd_apply(preset: str) -> None:
     css_path = assets_dir / "globals.css"
 
     theme_css = generate_theme_css(preset)
-    theme_marker = ":root {"
-
-    if css_path.exists():
-        current = css_path.read_text()
-        if theme_marker in current:
-            lines = current.splitlines()
-            start_line = next(
-                (i for i, ln in enumerate(lines) if ln.strip().startswith(":root {")),
-                None,
-            )
-            if start_line is not None:
-                brace_depth = 0
-                end_line = start_line
-                in_block = False
-                for i, line in enumerate(lines[start_line:], start_line):
-                    brace_depth += line.count("{") - line.count("}")
-                    if brace_depth > 0:
-                        in_block = True
-                    if in_block and brace_depth == 0:
-                        end_line = i
-                        rest = lines[end_line + 1 :]
-                        for j, ln in enumerate(rest):
-                            if ln.strip().startswith(".dark {"):
-                                bd = 0
-                                for k, dl in enumerate(
-                                    lines[end_line + 1 + j :],
-                                    end_line + 1 + j,
-                                ):
-                                    bd += dl.count("{") - dl.count("}")
-                                    if bd == 0 and k > end_line + 1 + j:
-                                        end_line = k
-                                        break
-                                break
-                        break
-
-                after = "\n".join(lines[end_line + 1 :]).lstrip("\n")
-                new_css = theme_css + ("\n\n" + after if after else "")
-                css_path.write_text(new_css)
-            else:
-                css_path.write_text(theme_css + "\n\n" + current)
-        else:
-            css_path.write_text(theme_css + "\n\n" + current)
-    else:
-        css_path.write_text(theme_css)
+    _replace_theme_blocks(css_path, theme_css)
 
     print(f"✓ Applied preset '{preset}' to globals.css")
 
