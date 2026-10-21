@@ -286,7 +286,7 @@ def load_manifest(target_root: Path) -> dict:
                 print(
                     "Warning: components.json content was not a JSON object; recreating it.",
                 )
-        except Exception:
+        except (json.JSONDecodeError, OSError):
             print("Warning: components.json was unreadable; recreating it.")
 
     manifest.setdefault("components", {})
@@ -513,7 +513,7 @@ def patch_rxconfig(config_path: Path) -> None:
                 "Warning: Could not automatically update rxconfig.py. Please configure manually.",
             )
 
-    except Exception as e:
+    except (SyntaxError, OSError) as e:
         print(f"Warning: Could not parse rxconfig.py ({e}). Please configure manually.")
 
 
