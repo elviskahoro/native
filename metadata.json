@@ -1,0 +1,26 @@
+{
+  "cli_version": "0.11.4",
+  "checkpoint_id": "01M5G42CKGZZ35CR56RY4B4W8P",
+  "strategy": "manual-commit",
+  "branch": "conductor/native-issue-63",
+  "checkpoints_count": 1,
+  "files_touched": [
+    "tests/test_toc_links.py"
+  ],
+  "sessions": [
+    {
+      "metadata": "/0/metadata.json",
+      "transcript": "/0/full.jsonl",
+      "compact_transcript": "/0/transcript.jsonl",
+      "content_hash": "/0/content_hash.txt",
+      "prompt": ""
+    }
+  ],
+  "token_usage": {
+    "input_tokens": 16,
+    "cache_creation_tokens": 3655,
+    "cache_read_tokens": 480927,
+    "output_tokens": 1485,
+    "api_call_count": 8
+  }
+}
