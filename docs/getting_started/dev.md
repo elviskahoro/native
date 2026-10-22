@@ -133,6 +133,4 @@ When no arguments are passed, page selection happens through a single fuzzy-sear
 - Press `Tab` to select multiple entries
 - Press `Enter` to confirm your selection
 
-Each section also has a virtual **"(entire section)"** entry at the top of its group, letting you pull in every page in that section with one selection instead of picking them individually. You can mix and match — for example, select an entire section plus a couple of individual pages from other sections in the same pass.
-
 If no pages are selected, the CLI exits without launching Reflex. When pages are selected interactively, you'll be asked to confirm before Reflex starts; this confirmation step is skipped when pages are passed directly as command-line arguments.
