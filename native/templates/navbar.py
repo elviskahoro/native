@@ -7,7 +7,7 @@ from reflex_components_core.el import Div, Header, a, div, header, p
 from components.core.hugeicon import hi
 from components.ui.button import button, button_variants
 from components.ui.menu import menu
-from native.registry import routes
+from native import config
 from native.templates.github import github
 from native.templates.theme import theme_toggle_button
 
@@ -30,11 +30,11 @@ class SidebarSection:
 
 MENU_SECTIONS = [
     SidebarSection(title="Pages", routes=NAV_LIST),
-    SidebarSection(title="Getting Started", routes=routes.GET_STARTED_URLS),
-    SidebarSection(title="Utilities", routes=routes.UTILITIES),
-    SidebarSection(title="Resources", routes=routes.RESOURCES_URLS),
-    SidebarSection(title="Charts", routes=routes.CHARTS_URLS),
-    SidebarSection(title="Components", routes=routes.BASE_UI_COMPONENTS),
+    SidebarSection(title="Getting Started", routes=config.GET_STARTED_URLS),
+    SidebarSection(title="Utilities", routes=config.UTILITIES),
+    SidebarSection(title="Resources", routes=config.RESOURCES_URLS),
+    SidebarSection(title="Charts", routes=config.CHARTS_URLS),
+    SidebarSection(title="Components", routes=config.BASE_UI_COMPONENTS),
 ]
 
 

@@ -143,13 +143,6 @@ def table_of_content(url: str, toc_data: list[dict]) -> rx.Component:
                     _create_external_tool_links(url),
                     class_name="w-full flex flex-col",
                 ),
-                # rx.el.div(
-                #     rx.el.p(
-                #         "Package Manager",
-                #         class_name="text-xs text-muted-foreground font-medium pb-2",
-                #     ),
-                #     class_name="w-full flex flex-col",
-                # ),
                 rx.el.div(
                     rx.el.p(
                         "On This Page",
