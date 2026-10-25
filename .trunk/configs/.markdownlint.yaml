@@ -9,3 +9,11 @@ line_length: false
 spaces: false
 url: false
 whitespace: false
+# Long component guides intentionally use multiple top-level sections, and
+# generated prop tables use readable padded columns instead of MD060's strict
+# pipe alignment.
+MD025: false
+MD060: false
+MD041: false
+MD024:
+  siblings_only: true

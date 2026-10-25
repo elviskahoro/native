@@ -813,7 +813,7 @@ A full-card overlay that activates the attachment. Renders a `rx.el.button` by d
 | Prop         | Type                  | Default | Description                                                                   |
 | ------------ | --------------------- | ------- | ----------------------------------------------------------------------------- |
 | `link`       | `bool`         | `False`  | If set, renders an anchor (`rx.el.a`) instead of a button.                        |
-| `aria_label` | `str | None`         | `None`  | Accessibility label for screen readers. Required when no visible text exists. |
+| `aria_label` | `str \| None`        | `None`  | Accessibility label for screen readers. Required when no visible text exists. |
 | `class_name` | `str`                 | `""`    | Additional CSS classes applied to the trigger.                                |
 
 
