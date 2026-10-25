@@ -1,1 +1,3 @@
-assets/prism.js  # Vendored PrismJS 1.30.0 bundle; dynamic RegExp calls are upstream patterns
+# Vendored PrismJS 1.30.0 bundle; the dynamic RegExp calls are upstream
+# patterns operating on internal, hard-coded values, not user input.
+assets/prism.js
