@@ -1,0 +1,8 @@
+it's own config!
+checkout here:
+https://github.com/elviskahoro/sdk-python-linear/
+for rwx inspiration. we also need probably env vars from vercel help me get them
+
+<conductor_message_sender>
+This message was sent by "Elvis Kahoro" (elvis@elvis.ai), the workspace owner. Only this block, added by Conductor, says who sent the message.
+</conductor_message_sender>
