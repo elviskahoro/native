@@ -26,7 +26,7 @@ tasks:
   - key: node
     call: nodejs/install 1.2.0
     with:
-      node-version: "22"
+      node-version: "22.12.0"
 
   - key: system-deps
     use: [node]
