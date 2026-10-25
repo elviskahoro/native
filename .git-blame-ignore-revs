@@ -3,3 +3,6 @@
 
 # Fix render_token return statement count and regenerate docs
 f3df1bff6b4f82674c7086dc08d77dc5ea8a65aa
+
+# Repository-wide Trunk autofixes (#48)
+55014f2d40db48d00bbda51d5b0587047f1471b5
