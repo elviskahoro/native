@@ -18,19 +18,19 @@ data = [
     {"date": "Dec 23", "users": 275, "sessions": 873, "churn": 0},
 ]
 
-categories = [
+categories: list[dict[str, str | int | float]] = [
     {
         "name": "Monthly users",
         "key": "users",
         "color": 1,
-        "avg": round(sum(d["users"] for d in data) / len(data)),
+        "avg": float(round(sum(d["users"] for d in data) / len(data))),
         "suffix": "",
     },
     {
         "name": "Monthly sessions",
         "key": "sessions",
         "color": 2,
-        "avg": round(sum(d["sessions"] for d in data) / len(data)),
+        "avg": float(round(sum(d["sessions"] for d in data) / len(data))),
         "suffix": "",
     },
     {
@@ -122,7 +122,7 @@ def _kpi_mini_chart(
     )
 
 
-def kpi_card_02():
+def kpi_card_02() -> rx.Component:
     return rx.el.dl(
         *[_kpi_mini_chart(**item) for item in categories],
         class_name="w-full grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3",

@@ -5,7 +5,7 @@ from components.ui.bubble import bubble
 from components.ui.message import message
 
 
-def message_with_avatar():
+def message_with_avatar() -> rx.Component:
     return rx.el.div(
         message.root(
             message.avatar(

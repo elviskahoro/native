@@ -12,7 +12,7 @@ data = [
 ]
 
 
-def area_chart_stacked():
+def area_chart_stacked() -> rx.Component:
     return rx.el.div(
         rx.el.div(
             rx.el.h3(

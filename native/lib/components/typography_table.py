@@ -1,7 +1,7 @@
 import reflex as rx
 
 
-def table_list():
+def table_list() -> rx.Component:
     return rx.el.div(
         rx.el.table(
             rx.el.thead(

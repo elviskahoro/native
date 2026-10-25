@@ -40,8 +40,9 @@ def get_code_section(
     title: str,
     description: str,
     component: rx.Component,
+    *,
     has_copy: bool = False,
-):
+) -> rx.Component:
 
     if has_copy:
         copy_id = "css-theme-copy"
@@ -78,7 +79,7 @@ def get_code_section(
     )
 
 
-def get_code():
+def get_code() -> rx.Component:
     return rx.el.div(
         get_code_section(
             title="1. Theme Tokens",

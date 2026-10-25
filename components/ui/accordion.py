@@ -1,3 +1,5 @@
+from typing import Any
+
 import reflex as rx
 from reflex.components.component import ComponentNamespace
 
@@ -33,7 +35,7 @@ class ClassNames:
 
 class NativeAccordionRoot(CoreComponent):
     @classmethod
-    def create(cls, *children, **props) -> rx.Component:
+    def create(cls, *children: Any, **props: Any) -> rx.Component:
         data_slot = props.pop("data_slot", "accordion")
         props["data-slot"] = data_slot
         cls.set_class_name(ClassNames.ROOT, props)
@@ -42,7 +44,7 @@ class NativeAccordionRoot(CoreComponent):
 
 class NativeAccordionItem(CoreComponent):
     @classmethod
-    def create(cls, *children, **props) -> rx.Component:
+    def create(cls, *children: Any, **props: Any) -> rx.Component:
         data_slot = props.pop("data_slot", "accordion-item")
         props["data-slot"] = data_slot
         name = props.pop("name", None)
@@ -56,7 +58,7 @@ class NativeAccordionItem(CoreComponent):
 
 class NativeAccordionTrigger(CoreComponent):
     @classmethod
-    def create(cls, *children, **props) -> rx.Component:
+    def create(cls, *children: Any, **props: Any) -> rx.Component:
         data_slot = props.pop("data_slot", "accordion-trigger")
         props["data-slot"] = data_slot
         cls.set_class_name(ClassNames.TRIGGER, props)
@@ -74,7 +76,7 @@ class NativeAccordionTrigger(CoreComponent):
 
 class NativeAccordionPanel(CoreComponent):
     @classmethod
-    def create(cls, *children, **props) -> rx.Component:
+    def create(cls, *children: Any, **props: Any) -> rx.Component:
         data_slot = props.pop("data_slot", "accordion-panel")
         props["data-slot"] = data_slot
         inner_class = props.pop("class_name", "")

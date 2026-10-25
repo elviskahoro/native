@@ -3,7 +3,7 @@ import reflex as rx
 from components.ui.marker import marker
 
 
-def marker_variants_demo():
+def marker_variants_demo() -> rx.Component:
     return rx.el.div(
         marker.root(
             marker.content("A default marker for inline notes."),

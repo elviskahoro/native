@@ -3,7 +3,7 @@ import reflex as rx
 from components.ui.input import input
 
 
-def input_email():
+def input_email() -> rx.Component:
     return rx.el.div(
         rx.el.p("Email Input", class_name="text-sm font-medium mb-2"),
         input(

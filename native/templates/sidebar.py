@@ -3,7 +3,7 @@ from dataclasses import dataclass
 import reflex as rx
 
 from components.ui.button import button
-from native.registry import routes
+from native import config
 
 HIGHLIGHT_SCRIPT = """
     const currentPath = window.location.pathname.substring(1);
@@ -37,15 +37,15 @@ class SidebarSection:
 
 
 SIDEBAR_SECTIONS = [
-    SidebarSection(title="Getting Started", routes=routes.GET_STARTED_URLS),
-    SidebarSection(title="Resources", routes=routes.RESOURCES_URLS),
-    SidebarSection(title="Components", routes=routes.BASE_UI_COMPONENTS),
-    SidebarSection(title="Charts", routes=routes.CHARTS_URLS),
-    SidebarSection(title="Utilities", routes=routes.UTILITIES),
+    SidebarSection(title="Getting Started", routes=config.GET_STARTED_URLS),
+    SidebarSection(title="Resources", routes=config.RESOURCES_URLS),
+    SidebarSection(title="Components", routes=config.BASE_UI_COMPONENTS),
+    SidebarSection(title="Charts", routes=config.CHARTS_URLS),
+    SidebarSection(title="Utilities", routes=config.UTILITIES),
 ]
 
 
-def create_menu_item(data: dict):
+def create_menu_item(data: dict) -> rx.Component:
     """Create a single menu item."""
     if data["title"].startswith("pypi"):
         link = rx.el.a(
@@ -82,7 +82,7 @@ def create_menu_item(data: dict):
     )
 
 
-def create_sidebar_menu_items(routes: list[dict]):
+def create_sidebar_menu_items(routes: list[dict]) -> rx.Component:
     """Create menu items from routes."""
     return rx.el.div(
         *[create_menu_item(route) for route in routes],
@@ -90,7 +90,7 @@ def create_sidebar_menu_items(routes: list[dict]):
     )
 
 
-def create_section_content(section: SidebarSection):
+def create_section_content(section: SidebarSection) -> rx.Component:
     """Create content for a sidebar section."""
     return rx.el.div(
         rx.el.div(
@@ -101,7 +101,7 @@ def create_section_content(section: SidebarSection):
     )
 
 
-def sidebar_section(section: SidebarSection):
+def sidebar_section(section: SidebarSection) -> rx.Component:
     """Create a complete sidebar section with title and content."""
     return rx.el.div(
         rx.el.div(
@@ -119,7 +119,7 @@ def sidebar_section(section: SidebarSection):
     )
 
 
-def sidebar():
+def sidebar() -> rx.Component:
     """Main sidebar component."""
     content = rx.el.div(
         rx.el.div(class_name="py-5"),

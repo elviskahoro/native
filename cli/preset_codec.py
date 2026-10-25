@@ -22,6 +22,7 @@ uses the current version; only decoding needs to understand the old one.
 
 BASE62_ALPHABET = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz"
 DEFAULT_PRESET_CODE = "b0"
+PRESET_VERSION_1 = 1
 PRESET_VERSION = 2
 
 BITS_V1 = {"font": 5, "color": 5, "base": 4, "radius": 4, "style": 4}
@@ -60,6 +61,7 @@ def _mask(width: int) -> int:
 
 def decode_seed(
     seed: str,
+    *,
     base_themes: list[dict],
     color_themes: list[dict],
     style_registry: list[dict],
@@ -84,10 +86,10 @@ def decode_seed(
 
     version = (packed >> 28) & 0xF
 
-    if version == 1:
+    if version == PRESET_VERSION_1:
         shift, bits = SHIFT_V1, BITS_V1
         chart_idx = 0  # v1 codes predate the chart dimension — always inherit
-    elif version == 2:
+    elif version == PRESET_VERSION:
         shift, bits = SHIFT_V2, BITS_V2
         chart_idx = (packed >> shift["chart"]) & _mask(bits["chart"])
     else:

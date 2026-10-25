@@ -11,7 +11,7 @@ data = [
 ]
 
 
-def bar_chart_multiple_tracks():
+def bar_chart_multiple_tracks() -> rx.Component:
     return rx.el.div(
         rx.el.div(
             rx.el.h3(

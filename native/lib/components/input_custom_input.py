@@ -3,7 +3,7 @@ import reflex as rx
 from components.ui.input import input
 
 
-def input_custom_input():
+def input_custom_input() -> rx.Component:
     return rx.el.div(
         rx.el.p("Custom Width", class_name="text-sm font-medium mb-2"),
         input(

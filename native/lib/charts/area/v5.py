@@ -20,7 +20,7 @@ data = [
 SelectedRange = ClientStateVar.create("area_selected", data)
 
 
-def gradient(id_: str, color: str):
+def gradient(id_: str, color: str) -> rx.Component:
     return rx.el.svg.linear_gradient(
         rx.el.svg.stop(
             stop_color=f"var(--{color})",
@@ -40,7 +40,7 @@ def gradient(id_: str, color: str):
     )
 
 
-def area(data_key: str, color: str):
+def area(data_key: str, color: str) -> rx.Component:
     return rx.recharts.area(
         data_key=data_key,
         fill=f"url(#{data_key})",
@@ -52,7 +52,7 @@ def area(data_key: str, color: str):
     )
 
 
-def area_chart_dynamic():
+def area_chart_dynamic() -> rx.Component:
     select_options = [
         ("Last 3 Months", data),
         ("Last 30 Days", data[-30:]),

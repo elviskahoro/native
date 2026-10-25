@@ -17,7 +17,7 @@ No installation is used for typographies. This page is an example of how you can
 ## h1
 
 ```python
-def header_1():
+def header_1() -> rx.Component:
     return rx.el.h1(
         "All we have to decide is what to do with the time that is given us.",
         class_name="scroll-m-20 text-center text-4xl font-extrabold tracking-tight text-balance",
@@ -27,7 +27,7 @@ def header_1():
 ## h2
 
 ```python
-def header_2():
+def header_2() -> rx.Component:
     return rx.el.h2(
         "Not all those who wander are lost.",
         class_name="scroll-m-20 border-b pb-2 text-3xl font-semibold tracking-tight first:mt-0",
@@ -37,7 +37,7 @@ def header_2():
 ## h3
 
 ```python
-def header_3():
+def header_3() -> rx.Component:
     return rx.el.h3(
         "The Grey Havens lie beyond the reach of mortal sight.",
         class_name="scroll-m-20 text-2xl font-semibold tracking-tight",
@@ -47,7 +47,7 @@ def header_3():
 ## h4
 
 ```python
-def header_4():
+def header_4() -> rx.Component:
     return rx.el.h4(
         "Far over the misty mountains cold.",
         class_name="scroll-m-20 text-xl font-semibold tracking-tight",
@@ -57,7 +57,7 @@ def header_4():
 ## p
 
 ```python
-def paragraph():
+def paragraph() -> rx.Component:
     return rx.el.p(
         "I have seen many an oak grow from acorn to ruinous age.",
         class_name="leading-7 [&:not(:first-child)]:mt-6",
@@ -67,7 +67,7 @@ def paragraph():
 ## blockquote
 
 ```python
-def blockquote():
+def blockquote() -> rx.Component:
     return rx.el.blockquote(
         """
         "Five hundred times have the red leaves fallen in Mirkwood in my home since then," said Legolas, "and but a little while does that seem to us."
@@ -79,7 +79,7 @@ def blockquote():
 ## table
 
 ```python
-def table_list():
+def table_list() -> rx.Component:
     return rx.el.div(
         rx.el.table(
             rx.el.thead(
@@ -139,7 +139,7 @@ def table_list():
 ## list
 
 ```python
-def list():
+def list() -> rx.Component:
     return rx.el.ul(
         rx.el.li("Not all those who wander are lost."),
         rx.el.li("Even darkness must pass."),
@@ -151,7 +151,7 @@ def list():
 ## Inline code
 
 ```python
-def inline_code():
+def inline_code() -> rx.Component:
     return rx.el.code(
         "@buridan-ui/ui/accordion",
         class_name="relative rounded bg-muted px-[0.3rem] py-[0.2rem] font-mono text-sm font-medium",

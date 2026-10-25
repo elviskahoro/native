@@ -10,7 +10,7 @@ data = [
 ]
 
 
-def chart_example_with_x_axis():
+def chart_example_with_x_axis() -> rx.Component:
 
     return rx.recharts.bar_chart(
         rx.recharts.cartesian_grid(

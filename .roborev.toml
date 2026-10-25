@@ -1,0 +1,3 @@
+# Review with the pi agent via Fireworks (needs FIREWORKS_API_KEY in the env).
+agent = "pi"
+model = "fireworks/accounts/fireworks/models/glm-5p3-flash"

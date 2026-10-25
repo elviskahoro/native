@@ -3,7 +3,7 @@ import reflex as rx
 from components.ui.marker import marker
 
 
-def marker_separator():
+def marker_separator() -> rx.Component:
     return rx.el.div(
         marker.root(
             marker.content("Today"),

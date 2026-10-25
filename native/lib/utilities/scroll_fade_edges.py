@@ -21,7 +21,7 @@ tags = [
 ]
 
 
-def scroll_fade_edge_items():
+def scroll_fade_edge_items() -> rx.Component:
     return rx.el.div(
         *[
             rx.el.div(
@@ -34,7 +34,7 @@ def scroll_fade_edge_items():
     )
 
 
-def scroll_fade_edge_tags():
+def scroll_fade_edge_tags() -> rx.Component:
     return rx.el.div(
         *[
             rx.el.div(
@@ -47,7 +47,7 @@ def scroll_fade_edge_tags():
     )
 
 
-def scroll_fade_edge():
+def scroll_fade_edge() -> rx.Component:
     return rx.el.div(
         rx.el.div(
             rx.el.div(

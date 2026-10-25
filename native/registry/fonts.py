@@ -1,4 +1,6 @@
-FONT_REGISTRY = [
+from typing import Any
+
+FONT_REGISTRY: list[dict[str, Any]] = [
     # ---------------------------------------------------------------------------
     # SANS-SERIF FONTS (Ideal for Clean UI, Dashboards, and SaaS apps)
     # ---------------------------------------------------------------------------

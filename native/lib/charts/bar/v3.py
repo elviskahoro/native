@@ -12,7 +12,7 @@ data = [
 ]
 
 
-def bar_chart_with_legend():
+def bar_chart_with_legend() -> rx.Component:
     return rx.el.div(
         rx.el.div(
             rx.el.h3(

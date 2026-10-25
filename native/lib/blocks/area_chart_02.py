@@ -90,7 +90,7 @@ def _chart(show_y_axis: bool, start_end_only: bool = False) -> rx.Component:
     )
 
 
-def area_chart_02():
+def area_chart_02() -> rx.Component:
     return rx.el.div(
         rx.el.div(
             rx.el.h3(

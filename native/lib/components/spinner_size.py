@@ -3,7 +3,7 @@ import reflex as rx
 from components.ui.spinner import spinner
 
 
-def spinner_size():
+def spinner_size() -> rx.Component:
     return rx.el.div(
         spinner(class_name="size-3"),
         spinner(class_name="size-4"),

@@ -1,3 +1,5 @@
+from typing import Any
+
 import reflex as rx
 from reflex.components.component import ComponentNamespace
 
@@ -25,7 +27,7 @@ class ClassNames:
 
     ITEM_INDICATOR_DOT = "size-2 rounded-full bg-primary"
 
-    _KNOWN_INPUT_PROPS = (
+    KNOWN_INPUT_PROPS = (
         "checked",
         "default_checked",
         "disabled",
@@ -36,7 +38,12 @@ class ClassNames:
 
 class RadioGroupRoot(CoreComponent):
     @classmethod
-    def create(cls, *children, disabled: bool = False, **props) -> rx.Component:
+    def create(
+        cls,
+        *children: Any,
+        disabled: bool = False,
+        **props: Any,
+    ) -> rx.Component:
         custom_classes = props.pop("class_name", "")
         props["data-slot"] = "radio-group"
         props["role"] = "radiogroup"
@@ -48,12 +55,18 @@ class RadioGroupRoot(CoreComponent):
 
 class RadioGroupItem(CoreComponent):
     @classmethod
-    def create(cls, *children, name: str, value: str, **props) -> rx.Component:
+    def create(
+        cls,
+        *children: Any,
+        name: str,
+        value: str,
+        **props: Any,
+    ) -> rx.Component:
         custom_classes = props.pop("class_name", "")
 
         input_props = {"name": name, "value": value}
         for key in list(props.keys()):
-            if key in ClassNames._KNOWN_INPUT_PROPS or key.startswith(
+            if key in ClassNames.KNOWN_INPUT_PROPS or key.startswith(
                 ("on_", "data-", "aria-"),
             ):
                 input_props[key] = props.pop(key)
@@ -73,7 +86,7 @@ class RadioGroupItem(CoreComponent):
 
 class RadioGroupIndicator(CoreComponent):
     @classmethod
-    def create(cls, *children, **props) -> rx.Component:
+    def create(cls, *children: Any, **props: Any) -> rx.Component:
         if len(children) == 0:
             children = (rx.el.span(class_name=ClassNames.ITEM_INDICATOR_DOT),)
         props["data-slot"] = "radio-group-item-indicator"

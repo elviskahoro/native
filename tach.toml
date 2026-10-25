@@ -1,8 +1,12 @@
-# Tach module boundary enforcement for the repository's Python packages.
-# Application code may live in these modules; imports between them follow the
-# dependency direction below.
+# Tach module boundary enforcement -- seeded empty.
+# Strict module boundaries (root_module forbid, exact edges), adapted from the
+# gtm-sdk reference setup. Edges were seeded with `tach sync`.
 source_roots = ["."]
+# Circular dependency was broken up in 9cd4e86 (native/templates/routes.py).
+# Enforce to prevent future circular imports.
+forbid_circular_dependencies = true
 root_module = "forbid"
+exact = true
 exclude = [
   "tests/**",
   "docs/**",
@@ -17,16 +21,58 @@ exclude = [
 ]
 
 [[modules]]
-path = "components"
+path = "cli"
+depends_on = ["components", "native.registry", "native.registry.components"]
 
 [[modules]]
-path = "native"
+path = "components"
+depends_on = []
+
+[[modules]]
+path = "native.lib"
+depends_on = ["components", "native.templates"]
+
+[[modules]]
+path = "native.registry"
 depends_on = ["components"]
 
 [[modules]]
-path = "cli"
-depends_on = ["native", "components"]
+path = "native.registry.components"
+depends_on = []
+
+[[modules]]
+path = "native.core"
+depends_on = []
+
+[[modules]]
+path = "native.config"
+depends_on = ["native.core"]
+
+[[modules]]
+path = "native.engine"
+depends_on = ["native.templates", "native.registry.components", "native.core"]
+
+[[modules]]
+path = "native.hooks"
+depends_on = []
+
+[[modules]]
+path = "native.pages"
+depends_on = ["native.templates", "components", "native.registry", "native.lib"]
+
+[[modules]]
+path = "native.templates"
+depends_on = ["components", "native.config"]
+
+[[modules]]
+path = "native"
+depends_on = [
+  "native.hooks",
+  "native.engine",
+  "native.templates",
+  "native.pages",
+]
 
 [[modules]]
 path = "scripts"
-depends_on = ["native"]
+depends_on = ["native.registry.components", "native.config"]

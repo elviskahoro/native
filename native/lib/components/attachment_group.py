@@ -16,17 +16,19 @@ items = [
 ]
 
 
-def attachment_group_demo():
+def attachment_group_demo() -> rx.Component:
     return rx.el.div(
         attachment.group(
             [
                 attachment.root(
-                    attachment.media(
-                        rx.el.img(src=item["src"], alt=item["name"]),
-                        variant="image",
-                    )
-                    if item["type"] == "image"
-                    else attachment.media(hi("File02Icon")),
+                    (
+                        attachment.media(
+                            rx.el.img(src=item["src"], alt=item["name"]),
+                            variant="image",
+                        )
+                        if item["type"] == "image"
+                        else attachment.media(hi("File02Icon"))
+                    ),
                     attachment.content(
                         attachment.title(item["name"]),
                         attachment.description(item["meta"]),

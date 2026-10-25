@@ -1,6 +1,7 @@
 import ast
 import importlib
 from pathlib import Path
+from typing import Any
 
 DASHBOARDS_DIR = Path("native/lib/dashboards")
 
@@ -8,6 +9,7 @@ DEPENDENCY_BUCKETS = {
     "components.ui.": "components",
     "components.core.": "components",
     "native.lib.blocks.": "blocks",
+    "native.lib.charts.": "components",
 }
 
 
@@ -44,7 +46,7 @@ def list_dashboard_ids() -> list[str]:
     return sorted(p.stem for p in DASHBOARDS_DIR.glob("dashboard_*.py"))
 
 
-def load_dashboard_example(dashboard_id: str) -> dict:
+def load_dashboard_example(dashboard_id: str) -> dict[str, Any]:
     """dashboard_id="dashboard_01" -> reads
     native/lib/dashboards/dashboard_01.py, imports it, and grabs the
     top-level dashboard_01() function (same-name convention you're using).

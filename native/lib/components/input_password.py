@@ -3,7 +3,7 @@ import reflex as rx
 from components.ui.input import input
 
 
-def input_password():
+def input_password() -> rx.Component:
     return rx.el.div(
         rx.el.p("Password Input", class_name="text-sm font-medium mb-2"),
         input(

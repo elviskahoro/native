@@ -1,4 +1,4 @@
-from typing import Literal
+from typing import Any, Literal
 
 import reflex as rx
 from reflex.components.component import ComponentNamespace
@@ -43,7 +43,7 @@ class ClassNames:
 
 class NativeMessageGroup(CoreComponent):
     @classmethod
-    def create(cls, *children, **props) -> rx.Component:
+    def create(cls, *children: Any, **props: Any) -> rx.Component:
         props["data-slot"] = "message-group"
         cls.set_class_name(ClassNames.GROUP, props)
         return rx.el.div(*children, **props)
@@ -51,7 +51,7 @@ class NativeMessageGroup(CoreComponent):
 
 class NativeMessageRoot(CoreComponent):
     @classmethod
-    def create(cls, *children, **props) -> rx.Component:
+    def create(cls, *children: Any, **props: Any) -> rx.Component:
         align = props.pop("align", "start")
         props["data-slot"] = "message"
         props["data-align"] = align
@@ -61,7 +61,7 @@ class NativeMessageRoot(CoreComponent):
 
 class NativeMessageAvatar(CoreComponent):
     @classmethod
-    def create(cls, *children, **props) -> rx.Component:
+    def create(cls, *children: Any, **props: Any) -> rx.Component:
         props["data-slot"] = "message-avatar"
         cls.set_class_name(ClassNames.AVATAR, props)
         return rx.el.div(*children, **props)
@@ -69,7 +69,7 @@ class NativeMessageAvatar(CoreComponent):
 
 class NativeMessageContent(CoreComponent):
     @classmethod
-    def create(cls, *children, **props) -> rx.Component:
+    def create(cls, *children: Any, **props: Any) -> rx.Component:
         props["data-slot"] = "message-content"
         cls.set_class_name(ClassNames.CONTENT, props)
         return rx.el.div(*children, **props)
@@ -77,7 +77,7 @@ class NativeMessageContent(CoreComponent):
 
 class NativeMessageHeader(CoreComponent):
     @classmethod
-    def create(cls, *children, **props) -> rx.Component:
+    def create(cls, *children: Any, **props: Any) -> rx.Component:
         props["data-slot"] = "message-header"
         cls.set_class_name(ClassNames.HEADER, props)
         return rx.el.div(*children, **props)
@@ -85,7 +85,7 @@ class NativeMessageHeader(CoreComponent):
 
 class NativeMessageFooter(CoreComponent):
     @classmethod
-    def create(cls, *children, **props) -> rx.Component:
+    def create(cls, *children: Any, **props: Any) -> rx.Component:
         props["data-slot"] = "message-footer"
         cls.set_class_name(ClassNames.FOOTER, props)
         return rx.el.div(*children, **props)

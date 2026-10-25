@@ -1,3 +1,5 @@
+from typing import Any
+
 from reflex.vars.base import Var
 from reflex_components_core.el import Span
 
@@ -43,7 +45,7 @@ def badge_variants(variant: str = "default") -> Var:
 
 class BadgeComponent(Span, CoreComponent):
     @classmethod
-    def create(cls, *children, **props) -> Span:
+    def create(cls, *children: Any, **props: Any) -> Span:
         custom_classes = props.pop("class_name", "")
         variant = props.pop("variant", "default")
         props["data-slot"] = "badge"

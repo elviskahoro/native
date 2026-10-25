@@ -129,7 +129,7 @@ def export(app: App) -> None:
 
         title_s = doc.url.split("/")[-1].replace("-", " ").title()
 
-        title = f"{title_s} – buridan/native"
+        title = f"{title_s} \u2013 buridan/native"
 
         card_path = f"{doc.url.split('/')[-1]}.webp"
 

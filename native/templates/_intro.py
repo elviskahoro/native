@@ -3,23 +3,44 @@ from reflex_components_core.el import div, h1, p, span, strong
 
 from components.core.hugeicon import hi
 from components.ui.button import button
+from native.registry.components import COMPONENT_REGISTRY
 from native.templates._copy_btn import generate_component_id
 
 COPY_ICON_SVG = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" color="currentColor" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 15C9 12.1716 9 10.7574 9.87868 9.87868C10.7574 9 12.1716 9 15 9L16 9C18.8284 9 20.2426 9 21.1213 9.87868C22 10.7574 22 12.1716 22 15V16C22 18.8284 22 20.2426 21.1213 21.1213C20.2426 22 18.8284 22 16 22H15C12.1716 22 10.7574 22 9.87868 21.1213C9 20.2426 9 18.8284 9 16L9 15Z"/><path d="M16.9999 9C16.9975 6.04291 16.9528 4.51121 16.092 3.46243C15.9258 3.25989 15.7401 3.07418 15.5376 2.90796C14.4312 2 12.7875 2 9.5 2C6.21252 2 4.56878 2 3.46243 2.90796C3.25989 3.07417 3.07418 3.25989 2.90796 3.46243C2 4.56878 2 6.21252 2 9.5C2 12.7875 2 14.4312 2.90796 15.5376C3.07417 15.7401 3.25989 15.9258 3.46243 16.092C4.51121 16.9528 6.04291 16.9975 9 16.9999"/></svg>'
 TICK_ICON_SVG = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" color="currentColor" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 14.5C5 14.5 6.5 14.5 8.5 18C8.5 18 14.0588 8.83333 19 7"/></svg>'
 
 
-def _usage_demo(slug: str):
-    demo_id = generate_component_id()
-    icon_id = f"icon-{demo_id}"
-
+def _usage_demo(slug: str) -> rx.Component:
+    """Installation block for a COMPONENT_REGISTRY component."""
     commands = {
         "buridan": f"buridan add {slug}",
         "uv": f"uv run buridan add {slug}",
         "pip": f"python -m buridan add {slug}",
     }
+    return _install_block(commands)
 
-    def view_button(view: str, label: str):
+
+def _init_demo() -> rx.Component:
+    """Installation block for a utility shipped via `buridan init`.
+
+    `shimmer` and `scrollbar` are pure-CSS utilities injected into
+    `globals.css` by `buridan init`; they have no COMPONENT_REGISTRY entry,
+    so `buridan add <slug>` would print
+    "Warning: Component '<slug>' not found in registry." and exit 1.
+    """
+    commands = {
+        "buridan": "buridan init",
+        "uv": "uv run buridan init",
+        "pip": "python -m buridan init",
+    }
+    return _install_block(commands)
+
+
+def _install_block(commands: dict[str, str]) -> rx.Component:
+    demo_id = generate_component_id()
+    icon_id = f"icon-{demo_id}"
+
+    def view_button(view: str, label: str) -> rx.Component:
         return button(
             label,
             variant="outline",
@@ -33,7 +54,7 @@ def _usage_demo(slug: str):
             ),
         )
 
-    def command_line(view: str, command_text: str):
+    def command_line(view: str, command_text: str) -> rx.Component:
         return div(
             rx.el.pre(
                 rx.el.code(
@@ -92,7 +113,7 @@ def _usage_demo(slug: str):
     )
 
 
-def intro(raw_arg):
+def intro(raw_arg: str) -> rx.Component:
     intro = raw_arg.strip("[]").strip()
 
     if "," not in intro:
@@ -101,6 +122,27 @@ def intro(raw_arg):
 
     title, description = intro.split(",", 1)
     slug = title.strip().lower().replace(" ", "_")
+
+    is_component = slug in COMPONENT_REGISTRY
+    if is_component:
+        install_block = _usage_demo(slug)
+        install_caption = p(
+            span("Command to install the "),
+            strong(title.strip()),
+            span(" component."),
+            class_name="text-sm text-muted-foreground",
+        )
+    else:
+        # Non-registry pages (e.g. the Shimmer utility) ship via
+        # `buridan init`, not `buridan add <slug>` — the latter would warn
+        # "Component '<slug>' not found in registry." and exit 1.
+        install_block = _init_demo()
+        install_caption = p(
+            span("Command to install the "),
+            strong(title.strip()),
+            span(" utility."),
+            class_name="text-sm text-muted-foreground",
+        )
 
     return rx.el.div(
         rx.el.div(
@@ -119,13 +161,8 @@ def intro(raw_arg):
                 "Installation",
                 class_name="text-2xl leading-tight font-bold tracking-tighter",
             ),
-            p(
-                span("Command to install the "),
-                strong(title.strip()),
-                span(" component."),
-                class_name="text-sm text-muted-foreground",
-            ),
-            _usage_demo(slug),
+            install_caption,
+            install_block,
             class_name="w-full flex flex-col items-start gap-4",
         ),
         class_name="flex flex-col gap-6 mb-10",

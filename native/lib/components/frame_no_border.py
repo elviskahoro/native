@@ -3,7 +3,7 @@ import reflex as rx
 from components.ui.frame import frame
 
 
-def frame_no_border():
+def frame_no_border() -> rx.Component:
     return frame.root(
         frame.header(
             frame.title("No Outer Border"),

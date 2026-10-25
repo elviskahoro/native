@@ -10,7 +10,7 @@ data = [
 ]
 
 
-def chart_example_with_grid():
+def chart_example_with_grid() -> rx.Component:
 
     return rx.recharts.bar_chart(
         rx.recharts.cartesian_grid(horizontal=True, vertical=False),

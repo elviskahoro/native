@@ -1,7 +1,7 @@
 import reflex as rx
 
 
-def scroll_fade_size_items():
+def scroll_fade_size_items() -> rx.Component:
     return rx.el.div(
         *[
             rx.el.div(
@@ -14,7 +14,7 @@ def scroll_fade_size_items():
     )
 
 
-def scroll_fade_size():
+def scroll_fade_size() -> rx.Component:
     return rx.el.div(
         rx.el.div(
             rx.el.div(

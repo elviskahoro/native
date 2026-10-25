@@ -25,7 +25,7 @@ images = [
 ]
 
 
-def attachment_image_demo():
+def attachment_image_demo() -> rx.Component:
     return rx.el.div(
         attachment.group(
             [

@@ -1,3 +1,5 @@
+from typing import Any
+
 from reflex.components.component import Component
 from reflex.utils.imports import ImportVar
 from reflex.vars.base import Var, VarData
@@ -34,7 +36,7 @@ class HugeIcon(CoreComponent):
     disable_secondary_opacity: Var[bool]
 
     @classmethod
-    def create(cls, *children, **props) -> Component:
+    def create(cls, *children: Any, **props: Any) -> Component:
 
         if children and isinstance(children[0], str) and "icon" not in props:
             props["icon"] = children[0]

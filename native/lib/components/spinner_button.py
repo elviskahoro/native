@@ -4,7 +4,7 @@ from components.ui.button import button
 from components.ui.spinner import spinner
 
 
-def spinner_button():
+def spinner_button() -> rx.Component:
     return rx.el.div(
         button(spinner(), "Loading...", disabled=True, size="sm"),
         button(spinner(), "Please wait", disabled=True, size="sm", variant="outline"),

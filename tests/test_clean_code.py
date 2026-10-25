@@ -10,7 +10,7 @@ COMPONENTS_DIR = Path(__file__).parent.parent / "components"
 def get_file_comments(file_path: Path) -> list[tuple[int, str]]:
     """Scan a python file and return a list of (line_number, comment_text)."""
     comments = []
-    with open(file_path, "rb") as f:
+    with Path(file_path).open("rb") as f:
         try:
             tokens = tokenize.tokenize(f.readline)
             for token in tokens:

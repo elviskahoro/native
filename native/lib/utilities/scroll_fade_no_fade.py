@@ -1,7 +1,7 @@
 import reflex as rx
 
 
-def scroll_fade_no_fade():
+def scroll_fade_no_fade() -> rx.Component:
     return rx.el.div(
         rx.el.div(
             rx.el.div(

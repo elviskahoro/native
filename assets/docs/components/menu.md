@@ -65,6 +65,7 @@ def cn(*classes: Var | str | tuple | list | None) -> Var:
 
 ```python
 import itertools
+from typing import Any, ClassVar
 
 import reflex as rx
 from reflex.components.component import ComponentNamespace
@@ -95,7 +96,7 @@ class ClassNames:
     SEPARATOR = "-mx-1 my-1 h-px bg-border"
     GROUP_LABEL = "px-1.5 py-1 text-xs font-medium text-muted-foreground"
     SHORTCUT = "ml-auto text-xs tracking-widest text-muted-foreground"
-    SIDE_OFFSETS = {
+    SIDE_OFFSETS: ClassVar[dict[str, str]] = {
         "bottom": "top-full",
         "top": "bottom-full",
         "right": "left-full",
@@ -105,7 +106,7 @@ class ClassNames:
 
 class MenuRoot(CoreComponent):
     @classmethod
-    def create(cls, *children, **props) -> rx.Component:
+    def create(cls, *children: Any, **props: Any) -> rx.Component:
         props.setdefault("id", f"menu-{next(_menu_id_counter)}")
         props["data-slot"] = "menu"
         cls.set_class_name("relative inline-block", props)
@@ -141,7 +142,7 @@ class MenuRoot(CoreComponent):
 
 class MenuTrigger(CoreComponent):
     @classmethod
-    def create(cls, *children, **props) -> rx.Component:
+    def create(cls, *children: Any, **props: Any) -> rx.Component:
         props["data-slot"] = "menu-trigger"
         cls.set_class_name(ClassNames.TRIGGER, props)
         return rx.el.summary(
@@ -154,11 +155,11 @@ class MenuContent(CoreComponent):
     @classmethod
     def create(
         cls,
-        *children,
+        *children: Any,
         side: str = "bottom",
         side_offset: int = 4,
         align: str = "start",
-        **props,
+        **props: Any,
     ) -> rx.Component:
         props["data-slot"] = "menu-content"
         props["data-side"] = side
@@ -172,11 +173,18 @@ class MenuContent(CoreComponent):
         props["style"] = {margin_key: f"{side_offset}px", **props.get("style", {})}
 
         position_class = ClassNames.SIDE_OFFSETS.get(side, "top-full")
-        align_class = {
-            "start": "left-0",
-            "end": "right-0",
-            "center": "left-1/2 -translate-x-1/2",
-        }.get(align, "left-0")
+        if side in ("left", "right"):
+            align_class = {
+                "start": "top-0",
+                "end": "bottom-0",
+                "center": "top-1/2 -translate-y-1/2",
+            }.get(align, "top-0")
+        else:
+            align_class = {
+                "start": "left-0",
+                "end": "right-0",
+                "center": "left-1/2 -translate-x-1/2",
+            }.get(align, "left-0")
 
         cls.set_class_name(cn(ClassNames.CONTENT, position_class, align_class), props)
         return rx.el.div(*children, **props)
@@ -190,7 +198,12 @@ class MenuItem(CoreComponent):
     """
 
     @classmethod
-    def create(cls, *children, close_on_click: bool = True, **props) -> rx.Component:
+    def create(
+        cls,
+        *children: Any,
+        close_on_click: bool = True,
+        **props: Any,
+    ) -> rx.Component:
         props["data-slot"] = "menu-item"
         cls.set_class_name(ClassNames.ITEM, props)
 
@@ -227,7 +240,7 @@ class MenuItem(CoreComponent):
 
 class MenuClose(CoreComponent):
     @classmethod
-    def create(cls, *children, **props) -> rx.Component:
+    def create(cls, *children: Any, **props: Any) -> rx.Component:
         props["data-slot"] = "menu-close"
         props.setdefault("type", "button")
 
@@ -248,7 +261,7 @@ class MenuClose(CoreComponent):
 
 class MenuSeparator(CoreComponent):
     @classmethod
-    def create(cls, **props) -> rx.Component:
+    def create(cls, **props: Any) -> rx.Component:
         props["data-slot"] = "menu-separator"
         cls.set_class_name(ClassNames.SEPARATOR, props)
         return rx.el.div(**props)
@@ -256,7 +269,7 @@ class MenuSeparator(CoreComponent):
 
 class MenuGroupLabel(CoreComponent):
     @classmethod
-    def create(cls, *children, **props) -> rx.Component:
+    def create(cls, *children: Any, **props: Any) -> rx.Component:
         props["data-slot"] = "menu-group-label"
         cls.set_class_name(ClassNames.GROUP_LABEL, props)
         return rx.el.div(*children, **props)
@@ -264,7 +277,7 @@ class MenuGroupLabel(CoreComponent):
 
 class MenuShortcut(CoreComponent):
     @classmethod
-    def create(cls, *children, **props) -> rx.Component:
+    def create(cls, *children: Any, **props: Any) -> rx.Component:
         props["data-slot"] = "menu-shortcut"
         cls.set_class_name(ClassNames.SHORTCUT, props)
         return rx.el.span(*children, **props)

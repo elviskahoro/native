@@ -1,6 +1,8 @@
+from typing import Any
+
 # Color themes — only override primary + charts on top of a base theme.
 # The seed picks a base theme first, then optionally a color theme on top.
-COLOR_THEMES = [
+COLOR_THEMES: list[dict[str, Any]] = [
     {
         "id": "blue",
         "label": "Blue",

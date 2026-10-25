@@ -1,4 +1,6 @@
-RADII_OPTIONS = [
+from typing import Any
+
+RADII_OPTIONS: list[dict[str, Any]] = [
     {
         "id": "none",
         "label": "None",

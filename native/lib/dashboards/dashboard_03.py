@@ -5,7 +5,7 @@ from components.ui.avatar import avatar
 from components.ui.button import button
 from native.lib.charts.area.v8 import area_chart_with_gradient
 
-NAV_ITEMS = [
+NAV_ITEMS: list[dict[str, str | bool]] = [
     {"label": "Dashboard", "icon": "DashboardSquare01Icon", "active": True},
     {"label": "Projects", "icon": "Folder01Icon", "active": False},
     {"label": "Analytics", "icon": "ChartBarLineIcon", "active": False},
@@ -20,7 +20,7 @@ ACTIVE_PROJECTS = [
     "Analytics Rebuild",
 ]
 
-BREADCRUMB_ITEMS = [
+BREADCRUMB_ITEMS: list[dict[str, str | None]] = [
     {"label": "Acme Inc", "icon": "SquareIcon"},
     {"label": "Marketing Site", "icon": None},
     {"label": "Preview", "icon": None},
@@ -64,7 +64,7 @@ ACTIVITY = [
 ]
 
 
-def sidebar_header():
+def sidebar_header() -> rx.Component:
     return rx.el.div(
         rx.el.div(
             hi("DashboardSquare01Icon", class_name="size-5 shrink-0"),
@@ -80,7 +80,7 @@ def sidebar_header():
     )
 
 
-def new_report_button():
+def new_report_button() -> rx.Component:
     return button(
         hi("PlusSignIcon", class_name="size-4"),
         rx.el.span("New Report", class_name="text-sm font-medium"),
@@ -110,7 +110,7 @@ def _sidebar_item(label: str, icon: str, active: bool = False) -> rx.Component:
     )
 
 
-def sidebar_platform_items():
+def sidebar_platform_items() -> rx.Component:
     return rx.el.div(
         _section_label("Platform"),
         *[_sidebar_item(i["label"], i["icon"], i["active"]) for i in NAV_ITEMS],
@@ -126,7 +126,7 @@ def _project_item(label: str) -> rx.Component:
     )
 
 
-def sidebar_active_projects():
+def sidebar_active_projects() -> rx.Component:
     return rx.el.div(
         _section_label("Active Projects"),
         *[_project_item(p) for p in ACTIVE_PROJECTS],
@@ -134,7 +134,7 @@ def sidebar_active_projects():
     )
 
 
-def sidebar_usage_card():
+def sidebar_usage_card() -> rx.Component:
     return rx.el.div(
         rx.el.div(
             rx.el.div(
@@ -167,7 +167,7 @@ def sidebar_usage_card():
     )
 
 
-def sidebar_footer():
+def sidebar_footer() -> rx.Component:
     return rx.el.div(
         avatar.root(
             avatar.image(
@@ -193,7 +193,7 @@ def sidebar_footer():
     )
 
 
-def sidebar():
+def sidebar() -> rx.Component:
     return rx.el.aside(
         sidebar_header(),
         rx.el.div(new_report_button(), class_name="p-2 w-full"),
@@ -222,7 +222,7 @@ def _breadcrumb_item(label: str, icon: str | None, is_last: bool) -> rx.Componen
     )
 
 
-def breadcrumb():
+def breadcrumb() -> rx.Component:
     items = []
     for i, crumb in enumerate(BREADCRUMB_ITEMS):
         items.append(
@@ -237,7 +237,7 @@ def breadcrumb():
     return rx.el.div(*items, class_name="flex items-center gap-2.5")
 
 
-def topbar_search():
+def topbar_search() -> rx.Component:
     return rx.el.div(
         hi("Search01Icon", class_name="size-4 shrink-0 text-muted-foreground"),
         rx.el.span("Search...", class_name="text-sm text-muted-foreground flex-1"),
@@ -249,7 +249,7 @@ def topbar_search():
     )
 
 
-def topbar_status_pill():
+def topbar_status_pill() -> rx.Component:
     return rx.el.div(
         rx.el.span(class_name="size-1.5 rounded-full bg-orange-500"),
         rx.el.span("Degraded", class_name="text-xs font-medium"),
@@ -257,7 +257,7 @@ def topbar_status_pill():
     )
 
 
-def topbar():
+def topbar() -> rx.Component:
     return rx.el.div(
         rx.el.div(
             hi(
@@ -314,14 +314,14 @@ def _stat_card(label: str, value: str, delta: str) -> rx.Component:
     )
 
 
-def main_stats_section():
+def main_stats_section() -> rx.Component:
     return rx.el.div(
         *[_stat_card(s["label"], s["value"], s["delta"]) for s in STATS],
         class_name="grid gap-4 sm:grid-cols-2 md:grid-cols-3",
     )
 
 
-def main_chart_section():
+def main_chart_section() -> rx.Component:
     return rx.el.div(
         rx.el.div(
             rx.el.div(
@@ -362,7 +362,7 @@ def _activity_row(item: dict) -> rx.Component:
     )
 
 
-def main_activity_section():
+def main_activity_section() -> rx.Component:
     return rx.el.div(
         rx.el.div(
             rx.el.p("Recent Activity", class_name="font-semibold"),
@@ -380,7 +380,7 @@ def main_activity_section():
     )
 
 
-def main_performance_section():
+def main_performance_section() -> rx.Component:
     return rx.el.div(
         main_chart_section(),
         main_activity_section(),
@@ -388,7 +388,7 @@ def main_performance_section():
     )
 
 
-def main_active_projects_header():
+def main_active_projects_header() -> rx.Component:
     return rx.el.div(
         rx.el.p("Active Projects", class_name="font-semibold"),
         rx.el.span(
@@ -399,7 +399,7 @@ def main_active_projects_header():
     )
 
 
-def main_header_row():
+def main_header_row() -> rx.Component:
     return rx.el.div(
         rx.el.div(
             rx.el.h1(
@@ -420,7 +420,7 @@ def main_header_row():
     )
 
 
-def main():
+def main() -> rx.Component:
     return rx.el.main(
         topbar(),
         rx.el.div(
@@ -434,7 +434,7 @@ def main():
     )
 
 
-def dashboard_03():
+def dashboard_03() -> rx.Component:
     return rx.el.div(
         sidebar(),
         main(),

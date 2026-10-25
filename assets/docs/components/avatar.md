@@ -65,6 +65,7 @@ def cn(*classes: Var | str | tuple | list | None) -> Var:
 
 ```python
 import uuid
+from typing import Any
 
 import reflex as rx
 from reflex.components.component import ComponentNamespace
@@ -109,7 +110,7 @@ class ClassNames:
 
 class AvatarRoot(Div, CoreComponent):
     @classmethod
-    def create(cls, *children, **props) -> Div:
+    def create(cls, *children: Any, **props: Any) -> Div:
         custom_classes = props.pop("class_name", "")
         size = props.pop("size", "default")
         props["data-slot"] = "avatar"
@@ -123,8 +124,9 @@ class AvatarRoot(Div, CoreComponent):
 
 class AvatarImage(CoreComponent):
     @classmethod
-    def create(cls, **props) -> rx.Component:
+    def create(cls, **props: Any) -> rx.Component:
         custom_classes = props.pop("class_name", "")
+        user_on_mount = props.pop("on_mount", None)
         props["data-slot"] = "avatar-image"
 
         img_id = props.get("id") or f"avatar-img-{uuid.uuid4().hex[:8]}"
@@ -151,7 +153,13 @@ class AvatarImage(CoreComponent):
         }})()
         """
 
-        props["on_mount"] = rx.call_script(js)
+        mount_handlers = [rx.call_script(js)]
+        if user_on_mount is not None:
+            if isinstance(user_on_mount, list):
+                mount_handlers.extend(user_on_mount)
+            else:
+                mount_handlers.append(user_on_mount)
+        props["on_mount"] = mount_handlers
 
         cls.set_class_name(cn(ClassNames.IMAGE, custom_classes), props)
         return rx.el.img(**props)
@@ -159,7 +167,7 @@ class AvatarImage(CoreComponent):
 
 class AvatarFallback(Span, CoreComponent):
     @classmethod
-    def create(cls, *children, **props) -> Span:
+    def create(cls, *children: Any, **props: Any) -> Span:
         custom_classes = props.pop("class_name", "")
         props["data-slot"] = "avatar-fallback"
         props["style"] = {"display": "none", **props.get("style", {})}
@@ -172,7 +180,7 @@ class AvatarFallback(Span, CoreComponent):
 
 class AvatarBadge(Span, CoreComponent):
     @classmethod
-    def create(cls, *children, **props) -> Span:
+    def create(cls, *children: Any, **props: Any) -> Span:
         custom_classes = props.pop("class_name", "")
         props["data-slot"] = "avatar-badge"
         return super().create(
@@ -184,7 +192,7 @@ class AvatarBadge(Span, CoreComponent):
 
 class AvatarGroup(Div, CoreComponent):
     @classmethod
-    def create(cls, *children, **props) -> Div:
+    def create(cls, *children: Any, **props: Any) -> Div:
         custom_classes = props.pop("class_name", "")
         props["data-slot"] = "avatar-group"
         return super().create(
@@ -196,7 +204,7 @@ class AvatarGroup(Div, CoreComponent):
 
 class AvatarGroupCount(Div, CoreComponent):
     @classmethod
-    def create(cls, *children, **props) -> Div:
+    def create(cls, *children: Any, **props: Any) -> Div:
         custom_classes = props.pop("class_name", "")
         props["data-slot"] = "avatar-group-count"
         return super().create(

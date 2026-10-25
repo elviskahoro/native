@@ -149,7 +149,7 @@ def _summary_item(item: dict) -> rx.Component:
     )
 
 
-def line_chart_02():
+def line_chart_02() -> rx.Component:
     return card.root(
         card.header(
             rx.el.p("Revenue", class_name="text-sm text-muted-foreground"),

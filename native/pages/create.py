@@ -95,7 +95,7 @@ def _theme_select(
             ),
             class_name="flex flex-col gap-2 px-1 pt-2",
         ),
-        class_name="px-3 pb-3",
+        class_name="min-w-[10rem] shrink-0 lg:min-w-0 lg:px-3 lg:pb-3",
     )
 
 
@@ -181,11 +181,18 @@ def reset_confirm() -> rx.Component:
     )
 
 
-def _sidebar_desktop():
+def _sidebar_desktop() -> rx.Component:
     return rx.el.aside(
         rx.el.div(
             button(
-                "Get Code",
+                rx.el.span(
+                    "Get Code",
+                    class_name="group-data-[show=true]:hidden",
+                ),
+                rx.el.span(
+                    "Preview",
+                    class_name="hidden group-data-[show=true]:inline",
+                ),
                 id="copy-theme-button",
                 type="button",
                 class_name="w-full",
@@ -233,6 +240,7 @@ def _sidebar_desktop():
                     "__match_base__",
                     swatch=True,
                 ),
+                class_name="min-w-[10rem] shrink-0 lg:min-w-0",
             ),
             _theme_select(
                 "radius-select",
@@ -248,7 +256,11 @@ def _sidebar_desktop():
                 FONT_REGISTRY[0]["id"],
                 icon=hi("TextFontIcon"),
             ),
-            class_name="flex-1 min-h-0 overflow-y-auto scrollbar-none divide-y divide-input",
+            class_name=(
+                "px-2 py-1 lg:p-0 flex gap-1 overflow-x-auto scrollbar-none "
+                "lg:flex-1 lg:flex-col lg:gap-0 lg:overflow-y-auto lg:overflow-x-hidden "
+                "lg:divide-y lg:divide-input"
+            ),
         ),
         rx.el.div(
             button(
@@ -266,21 +278,21 @@ def _sidebar_desktop():
                 class_name="w-full flex flex-row items-center justify-center gap-1",
             ),
             open_preset(),
-            class_name="p-4 flex flex-col gap-3 bg-card/20",
+            class_name="p-3 lg:p-4 flex flex-col gap-3 bg-card/20",
         ),
         rx.el.div(
             reset_confirm(),
             class_name="p-3 bg-card/20",
         ),
         class_name=(
-            "hidden lg:flex w-full max-w-[12rem] shrink-0 !overflow-hidden flex-col "
-            "border border-input/90 divide-y divide-input h-full text-sm "
-            "text-card-foreground dark bg-card/90 isolate rounded-2xl"
+            "flex flex-col gap-3 text-sm border border-input/90 dark "
+            "text-card-foreground bg-card/90 isolate rounded-2xl "
+            "lg:w-[12rem] lg:max-w-[12rem] lg:h-full lg:gap-0 lg:divide-y lg:divide-input"
         ),
     )
 
 
-def sidebar():
+def sidebar() -> rx.Component:
     return rx.el.div(
         _sidebar_desktop(),
         class_name=(
@@ -290,7 +302,7 @@ def sidebar():
     )
 
 
-def preview_space():
+def preview_space() -> rx.Component:
     return rx.el.div(
         rx.el.div(
             rx.el.div(
@@ -337,11 +349,11 @@ def preview_space():
             ),
             class_name="w-full h-full",
         ),
-        class_name="w-full flex-[2] min-h-0 order-first lg:order-none lg:flex-1 lg:min-w-0 lg:h-full",
+        class_name="w-full flex-[2] min-h-0 order-first lg:order-none lg:flex-1 lg:min-w-0 lg:h-full max-lg:group-data-[show=true]:hidden",
     )
 
 
-def source_space():
+def source_space() -> rx.Component:
     return rx.el.div(
         rx.el.div(
             get_code(),
@@ -367,12 +379,13 @@ def source_space():
             "hidden "
             "group-data-[show=true]:flex flex-col gap-y-4 "
             "w-full flex-initial h-auto min-h-0 min-w-0 max-w-full lg:flex-1 "
-            "lg:h-full lg:w-sm lg:max-w-sm lg:shrink-0"
+            "lg:h-full lg:w-sm lg:max-w-sm lg:shrink-0 "
+            "max-lg:group-data-[show=true]:flex-1 max-lg:group-data-[show=true]:min-h-0"
         ),
     )
 
 
-def create_page():
+def create_page() -> rx.Component:
     return rx.el.div(
         rx.el.div(
             navbar(),
@@ -397,8 +410,12 @@ def create_page():
                 style: {json.dumps(STYLE_REGISTRY)},
                 font: {json.dumps(FONT_REGISTRY)},
             }};
-            // if (window.preview) window.preview.applyAll();
-            if (window.preview) window.preview.syncAll();
+            if (window.preview) {{
+                var code = new URLSearchParams(window.location.search).get("preset");
+                if (!(code && window.preview.applyPresetCode(code))) {{
+                    window.preview.syncAll();
+                }}
+            }}
             """,
             ),
             rx.call_script(

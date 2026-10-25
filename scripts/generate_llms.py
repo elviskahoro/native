@@ -3,7 +3,7 @@ import sys
 
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
-from native.registry.routes import (
+from native.config import (
     BASE_UI_COMPONENTS,
     CHARTS_URLS,
     GET_STARTED_URLS,
@@ -15,7 +15,7 @@ BASE_URL = "https://native.buridan.dev"
 
 
 def generate_llms_txt() -> str:
-    def make_links(routes):
+    def make_links(routes: list[dict[str, str]]) -> str:
         return "\n".join(
             f"- [{route['title']}]({BASE_URL}/{route['url']}): The {route['title']} component."
             for route in routes

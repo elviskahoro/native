@@ -1,6 +1,8 @@
 import functools
 from collections.abc import Callable
+from typing import Any
 
+from reflex.components.component import Component
 from reflex_components_core.el import Main, Section, div, h1, main, p, section
 
 from native.templates.footer import _footer
@@ -14,9 +16,9 @@ def layout_decorator(
     logos: list | None = None,
 ) -> Callable[[Callable[..., Section]], Callable[..., Main]]:
 
-    def decorator(func):
+    def decorator(func: Callable[..., Section]) -> Callable[..., Main]:
         @functools.wraps(func)
-        def wrapper(*args, **kwargs):
+        def wrapper(*args: Any, **kwargs: Any) -> Component:
             page_content = func(*args, **kwargs)
             return main(
                 section(
@@ -24,7 +26,7 @@ def layout_decorator(
                     div(
                         div(
                             div(
-                                *(logos if logos else []),
+                                *(logos or []),
                                 class_name="mx-auto flex justify-center",
                             ),
                             h1(
@@ -36,7 +38,7 @@ def layout_decorator(
                                 class_name="text-md mx-auto max-w-2xl text-center text-pretty text-muted-foreground",
                             ),
                             div(
-                                *(ctas if ctas else []),
+                                *(ctas or []),
                                 class_name="flex w-full items-center justify-center gap-2 pt-8 **:data-[slot=button]:shadow-none",
                             ),
                             class_name="mx-auto flex flex-1 flex-col mt-10 mb-16",

@@ -1,14 +1,21 @@
 import functools
+from collections.abc import Callable
+from typing import Any
 
+from reflex.components.component import Component
 from reflex_components_core.el import div
 
 
-def masonry_card(func=None, *, label="General"):
+def masonry_card(
+    func: Callable[..., Any] | None = None,
+    *,
+    label: str = "General",
+) -> Callable[..., Component]:
     if func is None:
         return functools.partial(masonry_card, label=label)
 
     @functools.wraps(func)
-    def wrapper(*args, **kwargs):
+    def wrapper(*args: Any, **kwargs: Any) -> Component:
         inner_component = func(*args, **kwargs)
 
         return div(

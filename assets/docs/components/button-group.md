@@ -64,7 +64,7 @@ def cn(*classes: Var | str | tuple | list | None) -> Var:
 ```
 
 ```python
-from typing import Literal
+from typing import Any, Literal
 
 import reflex as rx
 
@@ -83,7 +83,7 @@ class ClassNames:
 
 class SeparatorComponent(CoreComponent):
     @classmethod
-    def create(cls, *children, **props) -> rx.Component:
+    def create(cls, *children: Any, **props: Any) -> rx.Component:
         orientation: str = props.pop("orientation", "horizontal")
         decorative = props.pop("decorative", True)
         data_slot = props.pop("data_slot", "separator")
@@ -105,9 +105,9 @@ separator = SeparatorComponent.create
 ```
 
 ```python
-from typing import Literal
+from typing import Any, Literal
 
-from reflex.components.component import ComponentNamespace
+from reflex.components.component import Component, ComponentNamespace
 from reflex.vars.base import Var
 from reflex_components_core.el import Div
 
@@ -127,7 +127,7 @@ class ButtonGroupRoot(Div, CoreComponent):
     orientation: Var[Literal["horizontal", "vertical"]]
 
     @classmethod
-    def create(cls, *children, **props) -> Div:
+    def create(cls, *children: Any, **props: Any) -> Div:
         props["data-slot"] = "button-group"
         orientation = props.get("orientation", "horizontal")
 
@@ -148,7 +148,7 @@ class ButtonGroupRoot(Div, CoreComponent):
 
 class ButtonGroupText(Div, CoreComponent):
     @classmethod
-    def create(cls, *children, **props) -> Div:
+    def create(cls, *children: Any, **props: Any) -> Div:
         props["data-slot"] = "button-group-text"
         cls.set_class_name(ClassNames.TEXT, props)
         return super().create(*children, **props)
@@ -156,7 +156,7 @@ class ButtonGroupText(Div, CoreComponent):
 
 class ButtonGroupSeparator(SeparatorComponent):
     @classmethod
-    def create(cls, *children, **props):
+    def create(cls, *children: Any, **props: Any) -> Component:
         props["data-slot"] = "button-group-separator"
 
         if "orientation" not in props:

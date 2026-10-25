@@ -1,5 +1,6 @@
 from pathlib import Path
 
+from reflex.components.component import Component
 from reflex.event import call_script
 from reflex_base.vars.base import Var
 from reflex_components_core.el import a, div, h3, h4, p, span
@@ -25,7 +26,7 @@ UTILITIES = [
 ]
 
 
-def link_card(name: str, href: str, count: int):
+def link_card(name: str, href: str, count: int) -> Component:
     return a(
         div(
             div(
@@ -47,26 +48,45 @@ def link_card(name: str, href: str, count: int):
     )
 
 
-def get_links(source_dir: Path, examples_dir: Path, url_prefix: str):
+def get_component_entries(
+    source_dir: Path,
+    examples_dir: Path,
+) -> list[tuple[str, str, int]]:
     entries = []
+
+    component_stems = [f.stem for f in source_dir.glob("*.py") if f.stem != "__init__"]
 
     for file in source_dir.glob("*.py"):
         stem = file.stem
+        if stem == "__init__":
+            continue
         name = stem.replace("_", " ").title()
         slug = stem.replace("_", "-")
 
-        example_count = len(list(examples_dir.glob(f"{stem}_*.py")))
+        sibling_prefixes = [
+            f"{s}_" for s in component_stems if s.startswith(f"{stem}_")
+        ]
+        example_count = sum(
+            1
+            for p in examples_dir.glob(f"{stem}_*.py")
+            if not any(p.name.startswith(pref) for pref in sibling_prefixes)
+        )
 
         entries.append((name, slug, example_count))
 
     entries.sort(key=lambda x: x[0].lower())
 
+    return entries
+
+
+def get_links(source_dir: Path, examples_dir: Path, url_prefix: str) -> list[Component]:
     return [
-        link_card(name, f"{url_prefix}/{slug}", count) for name, slug, count in entries
+        link_card(name, f"{url_prefix}/{slug}", count)
+        for name, slug, count in get_component_entries(source_dir, examples_dir)
     ]
 
 
-def get_utility_links():
+def get_utility_links() -> list[Component]:
     return [
         link_card(
             name,
@@ -77,7 +97,7 @@ def get_utility_links():
     ]
 
 
-def get_chart_links():
+def get_chart_links() -> list[Component]:
     entries = []
 
     if CHART_EXAMPLES.exists():
@@ -101,7 +121,7 @@ def get_chart_links():
     ]
 
 
-def section(title: str, description: str, links):
+def section(title: str, description: str, links: list[Component]) -> Component:
     return div(
         div(
             h3(title, class_name="text-lg font-bold tracking-tight"),
@@ -120,7 +140,7 @@ def section(title: str, description: str, links):
     )
 
 
-def no_results():
+def no_results() -> Component:
     return div(
         div(
             div("No components found", class_name="font-sans text-sm font-medium"),
@@ -239,7 +259,7 @@ def filter_script(value: Var) -> Var:
         ),
     ),
 )
-def components_page():
+def components_page() -> Component:
     return div(
         section(
             "UI Components",

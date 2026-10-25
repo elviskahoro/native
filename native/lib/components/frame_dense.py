@@ -3,7 +3,7 @@ import reflex as rx
 from components.ui.frame import frame
 
 
-def frame_dense():
+def frame_dense() -> rx.Component:
     return frame.root(
         frame.header(
             frame.title("Section header"),

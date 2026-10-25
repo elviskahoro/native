@@ -20,7 +20,7 @@ modified_data = [
 ]
 
 
-def bar_chart_active():
+def bar_chart_active() -> rx.Component:
     return rx.el.div(
         rx.el.div(
             rx.el.h3(

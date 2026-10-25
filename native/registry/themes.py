@@ -8,8 +8,10 @@
 # To add a new theme: append an entry. The seed engine picks it automatically.
 # ---------------------------------------------------------------------------
 
+from typing import Any
+
 # Base themes — full light + dark palette
-BASE_THEMES = [
+BASE_THEMES: list[dict[str, Any]] = [
     {
         "id": "neutral",
         "label": "Neutral",

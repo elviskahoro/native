@@ -1,4 +1,4 @@
-from typing import Literal
+from typing import Any, Literal
 
 from reflex.vars.base import Var
 from reflex_components_core.el import Button as BaseButton
@@ -106,7 +106,7 @@ class Button(BaseButton, CoreComponent):
     size: Var[LiteralButtonSize]
 
     @classmethod
-    def create(cls, *children, **props) -> BaseButton:
+    def create(cls, *children: Any, **props: Any) -> BaseButton:
         variant = props.pop("variant", "default")
         size = props.pop("size", "default")
         custom_classes = props.pop("class_name", "")

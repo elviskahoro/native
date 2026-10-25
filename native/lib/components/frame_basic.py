@@ -3,7 +3,7 @@ import reflex as rx
 from components.ui.frame import frame
 
 
-def frame_basic():
+def frame_basic() -> rx.Component:
     return frame.root(
         frame.header(
             frame.title("Section header"),

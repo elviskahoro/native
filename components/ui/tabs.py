@@ -1,4 +1,5 @@
 import uuid
+from typing import Any
 
 import reflex as rx
 from reflex.components.component import ComponentNamespace
@@ -35,7 +36,7 @@ class ClassNames:
 
 class TabsRoot(Div, CoreComponent):
     @classmethod
-    def create(cls, *children, **props) -> Div:
+    def create(cls, *children: Any, **props: Any) -> Div:
         custom_classes = props.pop("class_name", "")
         orientation = props.pop("orientation", "horizontal")
         default_value = props.pop("default_value", "")
@@ -53,7 +54,7 @@ class TabsRoot(Div, CoreComponent):
 
 class TabsList(Div, CoreComponent):
     @classmethod
-    def create(cls, *children, **props) -> Div:
+    def create(cls, *children: Any, **props: Any) -> Div:
         custom_classes = props.pop("class_name", "")
         variant = props.pop("variant", "default")
 
@@ -69,7 +70,7 @@ class TabsList(Div, CoreComponent):
 
 class TabsTrigger(CoreComponent):
     @classmethod
-    def create(cls, *children, **props) -> rx.Component:
+    def create(cls, *children: Any, **props: Any) -> rx.Component:
         custom_classes = props.pop("class_name", "")
         value = props.pop("value", "")
 
@@ -92,6 +93,7 @@ class TabsTrigger(CoreComponent):
 
             root.dataset.value = '{value}';
             root.querySelectorAll('[data-slot="tabs-trigger"]').forEach(function(t) {{
+                if (t.closest('[data-slot="tabs"]') !== root) return;
                 t.setAttribute('data-active', t.getAttribute('data-value') === '{value}' ? 'true' : 'false');
             }});
         }})()
@@ -131,7 +133,7 @@ class TabsTrigger(CoreComponent):
 
 class TabsContent(Div, CoreComponent):
     @classmethod
-    def create(cls, *children, **props) -> Div:
+    def create(cls, *children: Any, **props: Any) -> Div:
         custom_classes = props.pop("class_name", "")
         value = props.pop("value", "")
 

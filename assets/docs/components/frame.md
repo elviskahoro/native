@@ -64,7 +64,7 @@ def cn(*classes: Var | str | tuple | list | None) -> Var:
 ```
 
 ```python
-from typing import Literal
+from typing import Any, Literal
 
 import reflex as rx
 from reflex.components.component import ComponentNamespace
@@ -105,7 +105,7 @@ SPACING_CLASSES: dict[str, str] = {
 
 class FrameRoot(CoreComponent):
     @classmethod
-    def create(cls, *children, **props) -> rx.Component:
+    def create(cls, *children: Any, **props: Any) -> rx.Component:
         variant: LiteralVariant = props.pop("variant", "default")
         spacing: LiteralSpacing = props.pop("spacing", "default")
         stacked: bool = props.pop("stacked", False)
@@ -143,7 +143,7 @@ class FrameRoot(CoreComponent):
 
 class FramePanel(CoreComponent):
     @classmethod
-    def create(cls, *children, **props) -> rx.Component:
+    def create(cls, *children: Any, **props: Any) -> rx.Component:
         class_name: str = props.pop("class_name", "")
         props["data-slot"] = "frame-panel"
         return rx.el.div(
@@ -155,7 +155,7 @@ class FramePanel(CoreComponent):
 
 class FrameHeader(CoreComponent):
     @classmethod
-    def create(cls, *children, **props) -> rx.Component:
+    def create(cls, *children: Any, **props: Any) -> rx.Component:
         class_name: str = props.pop("class_name", "")
         props["data-slot"] = "frame-panel-header"
         return rx.el.header(
@@ -167,7 +167,7 @@ class FrameHeader(CoreComponent):
 
 class FrameTitle(CoreComponent):
     @classmethod
-    def create(cls, *children, **props) -> rx.Component:
+    def create(cls, *children: Any, **props: Any) -> rx.Component:
         class_name: str = props.pop("class_name", "")
         props["data-slot"] = "frame-panel-title"
         return rx.el.div(
@@ -179,7 +179,7 @@ class FrameTitle(CoreComponent):
 
 class FrameDescription(CoreComponent):
     @classmethod
-    def create(cls, *children, **props) -> rx.Component:
+    def create(cls, *children: Any, **props: Any) -> rx.Component:
         class_name: str = props.pop("class_name", "")
         props["data-slot"] = "frame-panel-description"
         return rx.el.div(
@@ -191,7 +191,7 @@ class FrameDescription(CoreComponent):
 
 class FrameFooter(CoreComponent):
     @classmethod
-    def create(cls, *children, **props) -> rx.Component:
+    def create(cls, *children: Any, **props: Any) -> rx.Component:
         class_name: str = props.pop("class_name", "")
         props["data-slot"] = "frame-panel-footer"
         return rx.el.footer(
@@ -224,7 +224,7 @@ A basic frame with a header and two panels.
 **Props used:** none required beyond default `frame.root` composition.
 
 ```python
-def frame_basic():
+def frame_basic() -> rx.Component:
     return frame.root(
         frame.header(
             frame.title("Section header"),
@@ -249,7 +249,7 @@ Set `stacked=True` to merge panel borders into one continuous block.
 **Props used:** `stacked` on `frame.root`.
 
 ```python
-def frame_stacked():
+def frame_stacked() -> rx.Component:
     return frame.root(
         frame.header(
             frame.title("Section header"),
@@ -275,7 +275,7 @@ Set `dense=True` for minimal frame padding, edge-to-edge.
 **Props used:** `dense` on `frame.root`.
 
 ```python
-def frame_dense():
+def frame_dense() -> rx.Component:
     return frame.root(
         frame.header(
             frame.title("Section header"),
@@ -302,7 +302,7 @@ Set `variant="ghost"` to remove the frame's outer border.
 **Props used:** `variant` on `frame.root`.
 
 ```python
-def frame_no_border():
+def frame_no_border() -> rx.Component:
     return frame.root(
         frame.header(
             frame.title("No Outer Border"),

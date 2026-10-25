@@ -1,5 +1,7 @@
+from reflex.components.component import Component
+
 from components.ui.button import button
 
 
-def button_ghost():
+def button_ghost() -> Component:
     return button("Ghost", variant="ghost")
