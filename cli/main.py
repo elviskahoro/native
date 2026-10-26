@@ -4,6 +4,7 @@ import json
 import re
 import shutil
 import sys
+from collections.abc import Sequence
 from pathlib import Path
 
 from cli.preset_codec import decode_seed
@@ -569,7 +570,7 @@ def cmd_init() -> None:
     print("     buridan add button")
 
 
-def _find_theme_block_end(lines: list[str], start_line: int) -> int:
+def _find_theme_block_end(lines: Sequence[str], start_line: int) -> int:
     """Find the end line of a CSS block starting at start_line (handles brace tracking)."""
     brace_depth = 0
     in_block = False
@@ -608,7 +609,7 @@ def join_css_around_theme(prefix: str, block: str, suffix: str) -> str:
     return out
 
 
-def find_legacy_theme_pair(lines: list[str]) -> tuple[int, int] | None:
+def find_legacy_theme_pair(lines: Sequence[str]) -> tuple[int, int] | None:
     """Locate a top-level adjacent `:root {` / `.dark {` pair written by older CLIs.
 
     Returns (start_line, end_line) inclusive, or None if no safe match exists.
