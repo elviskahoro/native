@@ -23,6 +23,7 @@ fixed and neither caller form regresses.
 
 from __future__ import annotations
 
+from typing import Any
 from urllib.parse import urlparse
 
 import pytest
@@ -68,13 +69,17 @@ URL_CASES = [
 
 class TestUrlNormalization:
     @pytest.mark.parametrize(("url_input", "expected"), URL_CASES)  # pyright: ignore[reportUntypedFunctionDecorator]
-    def test_og_url_and_twitter_url_are_well_formed(self, url_input, expected):
+    def test_og_url_and_twitter_url_are_well_formed(
+        self,
+        url_input: str,
+        expected: str,
+    ) -> None:
         tags = _tags_by_key(url_input)
         assert tags["og:url"] == expected
         assert tags["twitter:url"] == expected
 
     @pytest.mark.parametrize(("url_input", "_expected"), URL_CASES)  # pyright: ignore[reportUntypedFunctionDecorator]
-    def test_host_is_not_corrupted(self, url_input, _expected):
+    def test_host_is_not_corrupted(self, url_input: str, _expected: str) -> None:
         """The host must be exactly `native.buridan.dev`.
 
         Before the fix, a missing leading slash caused the first path segment
@@ -93,11 +98,11 @@ class TestUrlNormalization:
 _ALL_DOCS = generate_docs_library()
 
 
-def _doc_id(doc) -> str:
+def _doc_id(doc: Any) -> str:
     return doc.url
 
 
-def test_docs_library_is_not_empty():
+def test_docs_library_is_not_empty() -> None:
     """Sanity guard so the parametrized test below cannot silently collect
     zero cases (mirrors the pattern in tests/test_docs_error.py)."""
     assert _ALL_DOCS, "generate_docs_library() returned no docs"
@@ -114,7 +119,7 @@ class TestDocsLibraryMetaTags:
     """
 
     @pytest.mark.parametrize("doc", _ALL_DOCS, ids=_doc_id)  # pyright: ignore[reportUntypedFunctionDecorator]
-    def test_doc_canonical_url_is_well_formed(self, doc):
+    def test_doc_canonical_url_is_well_formed(self, doc: Any) -> None:
         tags = _tags_by_key(doc.url, title=doc.url, description=doc.description)
         expected = f"{BURIDAN_URL}/{doc.url}"
         assert tags["og:url"] == expected

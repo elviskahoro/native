@@ -1,4 +1,5 @@
 from dataclasses import dataclass
+from typing import Any
 
 import reflex as rx
 
@@ -25,7 +26,7 @@ HIGHLIGHT_SCRIPT = """
     }
 """
 
-NEW_COMP = []
+NEW_COMP: list[str] = []
 
 
 @dataclass
@@ -33,7 +34,7 @@ class SidebarSection:
     """Configuration for a sidebar section."""
 
     title: str
-    routes: list[dict]
+    routes: list[dict[str, Any]]
 
 
 SIDEBAR_SECTIONS = [
@@ -45,7 +46,7 @@ SIDEBAR_SECTIONS = [
 ]
 
 
-def create_menu_item(data: dict) -> rx.Component:
+def create_menu_item(data: dict[str, Any]) -> rx.Component:
     """Create a single menu item."""
     if data["title"].startswith("pypi"):
         link = rx.el.a(
@@ -82,7 +83,7 @@ def create_menu_item(data: dict) -> rx.Component:
     )
 
 
-def create_sidebar_menu_items(routes: list[dict]) -> rx.Component:
+def create_sidebar_menu_items(routes: list[dict[str, Any]]) -> rx.Component:
     """Create menu items from routes."""
     return rx.el.div(
         *[create_menu_item(route) for route in routes],

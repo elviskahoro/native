@@ -1,4 +1,5 @@
 import importlib
+from collections.abc import Callable
 from pathlib import Path
 
 import reflex as rx
@@ -22,8 +23,8 @@ def block_files(prefix: str) -> list[Path]:
     return sorted(BLOCKS_PATH.glob(f"{prefix}_*.py"))
 
 
-def load_blocks(prefix: str) -> list[tuple[str, object, str]]:
-    blocks = []
+def load_blocks(prefix: str) -> list[tuple[str, Callable[..., rx.Component], str]]:
+    blocks: list[tuple[str, Callable[..., rx.Component], str]] = []
     for file in block_files(prefix):
         module = importlib.import_module(f"{BLOCKS_MODULE}.{file.stem}")
         component_fn = getattr(module, file.stem)
@@ -85,7 +86,7 @@ BLOCK_GROUPS = [
 
 
 def build_section(prefix: str, title: str, description: str) -> rx.Component:
-    blocks = [
+    blocks: list[rx.Component] = [
         div(demo(component=component_fn(), source=source))
         for name, component_fn, source in load_blocks(prefix)
     ]

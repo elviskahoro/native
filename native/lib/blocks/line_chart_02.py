@@ -1,3 +1,5 @@
+from typing import Any
+
 import reflex as rx
 
 from components.chart.chart_tooltip import chart_tooltip, chart_tooltip_content
@@ -104,7 +106,7 @@ def _chart(show_y_axis: bool) -> rx.Component:
     )
 
 
-def _summary_item(item: dict) -> rx.Component:
+def _summary_item(item: dict[str, Any]) -> rx.Component:
     is_positive = item["change_type"] == "positive"
 
     return rx.el.div(

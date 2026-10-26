@@ -1,3 +1,5 @@
+from typing import Any
+
 import reflex as rx
 
 from components.core.hugeicon import hi
@@ -5,7 +7,7 @@ from components.ui.avatar import avatar
 from components.ui.button import button
 from native.lib.charts.area.v8 import area_chart_with_gradient
 
-NAV_ITEMS: list[dict[str, str | bool]] = [
+NAV_ITEMS: list[dict[str, Any]] = [
     {"label": "Dashboard", "icon": "DashboardSquare01Icon", "active": True},
     {"label": "Projects", "icon": "Folder01Icon", "active": False},
     {"label": "Analytics", "icon": "ChartBarLineIcon", "active": False},
@@ -20,7 +22,7 @@ ACTIVE_PROJECTS = [
     "Analytics Rebuild",
 ]
 
-BREADCRUMB_ITEMS: list[dict[str, str | None]] = [
+BREADCRUMB_ITEMS: list[dict[str, Any]] = [
     {"label": "Acme Inc", "icon": "SquareIcon"},
     {"label": "Marketing Site", "icon": None},
     {"label": "Preview", "icon": None},
@@ -339,7 +341,7 @@ def main_chart_section() -> rx.Component:
     )
 
 
-def _activity_row(item: dict) -> rx.Component:
+def _activity_row(item: dict[str, Any]) -> rx.Component:
     return rx.el.div(
         avatar.root(
             avatar.image(src=item["avatar"], class_name="shrink-0 grayscale"),

@@ -13,12 +13,12 @@ def sub_layout_decorator(
     badge_name: str,
     title: str,
     description: str,
-    search: Div | list,
-) -> Callable[[Callable[..., Div]], Callable[..., Main]]:
+    search: Div | list[Component],
+) -> Callable[[Callable[..., Component]], Callable[..., Main]]:
 
-    def decorator(func: Callable[..., Div]) -> Callable[..., Main]:
+    def decorator(func: Callable[..., Component]) -> Callable[..., Main]:
         @functools.wraps(func)
-        def wrapper(*args: Any, **kwargs: Any) -> Component:
+        def wrapper(*args: Any, **kwargs: Any) -> Main:
             page_content = func(*args, **kwargs)
             return main(
                 section(

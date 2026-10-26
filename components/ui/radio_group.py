@@ -64,7 +64,7 @@ class RadioGroupItem(CoreComponent):
     ) -> rx.Component:
         custom_classes = props.pop("class_name", "")
 
-        input_props = {"name": name, "value": value}
+        input_props: dict[str, Any] = {"name": name, "value": value}
         for key in list(props.keys()):
             if key in ClassNames.KNOWN_INPUT_PROPS or key.startswith(
                 ("on_", "data-", "aria-"),

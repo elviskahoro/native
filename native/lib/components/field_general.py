@@ -4,8 +4,6 @@ from components.ui.button import button
 from components.ui.checkbox import checkbox
 from components.ui.field import field
 from components.ui.input import input
-
-# from components.ui.select import select
 from components.ui.textarea import textarea
 
 months = [
@@ -63,63 +61,9 @@ def field_demo() -> rx.Component:
                         rx.el.div(
                             field.root(
                                 field.label("Month", html_for="checkout-exp-month"),
-                                # select.root(
-                                #     select.trigger(
-                                #         select.value(),
-                                #         select.icon(),
-                                #         id="checkout-exp-month",
-                                #     ),
-                                #     select.portal(
-                                #         select.positioner(
-                                #             select.popup(
-                                #                 select.group(
-                                #                     *[
-                                #                         select.item(
-                                #                             select.item_text(
-                                #                                 item["label"]
-                                #                             ),
-                                #                             select.item_indicator(),
-                                #                             value=item["value"],
-                                #                         )
-                                #                         for item in months
-                                #                     ]
-                                #                 )
-                                #             )
-                                #         )
-                                #     ),
-                                #     items=months,
-                                #     default_value="MM",
-                                # ),
                             ),
                             field.root(
                                 field.label("Year", html_for="checkout-exp-year"),
-                                # select.root(
-                                #     select.trigger(
-                                #         select.value(),
-                                #         select.icon(),
-                                #         id="checkout-exp-year",
-                                #     ),
-                                #     select.portal(
-                                #         select.positioner(
-                                #             select.popup(
-                                #                 select.group(
-                                #                     *[
-                                #                         select.item(
-                                #                             select.item_text(
-                                #                                 item["label"]
-                                #                             ),
-                                #                             select.item_indicator(),
-                                #                             value=item["value"],
-                                #                         )
-                                #                         for item in years
-                                #                     ]
-                                #                 )
-                                #             )
-                                #         )
-                                #     ),
-                                #     items=years,
-                                #     default_value="YYYY",
-                                # ),
                             ),
                             field.root(
                                 field.label("CVV", html_for="checkout-cvv"),

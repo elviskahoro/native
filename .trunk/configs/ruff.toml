@@ -124,6 +124,7 @@ convention = "google"
 # handlers are invoked positionally (`EventHandler[[bool]]`), so the handler's
 # parameter name can't be assumed; comments are banned here, so no inline noqa.
 "components/**" = ["TID252", "FBT003"]
+"components/chart/chart_tooltip.py" = ["PLR0913"]
 # `input` is the public component name in the registry API (shadcn parity).
 "components/ui/input*.py" = ["A001", "A004"]
 "native/pages/create.py" = ["A004"]

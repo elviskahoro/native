@@ -68,7 +68,7 @@ depends_on = [
 
 [[modules]]
 path = "native.templates"
-depends_on = ["components", "native.config"]
+depends_on = ["components", "native.config", "native.registry.components"]
 
 [[modules]]
 path = "native"

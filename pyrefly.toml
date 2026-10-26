@@ -28,3 +28,23 @@ implicit-any = true
 unannotated-parameter = true
 unannotated-return = true
 unused-ignore = true
+
+# Reflex declares event triggers as `rx.EventHandler` class attributes, which
+# pyrefly reads as non-data descriptors on a dataclass. components/ bans
+# comments (copied verbatim into user projects), so scope the exemption here.
+# Pyrefly applies only the first matching sub-config, so this block must repeat
+# the components/** bad-override exemption below.
+[[sub-config]]
+matches = "components/ui/dialog.py"
+
+[sub-config.errors]
+bad-dataclass-descriptor = false
+bad-override = false
+
+# Every component overrides Reflex's `Component.create(*children, **props)`
+# with a narrower, typed signature; that is the framework's extension idiom.
+[[sub-config]]
+matches = "components/**"
+
+[sub-config.errors]
+bad-override = false

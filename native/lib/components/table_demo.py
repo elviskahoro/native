@@ -56,7 +56,7 @@ def fmt(val: float) -> str:
     return f"${val:,.2f}"
 
 
-def summary_label(text: str, extra_classes: str = "") -> list:
+def summary_label(text: str, extra_classes: str = "") -> list[rx.Component]:
     base_class = f"py-2 pl-3 whitespace-nowrap {extra_classes}"
     return [
         table.cell(text, col_span=3, class_name=f"{base_class} sm:hidden"),

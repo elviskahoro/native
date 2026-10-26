@@ -130,7 +130,7 @@ class Button(BaseButton, CoreComponent):
         return [*super()._exclude_props(), "size", "variant"]
 
 
-def button_variants(variant: str = "default", size: str = "default") -> Var:
+def button_variants(variant: str = "default", size: str = "default") -> Var[str]:
     return cn(
         DEFAULT_CLASS_NAME,
         BUTTON_VARIANTS["variant"].get(variant, ""),

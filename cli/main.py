@@ -6,6 +6,7 @@ import shutil
 import sys
 from collections.abc import Sequence
 from pathlib import Path
+from typing import Any
 
 from cli.preset_codec import decode_seed
 from cli.scrollbar_css import SCROLLBAR_CSS
@@ -38,7 +39,7 @@ UTILITY_SENTINELS = {
 VERSIONED_PATH_PARTS = 4
 
 
-def flatten_vars(obj: dict) -> dict:
+def flatten_vars(obj: dict[str, Any]) -> dict[str, Any]:
     out = {}
     for k, v in obj.items():
         key = "--radius" if k == "radius" else f"--{k}"
@@ -84,7 +85,7 @@ def _apply_font_theme(theme: dict[str, str], font_id: str) -> None:
         theme.update(font["vars"])
 
 
-def rebuild_theme(config: dict) -> dict:
+def rebuild_theme(config: dict[str, Any]) -> dict[str, Any]:
     base_id = config.get("baseId")
     color_id = config.get("colorId")
     chart_id = config.get("chartId")
@@ -114,7 +115,7 @@ def rebuild_theme(config: dict) -> dict:
     return theme
 
 
-def format_css(config: dict) -> str:
+def format_css(config: dict[str, Any]) -> str:
     return "\n".join(f"    {k}: {v};" for k, v in config.items() if k.startswith("--"))
 
 
@@ -164,7 +165,7 @@ def parse_version_key(version_str: str) -> list[int]:
     return [int(x) for x in re.findall(r"\d+", version_str)]
 
 
-def get_latest_version(component_name: str, registry: dict) -> str | None:
+def get_latest_version(component_name: str, registry: dict[str, Any]) -> str | None:
     """Find the latest registered version of a component."""
     target = component_name.lower()
     versions = []
@@ -183,9 +184,76 @@ def get_latest_version(component_name: str, registry: dict) -> str | None:
     return f"{target}@{versions[-1]}"
 
 
+class _DependencyResolver:
+    """Mutable state for resolve_dependencies: claims, warnings and files."""
+
+    def __init__(self, registry: dict[str, Any]) -> None:
+        self.registry = registry
+        self.required_files: set[str] = set()
+        self.resolved: dict[str, str] = {}  # component name -> chosen registry key
+        self.order: list[str] = []  # first-resolved order, for a stable map
+        self.warned: set[str] = set()
+
+    def resolve_key(self, spec: str) -> str | None:
+        key = spec.lower()
+        if "@" in key:
+            return key if key in self.registry else None
+        return get_latest_version(key, self.registry)
+
+    def claim(self, name: str, key: str) -> bool:
+        """Register `name` as resolved to `key`. Returns True if this call
+        actually claimed it (False if already claimed by something else).
+        """
+        if name in self.resolved:
+            if self.resolved[name] != key and name not in self.warned:
+                _, existing_version = parse_component_spec(self.resolved[name])
+                _, new_version = parse_component_spec(key)
+                print(
+                    f"Warning: '{name}' requested at both "
+                    f"{existing_version or 'latest'} and {new_version or 'latest'}; "
+                    f"keeping {existing_version or 'latest'}.",
+                )
+                self.warned.add(name)
+            return False
+        self.resolved[name] = key
+        self.order.append(name)
+        return True
+
+    def claim_spec(self, spec: str) -> str | None:
+        """Resolve and claim `spec`; return its component name, or None."""
+        key = self.resolve_key(spec)
+        if not key:
+            print(f"Warning: Component '{spec}' not found in registry.")
+            return None
+        name, _ = parse_component_spec(key)
+        self.claim(name, key)
+        return name
+
+    def add_files_and_deps(self, key: str) -> None:
+        entry = self.registry[key]
+        self.required_files.update(entry["files"])
+        for dep in entry.get("dependencies", []):
+            self.add(dep)
+
+    def add(self, spec: str) -> None:
+        key = self.resolve_key(spec)
+        if not key:
+            print(f"Warning: Component '{spec}' not found in registry.")
+            return
+        name, _ = parse_component_spec(key)
+        if self.claim(name, key):
+            self.add_files_and_deps(key)
+
+    def installed_map(self) -> dict[str, str]:
+        return {
+            name: (parse_component_spec(self.resolved[name])[1] or "latest")
+            for name in self.order
+        }
+
+
 def resolve_dependencies(
     component_names: list[str],
-    registry: dict,
+    registry: dict[str, Any],
 ) -> tuple[list[str], dict[str, str]]:
     """Resolve a list of top-level component specs (with optional @version)
     plus their transitive dependencies into a file list and a name->version
@@ -199,84 +267,32 @@ def resolve_dependencies(
     top-level request always wins; a conflict pulled in purely via
     dependencies is resolved by first-come and a warning is printed.
     """
-    required_files: set[str] = set()
-    resolved: dict[str, str] = {}  # component name -> chosen registry key
-    order: list[str] = []  # first-resolved order, for a stable installed_map
-    warned: set[str] = set()
-
-    def resolve_key(spec: str) -> str | None:
-        key = spec.lower()
-        if "@" in key:
-            return key if key in registry else None
-        return get_latest_version(key, registry)
-
-    def claim(name: str, key: str) -> bool:
-        """Register `name` as resolved to `key`. Returns True if this call
-        actually claimed it (False if already claimed by something else).
-        """
-        if name in resolved:
-            if resolved[name] != key and name not in warned:
-                _, existing_version = parse_component_spec(resolved[name])
-                _, new_version = parse_component_spec(key)
-                print(
-                    f"Warning: '{name}' requested at both "
-                    f"{existing_version or 'latest'} and {new_version or 'latest'}; "
-                    f"keeping {existing_version or 'latest'}.",
-                )
-                warned.add(name)
-            return False
-        resolved[name] = key
-        order.append(name)
-        return True
-
-    def add_files_and_deps(key: str) -> None:
-        entry = registry[key]
-        for f in entry["files"]:
-            required_files.add(f)
-        for dep in entry.get("dependencies", []):
-            add(dep)
-
-    def add(spec: str) -> None:
-        key = resolve_key(spec)
-        if not key:
-            print(f"Warning: Component '{spec}' not found in registry.")
-            return
-        name, _ = parse_component_spec(key)
-        if not claim(name, key):
-            return
-        add_files_and_deps(key)
+    resolver = _DependencyResolver(registry)
 
     # First pass: claim every explicitly-requested component up front, so a
     # pinned version always wins over whatever a dependency graph resolves
     # to later, regardless of command-line order.
     explicit_names: list[str] = []
     for spec in component_names:
-        key = resolve_key(spec)
-        if not key:
-            print(f"Warning: Component '{spec}' not found in registry.")
-            continue
-        name, _ = parse_component_spec(key)
-        claim(name, key)
-        explicit_names.append(name)
+        name = resolver.claim_spec(spec)
+        if name is not None:
+            explicit_names.append(name)
 
     # Second pass: pull in files + dependencies for each explicit component,
     # using resolved[name] — the version that actually won the claim above —
     # not whichever key that particular spec happened to resolve to.
     for name in dict.fromkeys(explicit_names):  # dedupe, keep first-seen order
-        add_files_and_deps(resolved[name])
+        resolver.add_files_and_deps(resolver.resolved[name])
 
-    installed_map = {
-        name: (parse_component_spec(resolved[name])[1] or "latest") for name in order
-    }
-    return sorted(required_files), installed_map
+    return sorted(resolver.required_files), resolver.installed_map()
 
 
-def load_manifest(target_root: Path) -> dict:
+def load_manifest(target_root: Path) -> dict[str, Any]:
     """Load components.json, tolerating a missing or corrupt file.
     Always returns a dict with at least 'components' and 'theme' keys.
     """
     manifest_path = target_root / "components.json"
-    manifest: dict = {}
+    manifest: dict[str, Any] = {}
 
     if manifest_path.exists():
         try:
@@ -295,7 +311,7 @@ def load_manifest(target_root: Path) -> dict:
     return manifest
 
 
-def save_manifest(target_root: Path, manifest: dict) -> None:
+def save_manifest(target_root: Path, manifest: dict[str, Any]) -> None:
     manifest_path = target_root / "components.json"
     manifest_path.write_text(json.dumps(manifest, indent=2))
 
@@ -310,7 +326,11 @@ def update_manifest(target_root: Path, installed_map: dict[str, str]) -> None:
     print("• Updated manifest: components.json")
 
 
-def update_manifest_theme(target_root: Path, preset: str, config: dict) -> None:
+def update_manifest_theme(
+    target_root: Path,
+    preset: str,
+    config: dict[str, Any],
+) -> None:
     """Record the currently-applied theme preset in components.json without
     touching the components section.
     """
@@ -463,6 +483,37 @@ def _cleanup_duplicate_plugins(content: str) -> str:
     return content.replace(",,", ",")
 
 
+def _inject_tailwind_plugin(
+    content: str,
+    tree: ast.AST,
+    snippet: str,
+) -> tuple[str, bool]:
+    """Return (new_content, modified) after injecting the Tailwind plugin."""
+    lines = content.splitlines()
+    modified = False
+
+    call = _find_rx_config_node(tree)
+    if call:
+        if any(kw.arg == "plugins" for kw in call.keywords):
+            modified = _inject_plugins_into_existing(lines, snippet, call)
+        else:
+            modified = _inject_plugins_into_new(lines, snippet, call)
+
+        if modified:
+            content = _cleanup_duplicate_plugins("\n".join(lines))
+
+    if not modified:
+        for ctor in ("rx.Config(", "rx.config("):
+            if ctor in content:
+                content = content.replace(
+                    ctor,
+                    f"{ctor}\n    plugins=[\n{snippet}\n    ],",
+                )
+                modified = True
+                break
+    return content, modified
+
+
 def patch_rxconfig(config_path: Path) -> None:
     """Inject TailwindV4 plugin into rxconfig.py if not already present."""
     content = config_path.read_text()
@@ -474,34 +525,7 @@ def patch_rxconfig(config_path: Path) -> None:
     try:
         tree = ast.parse(content)
         snippet = TAILWIND_CONFIG_SNIPPET.strip().rstrip(",")
-        lines = content.splitlines()
-        modified = False
-
-        call = _find_rx_config_node(tree)
-        if call:
-            plugins_kw = next((kw for kw in call.keywords if kw.arg == "plugins"), None)
-            if plugins_kw:
-                modified = _inject_plugins_into_existing(lines, snippet, call)
-            else:
-                modified = _inject_plugins_into_new(lines, snippet, call)
-
-            if modified:
-                content = "\n".join(lines)
-                content = _cleanup_duplicate_plugins(content)
-
-        if not modified:
-            if "rx.Config(" in content:
-                content = content.replace(
-                    "rx.Config(",
-                    f"rx.Config(\n    plugins=[\n{snippet}\n    ],",
-                )
-                modified = True
-            elif "rx.config(" in content:
-                content = content.replace(
-                    "rx.config(",
-                    f"rx.config(\n    plugins=[\n{snippet}\n    ],",
-                )
-                modified = True
+        content, modified = _inject_tailwind_plugin(content, tree, snippet)
 
         if modified:
             import_stmt = "from reflex.plugins.shared_tailwind import TailwindConfig"

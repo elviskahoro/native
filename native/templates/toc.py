@@ -1,3 +1,5 @@
+from typing import Any
+
 import reflex as rx
 from reflex.experimental import ClientStateVar
 
@@ -39,7 +41,7 @@ def create_copy_button(url: str) -> rx.Component:
     )
 
 
-def _create_markdown_toc_links(toc_data: list[dict]) -> rx.Component:
+def _create_markdown_toc_links(toc_data: list[dict[str, Any]]) -> rx.Component:
 
     if not toc_data:
         return rx.el.div()
@@ -126,7 +128,7 @@ def _create_external_tool_links(url: str) -> rx.Component:
     )
 
 
-def table_of_content(url: str, toc_data: list[dict]) -> rx.Component:
+def table_of_content(url: str, toc_data: list[dict[str, Any]]) -> rx.Component:
     """Render table of contents.
 
     Args:

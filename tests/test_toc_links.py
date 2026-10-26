@@ -20,7 +20,7 @@ import html
 import re
 from pathlib import Path
 
-import pytest  # pyrefly: ignore[missing-import]
+import pytest
 
 from native.engine.parser import extract_toc_data, parse_and_render
 
@@ -49,7 +49,11 @@ def _served_headings(md_path: Path) -> list[dict[str, str]]:
     for piece in parse_and_render(body):
         if type(piece).__name__ != "Html":
             continue
-        payload = getattr(piece.dangerouslySetInnerHTML, "_var_value", None)  # pyrefly: ignore[missing-attribute]
+        payload = getattr(
+            getattr(piece, "dangerouslySetInnerHTML", None),
+            "_var_value",
+            None,
+        )
         if not payload or "__html" not in payload:
             continue
         for m in _HEADING_RE.finditer(payload["__html"]):
@@ -168,7 +172,11 @@ def test_extract_toc_data_dedup_restarts_per_chunk_like_served_dom() -> None:
     for piece in parse_and_render(body):
         if type(piece).__name__ != "Html":
             continue
-        payload = getattr(piece.dangerouslySetInnerHTML, "_var_value", None)  # pyrefly: ignore[missing-attribute]
+        payload = getattr(
+            getattr(piece, "dangerouslySetInnerHTML", None),
+            "_var_value",
+            None,
+        )
         if not payload or "__html" not in payload:
             continue
         served_ids.extend(m.group(2) for m in _HEADING_RE.finditer(payload["__html"]))

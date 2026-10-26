@@ -1,8 +1,12 @@
 from reflex.components.component import Component
-from reflex_base.event import call_script
+from reflex_base.event import EventSpec, call_script
 from reflex_components_core.el import svg
 
 from components.ui.button import button
+
+
+def _toggle_theme(_: object) -> EventSpec:
+    return call_script("window.toggleTheme()")
 
 
 def theme_toggle_button() -> Component:
@@ -37,7 +41,7 @@ def theme_toggle_button() -> Component:
             stroke_linejoin="round",
             class_name="size-4 !transition-none",
         ),
-        on_click=lambda _: call_script("window.toggleTheme()"),
+        on_click=_toggle_theme,
         variant="ghost",
         size="sm",
     )

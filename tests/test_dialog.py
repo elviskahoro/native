@@ -15,6 +15,8 @@ the popup renders a native ``<dialog>`` with ``data-slot="dialog-content"``,
 ``on_close`` only. See bug #4 and PR #23.
 """
 
+from typing import Any
+
 import reflex as rx
 from reflex_components_core.el.elements.other import Dialog
 
@@ -28,26 +30,39 @@ class _DialogState(rx.State):  # pyright: ignore [reportUntypedBaseClass]
         self.open = value
 
 
-def test_dialog_popup_declares_on_close_and_on_cancel_triggers():
+def test_dialog_popup_declares_on_close_and_on_cancel_triggers() -> None:
     triggers = DialogPopup.get_event_triggers()
     assert "on_close" in triggers
     assert "on_cancel" in triggers
 
 
-def test_popup_is_a_dialog_element_with_data_slot():
+def test_popup_is_a_dialog_element_with_data_slot() -> None:
     popup = dialog.popup(dialog.title("title"), dismissible=False)
     assert isinstance(popup, Dialog)
     assert popup.tag == "dialog"
     assert popup.custom_attrs.get("data-slot") == "dialog-content"
 
 
-def test_dismissible_false_wires_on_cancel():
+def test_dismissible_false_wires_on_cancel() -> None:
     popup = dialog.popup(dialog.title("title"), dismissible=False)
     assert "on_cancel" in popup.event_triggers
     assert "on_close" not in popup.event_triggers
 
 
-def test_on_open_change_wires_on_close():
-    popup = dialog.popup(dialog.title("title"), on_open_change=_DialogState.set_open)
+def test_on_open_change_wires_on_close() -> None:
+    handler: Any = _DialogState.set_open
+    popup = dialog.popup(dialog.title("title"), on_open_change=handler)
     assert "on_close" in popup.event_triggers
     assert "on_cancel" not in popup.event_triggers
+
+
+def test_dialog_parts_generate_no_ids_and_root_owns_handler() -> None:
+    from components.ui.dialog import GLOBAL_HANDLERS_JS
+
+    for part in (dialog.trigger("t"), dialog.close("c"), dialog.popup("p")):
+        assert "id" not in part.render()["props"] or not any(
+            p.startswith("id:") for p in part.render()["props"]
+        )
+    assert "getElementById" not in GLOBAL_HANDLERS_JS
+    assert "__dialogGlobalHandlersAttached" in GLOBAL_HANDLERS_JS
+    assert "on_mount" in dialog.root("x").event_triggers
