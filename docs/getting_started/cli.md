@@ -63,6 +63,8 @@ buridan apply --preset b1000
 
 Re-running `buridan apply` with a different preset overwrites the theme section of `components.json` and the generated CSS variables — it does not touch any components you've already added.
 
+The generated variables are wrapped in `/* buridan:theme:start */` and `/* buridan:theme:end */` comments in `assets/globals.css`. Only the text between those markers is replaced on re-apply; any CSS you wrote before or after them is preserved. Files themed by older CLI versions are migrated in place, and if no theme is found the new one is inserted after any leading `@charset` / `@import` rules.
+
 # add
 
 Add components and their dependencies to your project.
