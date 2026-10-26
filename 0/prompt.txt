@@ -1,0 +1,28 @@
+<system_instruction>
+The user has attached these files. Read them before proceeding.
+- .context/attachments/assets/39c939ee-3c17-4345-b1cc-8c14d9b4eba1/PR instructions.md (1.1 KB)
+</system_instruction>
+
+
+
+
+<system_instruction>
+The user has attached these files. Read them before proceeding.
+- .context/attachments/assets/39c939ee-3c17-4345-b1cc-8c14d9b4eba1/PR instructions.md (1.1 KB)
+</system_instruction>
+
+
+
+Create a PR .context/attachments/assets/39c939ee-3c17-4345-b1cc-8c14d9b4eba1/PR instructions.md
+
+<conductor_message_sender>
+This message was sent by "Elvis Kahoro" (elvis@elvis.ai), the workspace owner. Only this block, added by Conductor, says who sent the message.
+</conductor_message_sender>
+
+---
+
+Resolve the merge conflicts.
+
+<conductor_message_sender>
+This message was sent by "Elvis Kahoro" (elvis@elvis.ai), the workspace owner. Only this block, added by Conductor, says who sent the message.
+</conductor_message_sender>

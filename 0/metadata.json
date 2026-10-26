@@ -1,0 +1,64 @@
+{
+  "cli_version": "0.12.1",
+  "checkpoint_id": "01M5TY8TY8F7RT69Y8GGCZ05CE",
+  "session_id": "a40084cd-6dc4-49d0-aee2-87027c7ff064",
+  "strategy": "manual-commit",
+  "created_at": "2026-10-26T01:47:49.045536162Z",
+  "branch": "w-452/gh45-overview",
+  "checkpoints_count": 2,
+  "files_touched": [
+    "assets/docs/components/avatar.md",
+    "assets/docs/components/dialog.md",
+    "assets/docs/components/menu.md",
+    "assets/docs/components/tabs.md",
+    "cli/preset_codec.py",
+    "components/ui/avatar.py",
+    "components/ui/dialog.py",
+    "components/ui/menu.py",
+    "components/ui/tabs.py",
+    "docs/components/avatar.md",
+    "docs/components/dialog.md",
+    "docs/components/menu.md",
+    "docs/components/tabs.md",
+    "tests/test_dialog.py",
+    "tests/test_menu.py",
+    "tests/test_tabs.py"
+  ],
+  "agent": "Claude Code",
+  "model": "claude-sonnet-5-5",
+  "turn_id": "f78a113a5758",
+  "checkpoint_transcript_start": 452,
+  "transcript_lines_at_start": 452,
+  "compact_transcript_start": 59,
+  "token_usage": {
+    "input_tokens": 28,
+    "cache_creation_tokens": 12240,
+    "cache_read_tokens": 1148307,
+    "output_tokens": 4330,
+    "api_call_count": 14,
+    "subagent_tokens": {
+      "input_tokens": 0,
+      "cache_creation_tokens": 0,
+      "cache_read_tokens": 0,
+      "output_tokens": 0,
+      "api_call_count": 0
+    }
+  },
+  "redaction": {
+    "replacements": 2,
+    "layers": {
+      "betterleaks": 2,
+      "connection_string": 0,
+      "credential_key": 0,
+      "credential_value": 0,
+      "credentialed_uri": 0,
+      "entropy": 0,
+      "key_context": 0,
+      "provider_token": 0,
+      "shell_stdin": 0
+    }
+  },
+  "session_metrics": {
+    "turn_count": 8
+  }
+}
