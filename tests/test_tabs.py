@@ -33,7 +33,7 @@ def _extract_on_click_js(comp):
                 if isinstance(item, (tuple, list)):
                     stack.extend(item)
                     continue
-                value = getattr(item, "_var_value", None)
+                value = getattr(item, "_var_value", None) or getattr(item, "_js_expr", None)
                 if isinstance(value, str) and "querySelectorAll" in value:
                     out.append(value)
     return out
@@ -149,7 +149,7 @@ def test_on_click_handler_contains_scope_guard():
     trigger = tabs.trigger("Home", value="home", id="t1")
     handlers = _extract_on_click_js(trigger)
     assert len(handlers) == 1
-    assert GUARD_SUBSTRING in handlers[0]
+    assert GUARD_SUBSTRING in handlers[0] or GUARD_SUBSTRING.replace('"', '\\"') in handlers[0]
 
 
 def test_guard_preserves_nested_highlight_after_outer_click():

@@ -1,4 +1,4 @@
-import uuid
+import json
 from typing import Any
 
 import reflex as rx
@@ -72,40 +72,43 @@ class TabsTrigger(CoreComponent):
         props["data-value"] = value
         props["type"] = "button"
 
-        trigger_id = props.get("id") or f"tabs-trigger-{uuid.uuid4().hex[:8]}"
-        props["id"] = trigger_id
-
         user_on_click = props.pop("on_click", None)
         user_on_mount = props.pop("on_mount", None)
 
-        js_on_click = f"""
-        (function() {{
-            var trigger = document.getElementById('{trigger_id}');
+        js_on_click = """
+        (function() {
+            var trigger = document.querySelector('[data-tabs-clicked]');
             if (!trigger) return;
+            trigger.removeAttribute('data-tabs-clicked');
             var root = trigger.closest('[data-slot="tabs"]');
             if (!root) return;
 
-            root.dataset.value = '{value}';
-            root.querySelectorAll('[data-slot="tabs-trigger"]').forEach(function(t) {{
+            var value = trigger.getAttribute('data-value');
+            root.dataset.value = value;
+            root.querySelectorAll('[data-slot="tabs-trigger"]').forEach(function(t) {
                 if (t.closest('[data-slot="tabs"]') !== root) return;
-                t.setAttribute('data-active', t.getAttribute('data-value') === '{value}' ? 'true' : 'false');
-            }});
-        }})()
+                t.setAttribute('data-active', t.getAttribute('data-value') === value ? 'true' : 'false');
+            });
+        })()
         """
 
-        js_on_mount = f"""
-        (function() {{
-            var trigger = document.getElementById('{trigger_id}');
-            if (!trigger) return;
-            var root = trigger.closest('[data-slot="tabs"]');
-            if (!root) return;
-
-            var initialValue = root.dataset.value;
-            trigger.setAttribute('data-active', trigger.getAttribute('data-value') === initialValue ? 'true' : 'false');
-        }})()
+        js_on_mount = """
+        (function() {
+            document.querySelectorAll('[data-slot="tabs-trigger"]').forEach(function(t) {
+                var root = t.closest('[data-slot="tabs"]');
+                if (!root) return;
+                t.setAttribute('data-active', t.getAttribute('data-value') === root.dataset.value ? 'true' : 'false');
+            });
+        })()
         """
 
-        click_handlers = [rx.call_script(js_on_click)]
+        click_script = rx.Var(
+            "(_e.currentTarget.setAttribute('data-tabs-clicked', '1'), "
+            + json.dumps(js_on_click)
+            + ")"
+        )
+
+        click_handlers = [rx.call_script(click_script)]
         if user_on_click is not None:
             if isinstance(user_on_click, list):
                 click_handlers.extend(user_on_click)
