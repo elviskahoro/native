@@ -6,7 +6,7 @@
       "UV_PYTHON_DOWNLOADS": "automatic"
     }
   },
-  "installCommand": "curl -LsSf https://astral.sh/uv/install.sh | UV_INSTALL_DIR=$PWD/.uvbin UV_NO_MODIFY_PATH=1 sh && export UV_PYTHON_DOWNLOADS=automatic UV_PYTHON=3.12 && .uvbin/uv python install 3.12 && .uvbin/uv sync",
+  "installCommand": "bash scripts/vercel_install.sh",
   "buildCommand": "export UV_PYTHON=3.12 && .uvbin/uv run reflex export --frontend-only && mkdir -p frontend && unzip -o frontend.zip -d frontend",
   "outputDirectory": "frontend"
 }
