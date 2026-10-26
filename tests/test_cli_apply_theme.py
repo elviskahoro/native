@@ -62,3 +62,10 @@ def test_fallback_keeps_imports_first() -> None:
     out = splice_theme_block(css, THEME)
     assert out.index("@import") < out.index(THEME_START_SENTINEL)
     assert out.index(THEME_END_SENTINEL) < out.index("body {")
+
+
+def test_fallback_handles_semicolon_in_quoted_import_url() -> None:
+    css = '@import url("data:text/css;base64,ABCD");\nbody { margin: 0; }\n'
+    out = splice_theme_block(css, THEME)
+    assert out.startswith(css.splitlines()[0])
+    assert out.index(THEME_START_SENTINEL) > out.index("ABCD")

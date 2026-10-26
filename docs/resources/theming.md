@@ -92,7 +92,9 @@ These tokens live in your CSS file under `:root` and `.dark`.
 
 # Adding New Tokens
 
-To add a new token, define it under `:root` and `.dark`, then expose it to Tailwind by appending `rxconfig.py`.
+`buridan apply` owns the region of `assets/globals.css` between the `/* buridan:theme:start */` and `/* buridan:theme:end */` comments and rewrites it on every run. Put your own tokens and styles outside those markers, for example in a separate `:root` / `.dark` block, so they survive re-applying a preset.
+
+To add a new token, define it under `:root` and `.dark` outside the managed region, then expose it to Tailwind by appending `rxconfig.py`.
 
 ```css
 :root {

@@ -588,7 +588,7 @@ THEME_END_SENTINEL = "/* buridan:theme:end */"
 
 # @charset/@import rules (plus comments/whitespace) must precede all other rules.
 _LEADING_IMPORTS_RE = re.compile(
-    r"(?:\s|/\*.*?\*/|@(?:charset|import)\b[^;]*;)*",
+    r"(?:\s|/\*.*?\*/|@(?:charset|import)\b(?:[^;\"']|\"[^\"]*\"|'[^']*')*;)*",
     re.DOTALL,
 )
 
