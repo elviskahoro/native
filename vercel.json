@@ -1,20 +1,12 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
-  "services": {
-    "web": {
-      "root": ".",
-      "framework": "other",
-      "installCommand": "pip install uv && uv sync",
-      "buildCommand": "uv run reflex export --frontend-only && mkdir -p frontend && unzip -o frontend.zip -d frontend",
-      "outputDirectory": "frontend"
+  "framework": null,
+  "build": {
+    "env": {
+      "UV_PYTHON_DOWNLOADS": "automatic"
     }
   },
-  "rewrites": [
-    {
-      "source": "/(.*)",
-      "destination": {
-        "service": "web"
-      }
-    }
-  ]
+  "installCommand": "bash scripts/vercel_install.sh",
+  "buildCommand": "export UV_PYTHON=3.12 && .uvbin/uv run reflex export --frontend-only && mkdir -p frontend && unzip -o frontend.zip -d frontend",
+  "outputDirectory": "frontend"
 }
