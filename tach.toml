@@ -58,7 +58,13 @@ depends_on = []
 
 [[modules]]
 path = "native.pages"
-depends_on = ["native.templates", "components", "native.registry", "native.lib"]
+depends_on = [
+  "native.templates",
+  "components",
+  "native.registry",
+  "native.lib",
+  "native.core",
+]
 
 [[modules]]
 path = "native.templates"

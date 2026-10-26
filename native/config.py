@@ -29,19 +29,19 @@ def generate_doc_routes(section_folder: str, base_path: str) -> list[dict[str, A
                 "title": metadata["title"],
                 "description": metadata["description"],
                 "url": f"{base_path}{path_slug}",
-                "order": metadata.get("order", 0),
+                "order": metadata.get("order", 999),
             },
         )
     routes.sort(key=lambda x: x["order"])
     return routes
 
 
-DOC_SECTIONS: list[tuple[str, str, str, list[dict[str, str]]]] = [
+DOC_SECTIONS: list[tuple[str, str, str, list[dict[str, str | int]]]] = [
     (
         "getting_started",
         "docs/getting-started/",
         "",
-        [{"title": "llms.txt", "url": "llms.txt", "order": "5"}],
+        [{"title": "llms.txt", "url": "llms.txt", "order": 5}],
     ),
     ("utilities", "docs/utilities/", "title", []),
     ("resources", "docs/resources/", "title", []),
