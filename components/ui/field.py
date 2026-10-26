@@ -146,12 +146,13 @@ class FieldSeparator(elements.Div):
         )
 
         inner_elements = [separator(class_name="absolute inset-0 top-1/2")]
+        content_props: dict[str, Any] = {"data_slot": "field-separator-content"}
         if children:
             inner_elements.append(
                 elements.Span(
                     *children,
-                    data_slot="field-separator-content",
                     class_name="relative mx-auto block w-fit bg-background px-2 text-muted-foreground",
+                    **content_props,
                 ),
             )
         return super().create(*inner_elements, **props)

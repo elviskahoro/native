@@ -1,3 +1,5 @@
+from typing import Any
+
 import reflex as rx
 
 from components.ui.avatar import avatar
@@ -5,7 +7,7 @@ from components.ui.badge import badge
 from components.ui.checkbox import checkbox
 from components.ui.table import table
 
-INVOICES = [
+INVOICES: list[dict[str, Any]] = [
     {
         "id": "INV-0041",
         "client": "Miriam Okafor",
@@ -157,7 +159,7 @@ def render_status_badge(status: str) -> rx.Component:
     )
 
 
-def render_row(inv: dict) -> rx.Component:
+def render_row(inv: dict[str, Any]) -> rx.Component:
     formatted_amount = f"{inv['amount']:,.2f}"
 
     return table.row(

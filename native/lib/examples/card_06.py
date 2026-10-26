@@ -1,3 +1,5 @@
+from typing import Any
+
 import reflex as rx
 
 from components.core.hugeicon import hi
@@ -16,7 +18,7 @@ members = [
 @masonry_card(label="General")
 def card_06() -> rx.Component:
 
-    def member_row(member: dict) -> rx.Component:
+    def member_row(member: dict[str, Any]) -> rx.Component:
         return rx.el.div(
             input(
                 default_value=member["email"],

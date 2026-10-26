@@ -16,9 +16,14 @@ control factories.
 
 from __future__ import annotations
 
+from typing import TYPE_CHECKING, Any
+
 import pytest
 
 from components.ui.input_group import InputGroupAddon, input_group
+
+if TYPE_CHECKING:
+    from collections.abc import Callable
 
 CONTROL_SLOT = "input-group-control"
 
@@ -36,7 +41,7 @@ def _focus_script() -> str:
     return scripts[0]
 
 
-def test_addon_focus_handler_targets_shared_control_slot():
+def test_addon_focus_handler_targets_shared_control_slot() -> None:
     """The click handler must select the shared ``input-group-control`` slot
     rather than a hard-coded tag name, so it matches both ``<input>`` and
     ``<textarea>`` controls. A bare ``querySelector('input')`` type selector
@@ -51,7 +56,7 @@ def test_addon_focus_handler_targets_shared_control_slot():
     [input_group.input, input_group.textarea],
     ids=["input", "textarea"],
 )  # pyright: ignore[reportUntypedFunctionDecorator]
-def test_control_carries_shared_data_slot(factory):
+def test_control_carries_shared_data_slot(factory: Callable[..., Any]) -> None:
     """Both ``input_group.input`` and ``input_group.textarea`` must render a
     control carrying ``data-slot="input-group-control"`` in its DOM attributes.
     The focus handler's selector keys off this slot, so dropping it (or

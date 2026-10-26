@@ -1,4 +1,5 @@
 from dataclasses import dataclass
+from typing import Any
 
 from reflex.components.component import Component
 from reflex.event import call_script
@@ -25,7 +26,7 @@ NAV_LIST = [
 @dataclass
 class SidebarSection:
     title: str
-    routes: list[dict]
+    routes: list[dict[str, Any]]
 
 
 MENU_SECTIONS = [

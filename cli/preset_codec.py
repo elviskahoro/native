@@ -20,6 +20,8 @@ dimension, which defaults to "inherit" for any v1 code. Encoding always
 uses the current version; only decoding needs to understand the old one.
 """
 
+from typing import Any
+
 BASE62_ALPHABET = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz"
 DEFAULT_PRESET_CODE = "b0"
 VERSION_V1 = 1
@@ -29,7 +31,7 @@ BITS_V1 = {"font": 5, "color": 5, "base": 4, "radius": 4, "style": 4}
 BITS_V2 = {"font": 5, "color": 5, "chart": 5, "base": 4, "radius": 4, "style": 4}
 
 
-def _compute_shifts(bits: dict, order: list[str]) -> dict:
+def _compute_shifts(bits: dict[str, Any], order: list[str]) -> dict[str, Any]:
     shifts = {}
     offset = 0
     for name in order:
@@ -62,12 +64,12 @@ def _mask(width: int) -> int:
 def decode_seed(
     seed: str,
     *,
-    base_themes: list[dict],
-    color_themes: list[dict],
-    style_registry: list[dict],
-    radii_options: list[dict],
-    font_registry: list[dict],
-) -> dict | None:
+    base_themes: list[dict[str, Any]],
+    color_themes: list[dict[str, Any]],
+    style_registry: list[dict[str, Any]],
+    radii_options: list[dict[str, Any]],
+    font_registry: list[dict[str, Any]],
+) -> dict[str, Any] | None:
     """Returns: baseId, colorId, chartId, styleId, fontId, radius.
     colorId/chartId are None when inheriting. radius is None when
     inheriting from the active style's own --radius — NOT a hardcoded

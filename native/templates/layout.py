@@ -3,7 +3,7 @@ from collections.abc import Callable
 from typing import Any
 
 from reflex.components.component import Component
-from reflex_components_core.el import Main, Section, div, h1, main, p, section
+from reflex_components_core.el import Main, div, h1, main, p, section
 
 from native.templates.footer import _footer
 from native.templates.navbar import navbar
@@ -12,13 +12,13 @@ from native.templates.navbar import navbar
 def layout_decorator(
     title: str,
     description: str,
-    ctas: list | None = None,
-    logos: list | None = None,
-) -> Callable[[Callable[..., Section]], Callable[..., Main]]:
+    ctas: list[Component] | None = None,
+    logos: list[Component] | None = None,
+) -> Callable[[Callable[..., Component]], Callable[..., Main]]:
 
-    def decorator(func: Callable[..., Section]) -> Callable[..., Main]:
+    def decorator(func: Callable[..., Component]) -> Callable[..., Main]:
         @functools.wraps(func)
-        def wrapper(*args: Any, **kwargs: Any) -> Component:
+        def wrapper(*args: Any, **kwargs: Any) -> Main:
             page_content = func(*args, **kwargs)
             return main(
                 section(

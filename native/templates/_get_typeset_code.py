@@ -1,4 +1,5 @@
 import json
+from dataclasses import dataclass
 from pathlib import Path
 
 import reflex as rx
@@ -19,24 +20,30 @@ except FileNotFoundError:
 TYPESET_IMPORT_SNIPPET = '@import "tailwindcss";\n@import "./typeset.css";'
 
 
+@dataclass(frozen=True)
+class CopyButtonSpec:
+    """Id and optional click handler for a section's copy button."""
+
+    copy_id: str | None = None
+    on_click: EventSpec | None = None
+
+
 def get_code_section(
     title: str,
     description: str,
     component: rx.Component,
     *,
-    has_copy: bool = False,
-    copy_id: str | None = None,
-    on_copy_click: EventSpec | None = None,
+    copy: CopyButtonSpec | None = None,
 ) -> rx.Component:
 
-    if has_copy:
+    if copy is not None:
         copy_btn = button(
             "Copy",
             variant="outline",
             class_name="w-full mt-2",
-            id=copy_id,
+            id=copy.copy_id,
             type="button",
-            **({"on_click": on_copy_click} if on_copy_click is not None else {}),
+            **({"on_click": copy.on_click} if copy.on_click is not None else {}),
         )
     else:
         copy_btn = rx.el.div(class_name="hidden")
@@ -83,9 +90,10 @@ def typeset_get_code() -> rx.Component:
             component=rx.el.pre(
                 rx.el.code(TYPESET_IMPORT_SNIPPET, class_name="language-css w-full"),
             ),
-            has_copy=True,
-            copy_id="copy-typeset-css",
-            on_copy_click=rx.call_script(COPY_SCRIPT),
+            copy=CopyButtonSpec(
+                copy_id="copy-typeset-css",
+                on_click=rx.call_script(COPY_SCRIPT),
+            ),
         ),
         get_code_section(
             title="2. Add the fonts",
@@ -93,8 +101,7 @@ def typeset_get_code() -> rx.Component:
             component=rx.el.pre(
                 rx.el.code(id="get-typeset-fonts", class_name="language-python w-full"),
             ),
-            has_copy=True,
-            copy_id="copy-typeset-fonts",
+            copy=CopyButtonSpec(copy_id="copy-typeset-fonts"),
         ),
         get_code_section(
             title="3. Create your custom typeset",
@@ -102,8 +109,7 @@ def typeset_get_code() -> rx.Component:
             component=rx.el.pre(
                 rx.el.code(id="get-typeset-tokens", class_name="language-css w-full"),
             ),
-            has_copy=True,
-            copy_id="copy-typeset-tokens",
+            copy=CopyButtonSpec(copy_id="copy-typeset-tokens"),
         ),
         class_name="w-full h-full p-4 overflow-y-scroll overscroll-y-none flex flex-col gap-y-6 scrollbar-none",
     )

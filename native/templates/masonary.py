@@ -1,16 +1,32 @@
 import functools
 from collections.abc import Callable
-from typing import Any
+from typing import Any, overload
 
 from reflex.components.component import Component
 from reflex_components_core.el import div
+
+
+@overload
+def masonry_card(
+    func: Callable[..., Any],
+    *,
+    label: str = "General",
+) -> Callable[..., Component]: ...
+
+
+@overload
+def masonry_card(
+    func: None = None,
+    *,
+    label: str = "General",
+) -> Callable[[Callable[..., Any]], Callable[..., Component]]: ...
 
 
 def masonry_card(
     func: Callable[..., Any] | None = None,
     *,
     label: str = "General",
-) -> Callable[..., Component]:
+) -> Callable[..., Any]:
     if func is None:
         return functools.partial(masonry_card, label=label)
 

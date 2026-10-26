@@ -96,7 +96,7 @@ def build_component_index(
 
 
 def resolve_relative_module(package_dotted: str, level: int, module: str | None) -> str:
-    parts = package_dotted.split(".") if package_dotted else []
+    parts: list[str] = package_dotted.split(".") if package_dotted else []
     if level > 1:
         parts = parts[: len(parts) - (level - 1)]
     if module:
@@ -263,7 +263,7 @@ def render_registry(by_name: dict[str, ComponentFile]) -> str:
         "Re-run the script after adding/moving/renaming component files.",
         '"""',
         "",
-        "COMPONENT_REGISTRY = {",
+        "COMPONENT_REGISTRY: dict[str, dict[str, list[str]]] = {",
     ]
 
     for group in sorted(groups):

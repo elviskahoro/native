@@ -1,4 +1,6 @@
 import json
+from dataclasses import dataclass
+from typing import Any
 
 import reflex as rx
 
@@ -36,35 +38,43 @@ from native.templates.masonary import masonry_card
 from native.templates.navbar import navbar
 
 
+@dataclass(frozen=True)
+class SelectDecor:
+    """Optional decoration for `_theme_select` (see its docstring)."""
+
+    describe: bool = False
+    icon: rx.Component | None = None
+    swatch: bool = False
+
+
 def _theme_select(
     id_: str,
     label: str,
-    options: list[dict],
+    options: list[dict[str, Any]],
     default_id: str,
-    *,
-    describe: bool = False,
-    icon: rx.Component | None = None,
-    swatch: bool = False,
+    decor: SelectDecor | None = None,
 ) -> rx.Component:
-    """swatch=True: a single live color dot next to the label (id=f"{id_}-swatch"),
+    """decor.swatch=True: a single live color dot next to the label (id=f"{id_}-swatch"),
       kept in sync by theme-preview.js. Which CSS token it reflects is
       decided per-select in the JS layer, not here — base-theme-select
       shows --accent, color-theme-select shows the effective --primary,
       chart-color-select shows the effective --chart-1.
-    icon: a static icon (e.g. hi("PaintBucketIcon")) shown instead of a
+    decor.icon: a static icon (e.g. hi("PaintBucketIcon")) shown instead of a
       swatch — for selects with no live color to preview (Style, Radius,
       Font). Pass real icon names from your own hugeicon set; I'm not
       guessing at exact names here.
     """
+    decor = decor or SelectDecor()
+    icon = decor.icon
 
-    def _option_label(opt: dict) -> str:
-        if describe and opt.get("description"):
+    def _option_label(opt: dict[str, Any]) -> str:
+        if decor.describe and opt.get("description"):
             return f"{opt['label']}"
         return opt["label"]
 
     if icon is not None:
         indicator = icon
-    elif swatch:
+    elif decor.swatch:
         indicator = rx.el.div(
             id=f"{id_}-swatch",
             class_name="size-4 rounded-full shrink-0 border border-border/40",
@@ -208,9 +218,8 @@ def _sidebar_desktop() -> rx.Component:
                 "style-select",
                 "Style",
                 STYLE_REGISTRY,
-                STYLE_REGISTRY[0]["id"],
-                describe=True,
-                icon=hi("HexagonIcon"),
+                str(STYLE_REGISTRY[0]["id"]),
+                decor=SelectDecor(describe=True, icon=hi("HexagonIcon")),
             ),
             rx.el.div(
                 _theme_select(
@@ -218,7 +227,7 @@ def _sidebar_desktop() -> rx.Component:
                     "Base theme",
                     BASE_THEMES,
                     BASE_THEMES[0]["id"],
-                    swatch=True,
+                    decor=SelectDecor(swatch=True),
                 ),
                 _theme_select(
                     "color-theme-select",
@@ -228,7 +237,7 @@ def _sidebar_desktop() -> rx.Component:
                         *COLOR_THEMES,
                     ],
                     "__match_base__",
-                    swatch=True,
+                    decor=SelectDecor(swatch=True),
                 ),
                 _theme_select(
                     "chart-color-select",
@@ -238,7 +247,7 @@ def _sidebar_desktop() -> rx.Component:
                         *COLOR_THEMES,
                     ],
                     "__match_base__",
-                    swatch=True,
+                    decor=SelectDecor(swatch=True),
                 ),
                 class_name="min-w-[10rem] shrink-0 lg:min-w-0",
             ),
@@ -247,14 +256,14 @@ def _sidebar_desktop() -> rx.Component:
                 "Radius",
                 [{"id": "__default__", "label": "Default"}, *RADII_OPTIONS],
                 "__default__",
-                icon=hi("SquareRoundCornerIcon"),
+                decor=SelectDecor(icon=hi("SquareRoundCornerIcon")),
             ),
             _theme_select(
                 "font-select",
                 "Font",
                 FONT_REGISTRY,
                 FONT_REGISTRY[0]["id"],
-                icon=hi("TextFontIcon"),
+                decor=SelectDecor(icon=hi("TextFontIcon")),
             ),
             class_name=(
                 "px-2 py-1 lg:p-0 flex gap-1 overflow-x-auto scrollbar-none "

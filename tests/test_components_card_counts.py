@@ -21,17 +21,17 @@ def _demo_count(slug: str) -> int:
     return len(DEMO_RE.findall(md.read_text()))
 
 
-def _entries():
+def _entries() -> list[tuple[str, str, int]]:
     from native.pages.components import get_component_entries
 
     return get_component_entries(UI, EX)
 
 
-def _cards():
+def _cards() -> dict[str, int]:
     return {slug: count for _, slug, count in _entries()}
 
 
-def test_card_count_matches_detail_page_demos():
+def test_card_count_matches_detail_page_demos() -> None:
     cards = _cards()
     assert cards, "no component entries found (glob returned nothing)"
     mismatches = []
@@ -44,21 +44,21 @@ def test_card_count_matches_detail_page_demos():
     )
 
 
-def test_button_card_count_excludes_button_group():
+def test_button_card_count_excludes_button_group() -> None:
     cards = _cards()
     assert cards["button"] == EXPECTED_BUTTON_DEMOS
     assert cards["button-group"] == EXPECTED_BUTTON_GROUP_DEMOS
     assert cards["button"] != EXPECTED_BUTTON_DEMOS + EXPECTED_BUTTON_GROUP_DEMOS
 
 
-def test_input_card_count_excludes_input_group():
+def test_input_card_count_excludes_input_group() -> None:
     cards = _cards()
     assert cards["input"] == EXPECTED_INPUT_DEMOS
     assert cards["input-group"] == EXPECTED_INPUT_GROUP_DEMOS
     assert cards["input"] != EXPECTED_INPUT_DEMOS + EXPECTED_INPUT_GROUP_DEMOS
 
 
-def test_no_prefixed_sibling_double_counting():
+def test_no_prefixed_sibling_double_counting() -> None:
     stems = sorted(p.stem for p in UI.glob("*.py") if p.stem != "__init__")
     cards = _cards()
     for a in stems:
@@ -80,13 +80,13 @@ def test_no_prefixed_sibling_double_counting():
             )
 
 
-def test_entries_sorted_by_name_case_insensitive():
+def test_entries_sorted_by_name_case_insensitive() -> None:
     entries = _entries()
     names_lower = [name.lower() for name, _, _ in entries]
     assert names_lower == sorted(names_lower)
 
 
-def test_get_links_returns_one_card_per_entry():
+def test_get_links_returns_one_card_per_entry() -> None:
     from native.pages.components import get_links
 
     cards = get_links(UI, EX, "/docs/components")
@@ -96,7 +96,7 @@ def test_get_links_returns_one_card_per_entry():
     assert not isinstance(cards[0], tuple)
 
 
-def test_module_component_links_nonempty_from_repo_root():
+def test_module_component_links_nonempty_from_repo_root() -> None:
     import native.pages.components as page
 
     cwd = Path.cwd()

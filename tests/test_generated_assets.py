@@ -30,7 +30,7 @@ UNRESOLVED_DELIMITER_PATTERN = re.compile(r"--([\w_]+)(?:\(.*?\))?--")
 # ---------------------------------------------------------------------------
 
 
-def all_source_md_files():
+def all_source_md_files() -> list[pathlib.Path]:
     """Return all .md source files under docs/."""
     return list(DOCS_DIR.rglob("*.md"))
 
@@ -81,7 +81,7 @@ class TestMarkdownGeneration:
         _all_md,
         ids=lambda f: str(f.relative_to(DOCS_DIR)),
     )
-    def test_output_file_exists(self, md_file):
+    def test_output_file_exists(self, md_file: pathlib.Path) -> None:
         """Every source .md file must have a corresponding generated output file."""
         output = expected_markdown_output_path(md_file)
         assert output.exists(), (
@@ -94,7 +94,7 @@ class TestMarkdownGeneration:
         _all_md,
         ids=lambda f: str(f.relative_to(DOCS_DIR)),
     )
-    def test_output_file_is_not_empty(self, md_file):
+    def test_output_file_is_not_empty(self, md_file: pathlib.Path) -> None:
         """Generated markdown files must not be empty."""
         output = expected_markdown_output_path(md_file)
         if not output.exists():
@@ -108,7 +108,7 @@ class TestMarkdownGeneration:
         _all_md,
         ids=lambda f: str(f.relative_to(DOCS_DIR)),
     )
-    def test_no_unresolved_delimiters(self, md_file):
+    def test_no_unresolved_delimiters(self, md_file: pathlib.Path) -> None:
         """
         Generated markdown must contain no unresolved --component-- delimiters,
         which would indicate a registry lookup failure during generation.
@@ -124,13 +124,13 @@ class TestMarkdownGeneration:
             + ", ".join(f"--{m}--" for m in matches)
         )
 
-    def test_output_directory_exists(self):
+    def test_output_directory_exists(self) -> None:
         """The assets/docs/ output directory itself must exist."""
         assert MARKDOWN_OUTPUT_DIR.exists() and MARKDOWN_OUTPUT_DIR.is_dir(), (
             f"Output directory missing: {MARKDOWN_OUTPUT_DIR.relative_to(ROOT_DIR)}"
         )
 
-    def test_no_extra_output_files(self):
+    def test_no_extra_output_files(self) -> None:
         """
         Every file in assets/docs/ should trace back to a source file in docs/.
         Catches stale outputs from deleted source files.
@@ -149,14 +149,14 @@ class TestMarkdownGeneration:
 
 
 class TestSocialCardGeneration:
-    def test_output_directory_exists(self):
+    def test_output_directory_exists(self) -> None:
         """The assets/social/ output directory must exist."""
         assert SOCIAL_OUTPUT_DIR.exists() and SOCIAL_OUTPUT_DIR.is_dir(), (
             f"Social card output directory missing: {SOCIAL_OUTPUT_DIR.relative_to(ROOT_DIR)}"
         )
 
     @pytest.mark.parametrize("route", PAGES_CONFIG_ROUTES)
-    def test_pages_config_card_exists(self, route):
+    def test_pages_config_card_exists(self, route: str) -> None:
         """Each hardcoded PAGES_CONFIG entry must have a .webp social card."""
         filename = route.replace("/", "-") + ".webp"
         card_path = SOCIAL_OUTPUT_DIR / filename
@@ -166,7 +166,7 @@ class TestSocialCardGeneration:
         )
 
     @pytest.mark.parametrize("route", PAGES_CONFIG_ROUTES)
-    def test_pages_config_card_is_not_empty(self, route):
+    def test_pages_config_card_is_not_empty(self, route: str) -> None:
         """PAGES_CONFIG social cards must not be zero-byte files."""
         filename = route.replace("/", "-") + ".webp"
         card_path = SOCIAL_OUTPUT_DIR / filename
@@ -181,7 +181,7 @@ class TestSocialCardGeneration:
         _md_with_frontmatter,
         ids=lambda f: str(f.relative_to(DOCS_DIR)),
     )
-    def test_doc_social_card_exists(self, md_file):
+    def test_doc_social_card_exists(self, md_file: pathlib.Path) -> None:
         """Every docs/ markdown file with frontmatter must have a .webp social card."""
         card_path = expected_social_card_path(md_file)
         assert card_path.exists(), (
@@ -194,7 +194,7 @@ class TestSocialCardGeneration:
         _md_with_frontmatter,
         ids=lambda f: str(f.relative_to(DOCS_DIR)),
     )
-    def test_doc_social_card_is_not_empty(self, md_file):
+    def test_doc_social_card_is_not_empty(self, md_file: pathlib.Path) -> None:
         """Social cards for docs pages must not be zero-byte files."""
         card_path = expected_social_card_path(md_file)
         if not card_path.exists():
@@ -208,7 +208,7 @@ class TestSocialCardGeneration:
         _md_with_frontmatter,
         ids=lambda f: str(f.relative_to(DOCS_DIR)),
     )
-    def test_doc_social_card_is_webp(self, md_file):
+    def test_doc_social_card_is_webp(self, md_file: pathlib.Path) -> None:
         """
         Social card files should be valid WEBP images — checked by magic bytes
         (no Pillow dependency needed at test time).
