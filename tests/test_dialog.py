@@ -53,7 +53,7 @@ def test_on_open_change_wires_on_close():
     assert "on_cancel" not in popup.event_triggers
 
 
-def test_dialog_parts_generate_no_ids_and_root_owns_handler():
+def test_dialog_parts_generate_no_ids_and_root_owns_handler() -> None:
     from components.ui.dialog import GLOBAL_HANDLERS_JS
 
     for part in (dialog.trigger("t"), dialog.close("c"), dialog.popup("p")):
