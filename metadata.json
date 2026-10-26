@@ -1,0 +1,40 @@
+{
+  "cli_version": "0.12.1",
+  "checkpoint_id": "01M5TR9C9NG7571AHYGKZPF98A",
+  "strategy": "manual-commit",
+  "branch": "conductor/native-pr-133",
+  "checkpoints_count": 1,
+  "files_touched": [
+    "vercel.json"
+  ],
+  "sessions": [
+    {
+      "metadata": "/0/metadata.json",
+      "transcript": "/0/full.jsonl",
+      "compact_transcript": "/0/transcript.jsonl",
+      "content_hash": "/0/content_hash.txt",
+      "prompt": ""
+    }
+  ],
+  "token_usage": {
+    "input_tokens": 2,
+    "cache_creation_tokens": 951,
+    "cache_read_tokens": 75740,
+    "output_tokens": 900,
+    "api_call_count": 1
+  },
+  "redaction": {
+    "replacements": 29,
+    "layers": {
+      "betterleaks": 21,
+      "connection_string": 0,
+      "credential_key": 0,
+      "credential_value": 5,
+      "credentialed_uri": 0,
+      "entropy": 24,
+      "key_context": 0,
+      "provider_token": 0,
+      "shell_stdin": 0
+    }
+  }
+}
