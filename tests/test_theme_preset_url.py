@@ -60,11 +60,11 @@ _MIN_ON_MOUNT_SCRIPTS = 2
 def _decode(code: str) -> dict[str, object] | None:
     return decode_seed(
         code,
-        _REGISTRY["base"],
-        _REGISTRY["color"],
-        _REGISTRY["style"],
-        _REGISTRY["radii"],
-        _REGISTRY["font"],
+        base_themes=_REGISTRY["base"],
+        color_themes=_REGISTRY["color"],
+        style_registry=_REGISTRY["style"],
+        radii_options=_REGISTRY["radii"],
+        font_registry=_REGISTRY["font"],
     )
 
 

@@ -76,6 +76,58 @@ def build_arg_parser() -> argparse.ArgumentParser:
     return parser
 
 
+def _resolve_single_name(
+    name: str,
+    name_to_paths: dict[str, list[str]],
+    sections: dict[str, list[str]],
+) -> tuple[str | None, str | None]:
+    """Resolves a single page name (bare or full path).
+
+    Returns: (resolved_path, error_message) tuple. error_message is None if successful.
+    """
+    if "/" in name:
+        section, _, page = name.partition("/")
+        if page in sections.get(section, []):
+            return name, None
+        return None, f"page not found: '{name}'"
+
+    matches = name_to_paths.get(name)
+    if not matches:
+        return None, f"page not found: '{name}'"
+    if len(matches) > 1:
+        error = (
+            f"'{name}' is ambiguous (matches: {', '.join(matches)}) "
+            f"— use the full path, e.g. '{matches[0]}'"
+        )
+        return None, error
+    return matches[0], None
+
+
+def _add_path_if_new(path: str, seen: set[str], resolved: list[str]) -> None:
+    """Add path to resolved list if not already seen (deduplication)."""
+    if path not in seen:
+        seen.add(path)
+        resolved.append(path)
+
+
+def _process_section_names(
+    section_names: list[str],
+    sections: dict[str, list[str]],
+) -> tuple[list[str], list[str]]:
+    """Expands section names into full page paths.
+
+    Returns: (paths, errors) tuple with all expanded paths and error messages.
+    """
+    paths = []
+    errors = []
+    for section in section_names:
+        if section not in sections:
+            errors.append(f"section not found: '{section}'")
+            continue
+        paths.extend(f"{section}/{page}" for page in sections[section])
+    return paths, errors
+
+
 def resolve_pages(
     names: list[str],
     section_names: list[str],
@@ -92,43 +144,20 @@ def resolve_pages(
             name_to_paths.setdefault(page, []).append(f"{section}/{page}")
 
     resolved = []
-    seen = set()
+    seen: set[str] = set()
     errors = []
 
     for name in names:
-        if "/" in name:
-            section, _, page = name.partition("/")
-            if page in sections.get(section, []):
-                path = name
-            else:
-                errors.append(f"page not found: '{name}'")
-                continue
-        else:
-            matches = name_to_paths.get(name)
-            if not matches:
-                errors.append(f"page not found: '{name}'")
-                continue
-            if len(matches) > 1:
-                errors.append(
-                    f"'{name}' is ambiguous (matches: {', '.join(matches)}) "
-                    f"— use the full path, e.g. '{matches[0]}'",
-                )
-                continue
-            path = matches[0]
+        path, error = _resolve_single_name(name, name_to_paths, sections)
+        if error:
+            errors.append(error)
+        elif path:
+            _add_path_if_new(path, seen, resolved)
 
-        if path not in seen:
-            seen.add(path)
-            resolved.append(path)
-
-    for section in section_names:
-        if section not in sections:
-            errors.append(f"section not found: '{section}'")
-            continue
-        for page in sections[section]:
-            path = f"{section}/{page}"
-            if path not in seen:
-                seen.add(path)
-                resolved.append(path)
+    section_paths, section_errors = _process_section_names(section_names, sections)
+    errors.extend(section_errors)
+    for path in section_paths:
+        _add_path_if_new(path, seen, resolved)
 
     if errors:
         for e in errors:
@@ -154,20 +183,10 @@ def select_env() -> str | None:
 
 
 def select_pages_fuzzy(sections: dict[str, list[str]]) -> list[str] | None:
-    """Fuzzy search + multi-select over all pages, plus a virtual
-    "whole section" entry so you can grab an entire section without
-    tabbing through every page in it individually.
-    """
+    """Fuzzy search + multi-select over all pages."""
     choices = []
 
     for section, pages in sections.items():
-        # virtual "select entire section" choice
-        # choices.append(
-        #     Choice(
-        #         value=f"__section__:{section}",
-        #         name=f"[{section}] (entire section)",
-        #     )
-        # )
         for page in pages:
             path = f"{section}/{page}"
             choices.append(Choice(value=path, name=f"  {path}"))
@@ -179,25 +198,17 @@ def select_pages_fuzzy(sections: dict[str, list[str]]) -> list[str] | None:
         choices=choices,
         multiselect=True,
         max_height="70%",
-        instruction="(type name, section name, or 'entire section')",
+        instruction="(type a page or section/page path)",
     ).execute()
 
     if not result:
         return None
 
-    # expand any "__section__:x" picks into their full page list
     pages = []
     seen = set()
 
     for item in result:
-        if item.startswith("__section__:"):
-            section = item.split(":", 1)[1]
-            for page in sections.get(section, []):
-                path = f"{section}/{page}"
-                if path not in seen:
-                    seen.add(path)
-                    pages.append(path)
-        elif item not in seen:
+        if item not in seen:
             seen.add(item)
             pages.append(item)
 
@@ -248,44 +259,14 @@ def run_reflex(env: str, pages: list[str] | None) -> str | None:
                     for page in pages:
                         print(f"{base_url}/{page}")
 
-            except Exception:
+            except IndexError:
                 pass
 
     return port
 
 
-def main() -> None:
-    sections = build_index()
-
-    parser = build_arg_parser()
-    args = parser.parse_args()
-
-    # ---------------- CLI FAST PATH: PROD ----------------
-    # `uv run dev prod` or `uv run dev --prod`
-    if args.prod or (args.pages and args.pages[0] == "prod"):
-        print("Launching full site (prod mode)...")
-        run_reflex("prod", pages=None)
-        return
-
-    requested_pages = list(args.pages)
-    # allow (and ignore) an optional literal "dev" prefix, e.g. `dev.py dev button`
-    if requested_pages and requested_pages[0] == "dev":
-        requested_pages = requested_pages[1:]
-
-    # ---------------- CLI FAST PATH: PAGES GIVEN DIRECTLY ----------------
-    if requested_pages or args.section:
-        resolved_pages = resolve_pages(requested_pages, args.section, sections)
-        if resolved_pages is None:
-            return
-
-        print(f"Running reflex in dev with {len(resolved_pages)} page(s):")
-        for page in resolved_pages:
-            print(f"  {page}")
-
-        run_reflex("dev", resolved_pages)
-        return
-
-    # ---------------- INTERACTIVE FLOW (no args given) ----------------
+def _run_interactive_mode(sections: dict[str, list[str]]) -> None:
+    """Interactive mode: prompts for environment and pages, then runs reflex."""
     env = select_env()
     if env is None:
         print("Exiting")
@@ -310,6 +291,36 @@ def main() -> None:
         return
 
     run_reflex(env, selected_pages)
+
+
+def main() -> None:
+    sections = build_index()
+
+    parser = build_arg_parser()
+    args = parser.parse_args()
+
+    if args.prod or (args.pages and args.pages[0] == "prod"):
+        print("Launching full site (prod mode)...")
+        run_reflex("prod", pages=None)
+        return
+
+    requested_pages = list(args.pages)
+    if requested_pages and requested_pages[0] == "dev":
+        requested_pages = requested_pages[1:]
+
+    if requested_pages or args.section:
+        resolved_pages = resolve_pages(requested_pages, args.section, sections)
+        if resolved_pages is None:
+            return
+
+        print(f"Running reflex in dev with {len(resolved_pages)} page(s):")
+        for page in resolved_pages:
+            print(f"  {page}")
+
+        run_reflex("dev", resolved_pages)
+        return
+
+    _run_interactive_mode(sections)
 
 
 if __name__ == "__main__":

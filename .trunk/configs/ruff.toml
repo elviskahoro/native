@@ -99,6 +99,7 @@ ignore = [
   "PIE807",
   "PLC0415",
   "N815",
+  "PLR0911",
   "UP037",
 ]
 
@@ -119,8 +120,10 @@ convention = "google"
 # convention and message strings in raises are test-local.
 "tests/**" = ["S101", "INP001", "ANN", "EM", "TRY003", "PT018", "D", "PLR0913"]
 # Component source is copied verbatim into user projects by the CLI
-# (shadcn-style), so sibling imports must stay relative.
-"components/**" = ["TID252"]
+# (shadcn-style), so sibling imports must stay relative. FBT003: Reflex event
+# handlers are invoked positionally (`EventHandler[[bool]]`), so the handler's
+# parameter name can't be assumed; comments are banned here, so no inline noqa.
+"components/**" = ["TID252", "FBT003"]
 # `input` is the public component name in the registry API (shadcn parity).
 "components/ui/input*.py" = ["A001", "A004"]
 "native/pages/create.py" = ["A004"]
@@ -132,7 +135,7 @@ convention = "google"
 "native/lib/**" = ["A001", "A004", "FBT", "S311", "DTZ007"]
 # Build/maintenance scripts run directly (not imported as packages), not shipped runtime.
 # CLI entry points and build scripts print to the terminal by design.
-"cli/**" = ["T201"]
+"cli/**" = ["T201", "PLR0913"]
 "scripts/**" = [
   "T201",
   "C901",

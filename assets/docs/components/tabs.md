@@ -158,7 +158,6 @@ class TabsRoot(Div, CoreComponent):
 
     @classmethod
     def create(cls, *children: Any, **props: Any) -> Div:
-        custom_classes = props.pop("class_name", "")
         orientation = props.pop("orientation", "horizontal")
         default_value = props.pop("default_value", "")
 
@@ -175,27 +174,22 @@ class TabsRoot(Div, CoreComponent):
                 mount_handlers.append(user_on_mount)
         props["on_mount"] = mount_handlers
 
-        return super().create(
-            *children,
-            class_name=cn(ClassNames.ROOT, custom_classes),
-            **props,
-        )
+        cls.set_class_name(ClassNames.ROOT, props)
+
+        return super().create(*children, **props)
 
 
 class TabsList(Div, CoreComponent):
     @classmethod
     def create(cls, *children: Any, **props: Any) -> Div:
-        custom_classes = props.pop("class_name", "")
         variant = props.pop("variant", "default")
 
         props["data-slot"] = "tabs-list"
         props["data-variant"] = variant
 
-        return super().create(
-            *children,
-            class_name=cn(ClassNames.LIST, custom_classes),
-            **props,
-        )
+        cls.set_class_name(ClassNames.LIST, props)
+
+        return super().create(*children, **props)
 
 
 class TabsTrigger(CoreComponent):
@@ -225,7 +219,6 @@ class TabsTrigger(CoreComponent):
 class TabsContent(Div, CoreComponent):
     @classmethod
     def create(cls, *children: Any, **props: Any) -> Div:
-        custom_classes = props.pop("class_name", "")
         value = props.pop("value", "")
 
         props["data-slot"] = "tabs-content"
@@ -233,11 +226,9 @@ class TabsContent(Div, CoreComponent):
 
         active_toggle_class = f"group-data-[value='{value}']/tabs:block"
 
-        return super().create(
-            *children,
-            class_name=cn(ClassNames.CONTENT, active_toggle_class, custom_classes),
-            **props,
-        )
+        cls.set_class_name(cn(ClassNames.CONTENT, active_toggle_class), props)
+
+        return super().create(*children, **props)
 
 
 class Tabs(ComponentNamespace):

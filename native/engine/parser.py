@@ -16,11 +16,14 @@ the other:
       real object to call and/or introspect for source.
 """
 
+import html
 import importlib
 import inspect
 import pathlib
 import re
+from collections.abc import Iterator
 from pathlib import Path
+from typing import TypedDict
 
 import markdown
 import reflex as rx
@@ -73,7 +76,10 @@ def _build_live_registry(dirs: list[str]) -> dict[str, tuple[object, str]]:
 _LIVE_REGISTRY = _build_live_registry(["native/lib", "components/"])
 
 
-def get_all_dependencies(name: str, registry: dict = COMPONENT_REGISTRY) -> list[str]:
+def get_all_dependencies(
+    name: str,
+    registry: dict[str, dict] = COMPONENT_REGISTRY,
+) -> list[str]:
     """Recursively resolve install-time dependencies in install order."""
     ordered: list[str] = []
 
@@ -139,11 +145,10 @@ def render_token(cmd: str, raw_arg: str) -> rx.Component:
         )
 
     obj, _preferred_name = entry
-    result = None
     if "demo" in cmd:
         source = Path(inspect.getsourcefile(obj)).read_text().strip()
-        result = demo(obj(), source)
-    return result
+        return demo(obj(), source)
+    return rx.el.div()
 
 
 # --------------------------------------------------------------------------
@@ -209,3 +214,50 @@ def parse_and_render(content: str) -> list[rx.Component]:
         pieces.append(render_markdown_chunk(content[cursor:]))
 
     return pieces
+
+
+_HEADING_RE = re.compile(r'<h([12])\s+id="([^"]+)"[^>]*>(.*?)</h\1>', re.DOTALL)
+
+
+class TocEntry(TypedDict):
+    level: int
+    text: str
+    id: str
+
+
+def _markdown_chunks(content: str) -> Iterator[str]:
+    """Yield the plain-markdown spans between --TOKEN-- markers, in order.
+
+    ``parse_and_render`` renders exactly these spans as HTML chunks, so any
+    other consumer of the rendered output (the TOC) must chunk the same way:
+    python-markdown deduplicates repeated heading ids per render call, so a
+    whole-body pass disagrees with the per-chunk served DOM whenever a
+    heading repeats across chunks.
+    """
+    cursor = 0
+    for match in _TOKEN_MATCH_RE.finditer(content):
+        start, end = match.span()
+        if start > cursor:
+            yield content[cursor:start]
+        cursor = end
+    if cursor < len(content):
+        yield content[cursor:]
+
+
+def extract_toc_data(body: str) -> list[TocEntry]:
+    """Build TOC entries from the same per-chunk rendering that serves the page.
+
+    Each --TOKEN---delimited chunk is rendered with python-markdown exactly
+    as ``parse_and_render`` serves it, so heading-id deduplication
+    (``dev``, ``dev_1``, ...) restarts per chunk the same way it does in
+    the served DOM and every TOC id resolves to a real element.
+    """
+    toc_data: list[TocEntry] = []
+    for chunk in _markdown_chunks(body):
+        rendered = markdown.markdown(chunk, extensions=_MD_EXTENSIONS)
+        for match in _HEADING_RE.finditer(rendered):
+            level = int(match.group(1))
+            heading_id = match.group(2)
+            text = html.unescape(re.sub(r"<[^>]+>", "", match.group(3))).strip()
+            toc_data.append({"level": level, "text": text, "id": heading_id})
+    return toc_data

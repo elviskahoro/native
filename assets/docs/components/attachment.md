@@ -175,18 +175,20 @@ class Button(BaseButton, CoreComponent):
     def create(cls, *children: Any, **props: Any) -> BaseButton:
         variant = props.pop("variant", "default")
         size = props.pop("size", "default")
-        custom_classes = props.pop("class_name", "")
         data_slot = props.pop("data_slot", "button")
+
+        cls.set_class_name(
+            cn(
+                DEFAULT_CLASS_NAME,
+                BUTTON_VARIANTS["variant"].get(variant, ""),
+                BUTTON_VARIANTS["size"].get(size, ""),
+            ),
+            props,
+        )
 
         return super().create(
             *children,
             data_slot=data_slot,
-            class_name=cn(
-                DEFAULT_CLASS_NAME,
-                BUTTON_VARIANTS["variant"].get(variant, ""),
-                BUTTON_VARIANTS["size"].get(size, ""),
-                custom_classes,
-            ),
             **props,
         )
 
@@ -222,7 +224,7 @@ AttachmentMediaVariant = Literal["icon", "image"]
 
 class ClassNames:
     ROOT_BASE = (
-        "group/attachment relative flex w-full max-w-full min-w-0 shrink-0 flex-wrap "
+        "group/attachment relative flex w-fit max-w-full min-w-0 shrink-0 flex-wrap "
         "rounded-2xl border border-input bg-card text-card-foreground transition-colors "
         "focus-within:ring-1 focus-within:ring-ring/30 "
         "has-[>a,>button]:hover:bg-muted/50 "
@@ -813,7 +815,7 @@ A full-card overlay that activates the attachment. Renders a `rx.el.button` by d
 | Prop         | Type                  | Default | Description                                                                   |
 | ------------ | --------------------- | ------- | ----------------------------------------------------------------------------- |
 | `link`       | `bool`         | `False`  | If set, renders an anchor (`rx.el.a`) instead of a button.                        |
-| `aria_label` | `str | None`         | `None`  | Accessibility label for screen readers. Required when no visible text exists. |
+| `aria_label` | `str \| None`        | `None`  | Accessibility label for screen readers. Required when no visible text exists. |
 | `class_name` | `str`                 | `""`    | Additional CSS classes applied to the trigger.                                |
 
 

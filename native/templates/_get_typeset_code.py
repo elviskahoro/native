@@ -23,6 +23,7 @@ def get_code_section(
     title: str,
     description: str,
     component: rx.Component,
+    *,
     has_copy: bool = False,
     copy_id: str | None = None,
     on_copy_click: EventSpec | None = None,

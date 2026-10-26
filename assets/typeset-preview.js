@@ -261,6 +261,22 @@ app = rx.App(
     }
   }
 
+  // syncAll is the on_mount entry point for SPA re-navigations: the IIFE
+  // in <head> persists state across client-side route changes, but React
+  // remounts the page DOM (including the uncontrolled <select> controls,
+  // which reseed to their `default_value`). Calling applyAll()/renderCodeBlocks()
+  // alone leaves the controls showing Python defaults while the preview and
+  // code blocks reflect the persisted JS state -- a visible desync.
+  // syncSelectsToState() pulls the persisted state back into the remounted
+  // selects before applyAll()/renderCodeBlocks() re-render the rest. Mirrors
+  // the sibling /create page's theme-preview.js syncAll() (fixed in a7c0cdb).
+  function syncAll() {
+    if (!ensureDefaults()) return;
+    syncSelectsToState();
+    applyAll();
+    renderCodeBlocks();
+  }
+
   window.typesetPreview = {
     state: state,
     applyAll: applyAll,
@@ -269,6 +285,7 @@ app = rx.App(
     getThemeTokensCode: getThemeTokensCode,
     getUsageCode: getUsageCode,
     renderCodeBlocks: renderCodeBlocks,
+    syncAll: syncAll,
   };
 
   document.addEventListener("change", function (e) {

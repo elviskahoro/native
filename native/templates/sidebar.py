@@ -3,7 +3,7 @@ from dataclasses import dataclass
 import reflex as rx
 
 from components.ui.button import button
-from native.registry import routes
+from native import config
 
 HIGHLIGHT_SCRIPT = """
     const currentPath = window.location.pathname.substring(1);
@@ -37,11 +37,11 @@ class SidebarSection:
 
 
 SIDEBAR_SECTIONS = [
-    SidebarSection(title="Getting Started", routes=routes.GET_STARTED_URLS),
-    SidebarSection(title="Resources", routes=routes.RESOURCES_URLS),
-    SidebarSection(title="Components", routes=routes.BASE_UI_COMPONENTS),
-    SidebarSection(title="Charts", routes=routes.CHARTS_URLS),
-    SidebarSection(title="Utilities", routes=routes.UTILITIES),
+    SidebarSection(title="Getting Started", routes=config.GET_STARTED_URLS),
+    SidebarSection(title="Resources", routes=config.RESOURCES_URLS),
+    SidebarSection(title="Components", routes=config.BASE_UI_COMPONENTS),
+    SidebarSection(title="Charts", routes=config.CHARTS_URLS),
+    SidebarSection(title="Utilities", routes=config.UTILITIES),
 ]
 
 

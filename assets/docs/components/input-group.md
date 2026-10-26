@@ -175,18 +175,20 @@ class Button(BaseButton, CoreComponent):
     def create(cls, *children: Any, **props: Any) -> BaseButton:
         variant = props.pop("variant", "default")
         size = props.pop("size", "default")
-        custom_classes = props.pop("class_name", "")
         data_slot = props.pop("data_slot", "button")
+
+        cls.set_class_name(
+            cn(
+                DEFAULT_CLASS_NAME,
+                BUTTON_VARIANTS["variant"].get(variant, ""),
+                BUTTON_VARIANTS["size"].get(size, ""),
+            ),
+            props,
+        )
 
         return super().create(
             *children,
             data_slot=data_slot,
-            class_name=cn(
-                DEFAULT_CLASS_NAME,
-                BUTTON_VARIANTS["variant"].get(variant, ""),
-                BUTTON_VARIANTS["size"].get(size, ""),
-                custom_classes,
-            ),
             **props,
         )
 
@@ -211,7 +213,7 @@ from typing import Any
 from reflex.components.component import ComponentNamespace
 from reflex_components_core.el import Input as BaseInput
 
-from ..core.core import CoreComponent, cn
+from ..core.core import CoreComponent
 
 
 class ClassNames:
@@ -234,14 +236,12 @@ class InputComponent(BaseInput, CoreComponent):
     @classmethod
     def create(cls, *children: Any, **props: Any) -> BaseInput:
 
-        existing_class = props.get("class_name", "")
-
-        props["class_name"] = cn(ClassNames.INPUT, existing_class)
-
         props.setdefault("data_slot", "input")
 
         if "type" not in props:
             props["type"] = "text"
+
+        cls.set_class_name(ClassNames.INPUT, props)
 
         return super().create(*children, **props)
 

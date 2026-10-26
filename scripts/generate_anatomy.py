@@ -88,10 +88,12 @@ def extract_composition_source(path: Path) -> str:
         ):
             segment = ast.get_source_segment(text, node.value)
             if segment is None:
-                raise ValueError(f"Could not extract source for COMPOSITION in {path}")
+                msg = f"Could not extract source for COMPOSITION in {path}"
+                raise ValueError(msg)
             return segment
 
-    raise ValueError(f"No top-level `COMPOSITION = ...` assignment found in {path}")
+    msg = f"No top-level `COMPOSITION = ...` assignment found in {path}"
+    raise ValueError(msg)
 
 
 def validate_by_importing(path: Path, repo_root: Path) -> None:
@@ -108,7 +110,8 @@ def validate_by_importing(path: Path, repo_root: Path) -> None:
         sys.path.pop(0)
 
     if not hasattr(module, "COMPOSITION"):
-        raise ValueError(f"{path} has no COMPOSITION after import")
+        msg = f"{path} has no COMPOSITION after import"
+        raise ValueError(msg)
 
 
 def discover_files(src_dir: Path) -> list[Path]:

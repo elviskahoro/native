@@ -28,7 +28,7 @@ A horizontal bar chart layout ideal for ranking categories or displaying long te
 
 --DEMO(bar_chart_horizontal)--
 
-## Legend
+## With Legend
 
 A stacked vertical bar chart with built-in legend rendering for multi-series comparisons.
 
@@ -97,8 +97,8 @@ rx.recharts.bar_chart(
 | Prop | Type | Default |
 | --- | --- | --- |
 | `data` | `list[dict]` |  |
-| `width` | `str | int` |  |
-| `height` | `str | int` |  |
+| `width` | `str \| int` |  |
+| `height` | `str \| int` |  |
 | `margin` | `dict` |  |
 | `layout` | `str` | `"horizontal"` |
 
@@ -121,7 +121,7 @@ rx.recharts.bar(
 | `fill` | `str` |  |
 | `stroke` | `str` |  |
 | `stroke_width` | `int` |  |
-| `radius` | `int | list` |  |
+| `radius` | `int \| list` |  |
 | `stack_id` | `str` |  |
 | `is_animation_active` | `bool` | `True` |
 
@@ -168,7 +168,7 @@ rx.recharts.x_axis(
 | `tick_line` | `bool` | `True` |
 | `tick_size` | `int` |  |
 | `tick` | `dict` |  |
-| `interval` | `str | int` |  |
+| `interval` | `str \| int` |  |
 
 ## y_axis
 
