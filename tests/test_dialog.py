@@ -54,3 +54,15 @@ def test_on_open_change_wires_on_close() -> None:
     popup = dialog.popup(dialog.title("title"), on_open_change=handler)
     assert "on_close" in popup.event_triggers
     assert "on_cancel" not in popup.event_triggers
+
+
+def test_dialog_parts_generate_no_ids_and_root_owns_handler() -> None:
+    from components.ui.dialog import GLOBAL_HANDLERS_JS
+
+    for part in (dialog.trigger("t"), dialog.close("c"), dialog.popup("p")):
+        assert "id" not in part.render()["props"] or not any(
+            p.startswith("id:") for p in part.render()["props"]
+        )
+    assert "getElementById" not in GLOBAL_HANDLERS_JS
+    assert "__dialogGlobalHandlersAttached" in GLOBAL_HANDLERS_JS
+    assert "on_mount" in dialog.root("x").event_triggers

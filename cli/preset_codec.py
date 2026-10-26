@@ -24,8 +24,8 @@ from typing import Any
 
 BASE62_ALPHABET = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz"
 DEFAULT_PRESET_CODE = "b0"
-PRESET_VERSION_1 = 1
-PRESET_VERSION = 2
+VERSION_V1 = 1
+VERSION_V2 = 2
 
 BITS_V1 = {"font": 5, "color": 5, "base": 4, "radius": 4, "style": 4}
 BITS_V2 = {"font": 5, "color": 5, "chart": 5, "base": 4, "radius": 4, "style": 4}
@@ -80,7 +80,7 @@ def decode_seed(
         return None
 
     if seed == DEFAULT_PRESET_CODE:
-        packed = PRESET_VERSION << 28
+        packed = VERSION_V2 << 28
     else:
         packed = decode_base62(seed)
         if packed is None:
@@ -88,10 +88,10 @@ def decode_seed(
 
     version = (packed >> 28) & 0xF
 
-    if version == PRESET_VERSION_1:
+    if version == VERSION_V1:
         shift, bits = SHIFT_V1, BITS_V1
         chart_idx = 0  # v1 codes predate the chart dimension — always inherit
-    elif version == PRESET_VERSION:
+    elif version == VERSION_V2:
         shift, bits = SHIFT_V2, BITS_V2
         chart_idx = (packed >> shift["chart"]) & _mask(bits["chart"])
     else:

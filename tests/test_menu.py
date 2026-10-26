@@ -28,7 +28,7 @@ import re
 
 import pytest
 
-from components.ui.menu import ClassNames, MenuContent
+from components.ui.menu import ClassNames, MenuContent, menu
 
 # tailwind-merge conflict groups for the inset utilities we emit. Side and
 # align classes must come from different groups, otherwise twMerge silently
@@ -163,3 +163,14 @@ def test_menu_content_defaults_match_documented_api() -> None:
     assert content == ClassNames.CONTENT
     assert position == "top-full"
     assert align == "left-0"
+
+
+def test_menu_item_and_close_use_data_attribute_not_ids() -> None:
+    item = menu.item("a")
+    assert not any(p.startswith("id:") for p in item.render()["props"])
+    assert any("data-close-menu" in p for p in item.render()["props"])
+    assert not any(
+        "data-close-menu" in p
+        for p in menu.item("a", close_on_click=False).render()["props"]
+    )
+    assert any("data-close-menu" in p for p in menu.close("x").render()["props"])
