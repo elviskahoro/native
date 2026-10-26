@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import pytest
+from reflex.components.component import Component
 
 from components.ui.input_group import (
     ClassNames,
@@ -18,8 +19,8 @@ CASES = [
 ]
 
 
-def _class_name(component: object) -> str:
-    return str(component.class_name)  # pyright: ignore[reportAttributeAccessIssue]
+def _class_name(component: Component) -> str:
+    return str(getattr(component, "class_name", ""))
 
 
 @pytest.mark.parametrize(("cls", "default"), CASES)
