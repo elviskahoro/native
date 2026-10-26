@@ -1,3 +1,9 @@
+"""Regression coverage for non-integer frontmatter ``order`` values (#5).
+
+A non-digit ``order`` used to stay a ``str`` and crash the route sort with
+``TypeError: '<' not supported between instances of 'int' and 'str'``.
+"""
+
 import pytest
 
 from native.core.utils import parse_frontmatter
@@ -14,9 +20,12 @@ def test_order_is_coerced_to_int(raw: str, expected: int) -> None:
 
 @pytest.mark.parametrize("raw", ["", "abc", "5.0"])
 def test_invalid_order_is_omitted(raw: str) -> None:
-    metadata, _ = parse_frontmatter(f"---\ntitle: x\norder: {raw}\n---\nbody")
+    metadata, _ = parse_frontmatter(
+        f"---\norder: {raw}\ntitle: x\ndescription: y\n---\nbody",
+    )
     assert "order" not in metadata
     assert metadata["title"] == "x"
+    assert metadata["description"] == "y"
 
 
 def test_mixed_orders_sort_without_type_error() -> None:
