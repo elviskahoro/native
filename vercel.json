@@ -6,7 +6,7 @@
       "UV_PYTHON_DOWNLOADS": "automatic"
     }
   },
-  "installCommand": "curl -LsSf https://astral.sh/uv/install.sh | UV_INSTALL_DIR=$PWD/.uvbin UV_NO_MODIFY_PATH=1 sh && .uvbin/uv sync",
+  "installCommand": "curl -LsSf https://astral.sh/uv/install.sh | UV_INSTALL_DIR=$PWD/.uvbin UV_NO_MODIFY_PATH=1 sh && export UV_PYTHON_DOWNLOADS=automatic && .uvbin/uv python install 3.11 && .uvbin/uv sync",
   "buildCommand": ".uvbin/uv run reflex export --frontend-only && mkdir -p frontend && unzip -o frontend.zip -d frontend",
   "outputDirectory": "frontend"
 }
