@@ -63,7 +63,7 @@ dialog.trigger(button("Share", variant="outline"))
 
 | Prop         | Type  | Default          |
 | ------------ | ----- | ---------------- |
-| `id`         | `str` | auto-generated    |
+| `id`         | `str` | _None_            |
 | `class_name` | `str` | `""`              |
 
 ## dialog.popup
@@ -104,7 +104,7 @@ dialog.close(
 
 | Prop         | Type  | Default          |
 | ------------ | ----- | ---------------- |
-| `id`         | `str` | auto-generated    |
+| `id`         | `str` | _None_            |
 | `class_name` | `str` | `""`              |
 
 ## dialog.title

@@ -1,4 +1,3 @@
-import uuid
 from typing import Any
 
 import reflex as rx
@@ -42,12 +41,51 @@ class ClassNames:
     )
 
 
+PROBE_IMAGES_JS = """
+(function () {
+    document.querySelectorAll('[data-slot="avatar-image"]').forEach(function (img) {
+        var root = img.closest('[data-slot="avatar"]');
+        var fallback = root
+            ? root.querySelector('[data-slot="avatar-fallback"]')
+            : null;
+        var tester = new Image();
+        tester.onload = function () {
+            img.style.display = '';
+            if (fallback) fallback.style.display = 'none';
+        };
+        tester.onerror = function () {
+            img.style.display = 'none';
+            if (fallback) fallback.style.display = 'flex';
+        };
+        tester.src = img.getAttribute('src') || '';
+    });
+})();
+"""
+
+
 class AvatarRoot(Div, CoreComponent):
+    """Avatar container; probes its images on mount.
+
+    The probe reads each image's rendered ``src`` from the DOM instead of baking
+    a build-time id/``src`` into per-image JS, so it stays correct when avatars
+    are rendered via ``rx.foreach``.
+    """
+
     @classmethod
     def create(cls, *children: Any, **props: Any) -> Div:
         size = props.pop("size", "default")
         props["data-slot"] = "avatar"
         props["data-size"] = size
+
+        user_on_mount = props.pop("on_mount", None)
+        mount_handlers = [rx.call_script(PROBE_IMAGES_JS)]
+        if user_on_mount is not None:
+            if isinstance(user_on_mount, list):
+                mount_handlers.extend(user_on_mount)
+            else:
+                mount_handlers.append(user_on_mount)
+        props["on_mount"] = mount_handlers
+
         cls.set_class_name(ClassNames.ROOT, props)
         return super().create(*children, **props)
 
@@ -56,41 +94,7 @@ class AvatarImage(CoreComponent):
     @classmethod
     def create(cls, **props: Any) -> rx.Component:
         custom_classes = props.pop("class_name", "")
-        user_on_mount = props.pop("on_mount", None)
         props["data-slot"] = "avatar-image"
-
-        img_id = props.get("id") or f"avatar-img-{uuid.uuid4().hex[:8]}"
-        props["id"] = img_id
-
-        src = props.get("src", "")
-
-        js = f"""
-        (function() {{
-            var img = document.getElementById('{img_id}');
-            if (!img) return;
-            var root = img.closest('[data-slot="avatar"]');
-            var fallback = root ? root.querySelector('[data-slot="avatar-fallback"]') : null;
-            var tester = new Image();
-            tester.onload = function() {{
-                img.style.display = '';
-                if (fallback) fallback.style.display = 'none';
-            }};
-            tester.onerror = function() {{
-                img.style.display = 'none';
-                if (fallback) fallback.style.display = 'flex';
-            }};
-            tester.src = '{src}';
-        }})()
-        """
-
-        mount_handlers = [rx.call_script(js)]
-        if user_on_mount is not None:
-            if isinstance(user_on_mount, list):
-                mount_handlers.extend(user_on_mount)
-            else:
-                mount_handlers.append(user_on_mount)
-        props["on_mount"] = mount_handlers
-
         cls.set_class_name(cn(ClassNames.IMAGE, custom_classes), props)
         return rx.el.img(**props)
 

@@ -99,9 +99,7 @@ menu.content(
 
 ## menu.item
 
-An action selection row component. Injects a DOM traversal action snippet that walks up to collapse the parent menu immediately upon clicking.
-
-> **Loop Context Warning:** If rendered inside an `rx.foreach`, pass an explicit `id` derived from your loop data (e.g. `id=f"menu-item-{item.id}"`) to prevent static template collisions.
+An action selection row component. Marks itself with `data-close-menu` so the delegated listener on `menu.root` collapses the parent menu on click. No element id is generated, so it is safe inside `rx.foreach`.
 
 ```python
 menu.item("Profile", variant="default", close_on_click=True)
