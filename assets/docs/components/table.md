@@ -59,7 +59,7 @@ class CoreComponent(Component):
         ]
 
 
-def cn(*classes: Var | str | tuple | list | None) -> Var:
+def cn(*classes: Var[Any] | str | tuple[Any, ...] | list[Any] | None) -> Var[str]:
     return CN.call(*classes).to(str)
 ```
 
@@ -154,6 +154,10 @@ class ClassNames:
     PAGE_BUTTON = "h-8 rounded-md border border-input px-3 text-xs disabled:opacity-40 disabled:cursor-not-allowed"
 
 
+def _attrs(attrs: dict[str, str]) -> dict[str, Any]:
+    return dict(attrs)
+
+
 def _chevron_icon(path_d: str | list[str], **props: Any) -> Component:
     paths = [path_d] if isinstance(path_d, str) else path_d
     return rx.el.svg(
@@ -174,17 +178,17 @@ def _sort_icons() -> list[Component]:
     return [
         _chevron_icon(
             "m18 15-6-6-6 6",
-            **{"data-dt-sort-icon": "asc"},
+            **_attrs({"data-dt-sort-icon": "asc"}),
             style={"display": "none"},
         ),
         _chevron_icon(
             "m6 9 6 6 6-6",
-            **{"data-dt-sort-icon": "desc"},
+            **_attrs({"data-dt-sort-icon": "desc"}),
             style={"display": "none"},
         ),
         _chevron_icon(
             ["m7 15 5 5 5-5", "m7 9 5-5 5 5"],
-            **{"data-dt-sort-icon": "none"},
+            **_attrs({"data-dt-sort-icon": "none"}),
             class_name="shrink-0 opacity-40",
         ),
     ]
@@ -422,18 +426,22 @@ class TableRoot(Div, CoreComponent):
 
         pagination = (
             rx.el.div(
-                rx.el.span("", **{"data-dt-info": "true"}),
+                rx.el.span("", **_attrs({"data-dt-info": "true"})),
                 rx.el.div(
                     rx.el.button(
                         "Prev",
                         class_name=ClassNames.PAGE_BUTTON,
-                        **{"data-dt-prev": "true"},
+                        **_attrs({"data-dt-prev": "true"}),
                     ),
-                    rx.el.span("", class_name="px-2", **{"data-dt-page-label": "true"}),
+                    rx.el.span(
+                        "",
+                        class_name="px-2",
+                        **_attrs({"data-dt-page-label": "true"}),
+                    ),
                     rx.el.button(
                         "Next",
                         class_name=ClassNames.PAGE_BUTTON,
-                        **{"data-dt-next": "true"},
+                        **_attrs({"data-dt-next": "true"}),
                     ),
                     class_name="flex items-center gap-1",
                 ),
@@ -443,7 +451,7 @@ class TableRoot(Div, CoreComponent):
             else None
         )
 
-        table_props = {"class_name": ClassNames.TABLE}
+        table_props: dict[str, Any] = {"class_name": ClassNames.TABLE}
         scroll_wrapper = rx.el.div(
             Table.create(*children, **table_props),
             class_name=ClassNames.SCROLL,
@@ -518,7 +526,7 @@ class TableHead(Th, CoreComponent):
                     *children,
                     *_sort_icons(),
                     class_name=ClassNames.HEAD_SORT_BTN,
-                    **{"data-dt-sort": sort_key},
+                    **_attrs({"data-dt-sort": sort_key}),
                 ),
             )
         return super().create(*children, **props)

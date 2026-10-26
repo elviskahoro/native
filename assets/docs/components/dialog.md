@@ -59,13 +59,13 @@ class CoreComponent(Component):
         ]
 
 
-def cn(*classes: Var | str | tuple | list | None) -> Var:
+def cn(*classes: Var[Any] | str | tuple[Any, ...] | list[Any] | None) -> Var[str]:
     return CN.call(*classes).to(str)
 ```
 
 ```python
 import uuid
-from typing import Any
+from typing import Any, cast
 
 import reflex as rx
 from reflex.components.component import ComponentNamespace
@@ -137,8 +137,8 @@ class DialogTrigger(CoreComponent):
 
 
 class DialogPopup(BaseDialog, CoreComponent):
-    on_close: rx.EventHandler = None
-    on_cancel: rx.EventHandler = None
+    on_close: rx.EventHandler = cast("Any", None)
+    on_cancel: rx.EventHandler = cast("Any", None)
 
     @classmethod
     def create(
