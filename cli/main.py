@@ -582,50 +582,84 @@ def _find_theme_block_end(lines: list[str], start_line: int) -> int:
     return start_line
 
 
-def _find_dark_theme_end(lines: list[str], start_after_line: int) -> int:
-    """Find the end of .dark { } block starting search after start_after_line."""
-    rest = lines[start_after_line + 1 :]
-    for j, ln in enumerate(rest):
-        if ln.strip().startswith(".dark {"):
-            bd = 0
-            for k, dl in enumerate(
-                lines[start_after_line + 1 + j :],
-                start_after_line + 1 + j,
+THEME_START_SENTINEL = "/* buridan:theme:start */"
+THEME_END_SENTINEL = "/* buridan:theme:end */"
+
+
+# @charset/@import rules (plus comments/whitespace) must precede all other rules.
+_LEADING_IMPORTS_RE = re.compile(
+    r"(?:\s|/\*.*?\*/|@(?:charset|import)\b[^;]*;)*",
+    re.DOTALL,
+)
+
+
+def managed_theme_block(theme_css: str) -> str:
+    """Wrap generated theme CSS in sentinel comments."""
+    return f"{THEME_START_SENTINEL}\n{theme_css.strip()}\n{THEME_END_SENTINEL}\n"
+
+
+def join_css_around_theme(prefix: str, block: str, suffix: str) -> str:
+    """Join prefix, managed block, and suffix with blank-line separation."""
+    out = block
+    if prefix.strip():
+        out = prefix.rstrip("\n") + "\n\n" + out
+    if suffix.strip():
+        out = out.rstrip("\n") + "\n\n" + suffix.lstrip("\n")
+    return out
+
+
+def find_legacy_theme_pair(lines: list[str]) -> tuple[int, int] | None:
+    """Locate a top-level adjacent `:root {` / `.dark {` pair written by older CLIs.
+
+    Returns (start_line, end_line) inclusive, or None if no safe match exists.
+    """
+    depth = 0
+    i = 0
+    while i < len(lines):
+        stripped = lines[i].strip()
+        if (
+            depth == 0
+            and stripped.startswith(":root {")
+            and stripped.endswith("{")
+        ):
+            root_end = _find_theme_block_end(lines, i)
+            j = root_end + 1
+            while j < len(lines) and not lines[j].strip():
+                j += 1
+            if (
+                root_end > i
+                and j < len(lines)
+                and lines[j].strip().startswith(".dark {")
+                and lines[j].strip().endswith("{")
             ):
-                bd += dl.count("{") - dl.count("}")
-                if bd == 0 and k > start_after_line + 1 + j:
-                    return k
-            break
-    return start_after_line
+                dark_end = _find_theme_block_end(lines, j)
+                if dark_end > j:
+                    return i, dark_end
+        depth += lines[i].count("{") - lines[i].count("}")
+        i += 1
+    return None
 
 
-def _replace_theme_blocks(css_path: Path, theme_css: str) -> None:
-    """Replace :root and .dark theme blocks in globals.css, preserving other content."""
-    if not css_path.exists():
-        css_path.write_text(theme_css)
-        return
+def splice_theme_block(current: str, theme_css: str) -> str:
+    """Insert or replace the managed theme region without discarding user CSS."""
+    block = managed_theme_block(theme_css)
 
-    current = css_path.read_text()
-    if ":root {" not in current:
-        css_path.write_text(theme_css + "\n\n" + current)
-        return
+    start = current.find(THEME_START_SENTINEL)
+    end = current.find(THEME_END_SENTINEL, start + 1) if start != -1 else -1
+    if start != -1 and end != -1:
+        end += len(THEME_END_SENTINEL)
+        return join_css_around_theme(current[:start], block, current[end:])
 
     lines = current.splitlines()
-    start_line = next(
-        (i for i, ln in enumerate(lines) if ln.strip().startswith(":root {")),
-        None,
-    )
+    pair = find_legacy_theme_pair(lines)
+    if pair is not None:
+        prefix = "\n".join(lines[: pair[0]])
+        suffix = "\n".join(lines[pair[1] + 1 :])
+        return join_css_around_theme(prefix, block, suffix)
 
-    if start_line is None:
-        css_path.write_text(theme_css + "\n\n" + current)
-        return
-
-    end_line = _find_theme_block_end(lines, start_line)
-    end_line = _find_dark_theme_end(lines, end_line)
-
-    after = "\n".join(lines[end_line + 1 :]).lstrip("\n")
-    new_css = theme_css + ("\n\n" + after if after else "")
-    css_path.write_text(new_css)
+    header = _LEADING_IMPORTS_RE.match(current)
+    split = header.end() if header else 0
+    return join_css_around_theme(current[:split], block, current[split:])
 
 
 def cmd_apply(preset: str) -> None:
@@ -655,7 +689,8 @@ def cmd_apply(preset: str) -> None:
     css_path = assets_dir / "globals.css"
 
     theme_css = generate_theme_css(preset)
-    _replace_theme_blocks(css_path, theme_css)
+    current = css_path.read_text() if css_path.exists() else ""
+    css_path.write_text(splice_theme_block(current, theme_css))
 
     print(f"✓ Applied preset '{preset}' to globals.css")
 
