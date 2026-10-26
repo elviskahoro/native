@@ -2,7 +2,7 @@ from typing import Any
 
 import reflex as rx
 from reflex.components.component import ComponentNamespace
-from reflex_components_core.el import Div, Span
+from reflex_components_core.el import Div, Img, Span
 
 from ..core.core import CoreComponent, cn
 
@@ -90,13 +90,13 @@ class AvatarRoot(Div, CoreComponent):
         return super().create(*children, **props)
 
 
-class AvatarImage(CoreComponent):
+class AvatarImage(Img, CoreComponent):
     @classmethod
-    def create(cls, *children: Any, **props: Any) -> Any:
+    def create(cls, *children: Any, **props: Any) -> Img:
         custom_classes = props.pop("class_name", "")
         props["data-slot"] = "avatar-image"
         cls.set_class_name(cn(ClassNames.IMAGE, custom_classes), props)
-        return rx.el.img(**props)
+        return super().create(*children, **props)
 
 
 class AvatarFallback(Span, CoreComponent):
