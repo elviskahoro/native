@@ -2,8 +2,9 @@
 
 from __future__ import annotations
 
+from typing import TYPE_CHECKING
+
 import pytest
-from reflex.components.component import Component
 
 from components.ui.input_group import (
     ClassNames,
@@ -11,6 +12,9 @@ from components.ui.input_group import (
     InputGroupInput,
     InputGroupTextarea,
 )
+
+if TYPE_CHECKING:
+    from reflex.components.component import Component
 
 CASES = [
     (InputGroupButton, "shadow-none"),
