@@ -1,6 +1,10 @@
 # PULLFROG ACTION — DO NOT EDIT EXCEPT WHERE INDICATED
 name: Pullfrog
 run-name: ${{ inputs.name || github.workflow }}
+# Access model: Triggered by repository maintainers only (single-handler control).
+# The prompt input is treated as trusted operator input; no external forks or
+# untrusted input sources. Workflow-level and job-level permissions are scoped
+# narrowly; no additional credential restrictions on inputs are required.
 on:
   workflow_dispatch:
     inputs:
