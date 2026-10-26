@@ -51,7 +51,7 @@ def test_nested_root_not_matched() -> None:
     css: str = (
         "@media (x) {\n  :root {\n    --a: 1;\n  }\n  .dark {\n    --a: 2;\n  }\n}\n"
     )
-    assert find_legacy_theme_pair(css.splitlines()) is None
+    assert find_legacy_theme_pair(css.split("\n")) is None
     out = splice_theme_block(css, THEME)
     assert out.count("{") == out.count("}")
     assert "@media (x)" in out

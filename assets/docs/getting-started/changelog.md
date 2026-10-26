@@ -8,6 +8,10 @@ order: 5
 
 Latest updates and announcements.
 
+# October 2026 - Safer Theme Re-apply
+
+`buridan apply` no longer overwrites your own CSS. The generated theme is now wrapped in `/* buridan:theme:start */` / `/* buridan:theme:end */` markers in `assets/globals.css`, and re-applying a preset replaces only that region. Anything you add outside the markers, including `@import` rules, custom `:root` tokens, and other styles, is preserved.
+
 # August 2026 - Component Versioning & components.json
 
 As Buridan UI's component library has grown, we've run into a familiar problem: components change over time, and sometimes those changes aren't backward compatible. Until now, updating a component in the registry meant every project pulling that component got the new version, whether it was ready for it or not. This update fixes that.
