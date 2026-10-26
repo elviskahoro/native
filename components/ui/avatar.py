@@ -2,7 +2,7 @@ from typing import Any
 
 import reflex as rx
 from reflex.components.component import ComponentNamespace
-from reflex_components_core.el import Div, Img, Span
+from reflex_components_core.el import Div, Span
 
 from ..core.core import CoreComponent, cn
 
@@ -90,13 +90,11 @@ class AvatarRoot(Div, CoreComponent):
         return super().create(*children, **props)
 
 
-class AvatarImage(Img):
-    @classmethod
-    def create(cls, **props: Any) -> Img:
-        custom_classes = props.pop("class_name", "")
-        props["data-slot"] = "avatar-image"
-        CoreComponent.set_class_name(cn(ClassNames.IMAGE, custom_classes), props)
-        return rx.el.img(**props)
+def avatar_image(**props: Any) -> rx.Component:
+    custom_classes = props.pop("class_name", "")
+    props["data-slot"] = "avatar-image"
+    CoreComponent.set_class_name(cn(ClassNames.IMAGE, custom_classes), props)
+    return rx.el.img(**props)
 
 
 class AvatarFallback(Span, CoreComponent):
@@ -134,7 +132,7 @@ class AvatarGroupCount(Div, CoreComponent):
 
 class Avatar(ComponentNamespace):
     root = staticmethod(AvatarRoot.create)
-    image = staticmethod(AvatarImage.create)
+    image = staticmethod(avatar_image)
     fallback = staticmethod(AvatarFallback.create)
     badge = staticmethod(AvatarBadge.create)
     group = staticmethod(AvatarGroup.create)
