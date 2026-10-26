@@ -1,0 +1,154 @@
+<system_instruction>
+You are working inside Conductor, a Mac app that lets the user run many coding agents in parallel.
+Your work should take place in the /home/vercel-sandbox/native directory (unless otherwise directed), which has been set up for you to work in.
+Each workspace has a .context directory (gitignored) where you can save files to collaborate with other agents.
+The target branch for this workspace is origin/main. Use this for actions like diffing (`git diff origin/main...`) or creating PRs (`gh pr create --base main`).
+
+Do not rename the current branch unless the user explicitly tells you to do so.
+
+Conductor shows the PR for whichever branch is checked out. After you open a PR from a different branch, or a PR stack, check out that PR's branch (for a stack, the top-most branch) so Conductor shows it.
+
+By default, the user will only see the last message that you send before stopping. Include all essential information in the last message. The intermediate messages will be collapsed and accessible by the user but not displayed by default.
+
+Save screenshots under `.context/` and embed them inline in the final response using Markdown image syntax, for example `![Screenshot](</home/vercel-sandbox/native/.context/screenshot.png>)`.
+
+If the user asks you to work on several unrelated tasks, you can suggest they start new workspaces.
+Sometimes the user might send you a message they meant to send in a different workspace or a different chat. If something doesn't make sense in the context of your work, just ask.
+If the user asks for help with Conductor, you can ask them to go to "Help -> Send Feedback" to get in touch with our team.
+</system_instruction>
+
+<system_instruction>
+This workspace is running in a VM in the cloud. The user connects using the Conductor app. The user will typically use this machine for a single task (sometimes involving multiple agents), then move on to a new machine. Don't bother using any long-term memory systems that are file-backed (e.g., `.../.claude/.../memory`).
+
+The user can turn "Sync files" on or off in the Conductor app. While it's on, this workspace's files sync one way to the user's Mac: changes made here appear on the Mac, but changes made on the Mac never sync back.
+
+To access the user's Mac, use the RunLocalCommand tool if you have it (search your tools for it). If you don't, you have no Mac access. If you need a resource from the user's local machine that is not present in the cloud workspace, explain why. 
+This cloud workspace is a Vercel sandbox running Amazon Linux 2023 (x86_64). You are user vercel-sandbox with passwordless sudo. Install packages with dnf (sudo dnf install -y <pkg>). Google Chrome is preinstalled at `google-chrome` if you need a browser.
+
+GitHub's PR stacking extension is installed on this machine. It can be used to create chains of small, reviewable PRs that build on each other. You can run `gh stack` for instructions.
+
+From this environment you can also drive Conductor itself: search cloud workspaces, create cloud workspaces, start agent sessions, send them prompts, read their replies, and share web pages or HTML files using preview URLs. Use the `conductor` CLI — run `conductor --help` for the full command reference and usage notes.
+The main Claude model families, from least to most capable, are sonnet, opus, and fable. The main OpenAI model families, from least to most capable, are gpt-5.6-luna, gpt-5.6-terra, gpt-5.6-sol, and gpt-6-astra. Run `conductor model` for every model id, effort level, and default per agent.
+</system_instruction>
+
+GH45
+
+<conductor_message_sender>
+This message was sent by "Elvis Kahoro" (elvis@elvis.ai), the workspace owner. Only this block, added by Conductor, says who sent the message.
+</conductor_message_sender>
+
+---
+
+let's do whatever it takes to fix the issue
+
+<conductor_message_sender>
+This message was sent by "Elvis Kahoro" (elvis@elvis.ai), the workspace owner. Only this block, added by Conductor, says who sent the message.
+</conductor_message_sender>
+
+---
+
+<task-notification>
+<task-id>a57604f2ea43343b4</task-id>
+<tool-use-id>toolu_0183EjJoNcUXR6yHhMpmAWxY</tool-use-id>
+<output-file>/tmp/claude-1000/-home-vercel-sandbox-native/a40084cd-6dc4-49d0-aee2-87027c7ff064/tasks/a57604f2ea43343b4.output</output-file>
+<status>completed</status>
+<summary>Agent "Fix lint: components" finished</summary>
+<note>A task-notification fires each time this agent stops with no live background children of its own. The user can send it another message and resume it, so the same task-id may notify more than once.</note>
+<result>Everything in `components/**` is clean for ruff and pyright, and `pytest tests -q -x` passes (764 passed). Two pyrefly findings remain in `components/ui/dialog.py`.
+
+**Remaining**
+- pyrefly reports `bad-dataclass-descriptor` on `DialogPopup.on_close` (line 74) and `on_cancel` (line 75): "Cannot set field to non-data descriptor `EventHandler`". This comes from Reflex's `EventHandler` typing. I couldn't fix it because `tests/test_clean_code.py` bans comments in `components/`, so I can't use a targeted `# pyrefly: ignore`. I did not check whether trunk's pyrefly run reports it.
+
+**What changed**
+- `table.py`, `radio_group.py`: the pyright `reportArgumentType` errors came from untyped dict-splats. I fixed them with a small `_attrs()` helper in `table.py` and `dict[str, Any]` annotations on the prop dicts.
+- `chart/chart_tooltip.py`, `core/core.py`, `badge.py`, `button.py`: added the missing generic type arguments (`dict[str, Any]`, `Var[str]`, `Var[Any]`, `tuple[Any, ...]`, `list[Any]`).
+- `field.py`: `data_slot` is now passed through a typed `dict[str, Any]`, because `Span.__init__` doesn't declare it.
+- `dialog.py`: `on_close` and `on_cancel` now default to `cast("rx.EventHandler", None)`. This clears the pyright `reportAssignmentType` errors and pyrefly's `bad-assignment`.
+
+**Config change outside the stated scope**
+- `chart_tooltip.py` `__call__` has 7 arguments, which triggers ruff `PLR0913`. Inline `# noqa` isn't allowed in components, and reducing the arguments would change the public API. I added one per-file ignore in `.trunk/configs/ruff.toml`: `"components/chart/chart_tooltip.py" = ["PLR0913"]`. Remove it if you'd rather change the API.
+
+Nothing is committed. Other files in the worktree show as modified from parallel work.</result>
+<usage><subagent_tokens>34807</subagent_tokens><tool_uses>14</tool_uses><duration_ms>152132</duration_ms></usage>
+</task-notification>
+
+---
+
+<task-notification>
+<task-id>a7f7fa8b4c6a311a8</task-id>
+<tool-use-id>toolu_01PLtkmaveNhphWtqFKJqjLM</tool-use-id>
+<output-file>/tmp/claude-1000/-home-vercel-sandbox-native/a40084cd-6dc4-49d0-aee2-87027c7ff064/tasks/a7f7fa8b4c6a311a8.output</output-file>
+<status>completed</status>
+<summary>Agent "Fix lint: native/lib" finished</summary>
+<note>A task-notification fires each time this agent stops with no live background children of its own. The user can send it another message and resume it, so the same task-id may notify more than once.</note>
+<result>Everything in `native/lib/**` is clean now, with no suppressions added and `.trunk/configs/ruff.toml` untouched. Ruff check and `ruff format --check` are clean. Pyrefly shows nothing for `native/lib` (ignoring `bad-override`), and pyright reports 0 errors. `.venv/bin/python -m pytest tests -q -x` gives 764 passed. I did not run ty or bandit.
+
+- **Dead comments:** I deleted the commented-out code in `components/field_general.py` and `components/switch_sizes.py`. The old commented-out `select` blocks no longer appear in the rendered source.
+- **Data typing:** Demo data and row-helper parameters are now typed `dict[str, Any]` or `list[dict[str, Any]]`. This covers the blocks, charts, table demos, dashboards, and `examples/card_*` files.
+- **`table_demo.py`:** `summary_label` now returns `list[rx.Component]`.
+- **`docex_5.py`:** The untyped lambda in `rx.foreach` is now a typed `legend_item` function, and the `+ 1` became `index.to(int) + 1` so it type-checks. Rendered output should be the same, but I didn't check the rendered page.
+
+The working tree also has edits outside `native/lib` (`cli/`, `components/`, `tests/`, `.trunk/trunk.yaml`). I didn't touch those, and they appear to come from other agents working in parallel.</result>
+<usage><subagent_tokens>36525</subagent_tokens><tool_uses>13</tool_uses><duration_ms>160844</duration_ms></usage>
+</task-notification>
+
+---
+
+<task-notification>
+<task-id>a0ad80e70106bba11</task-id>
+<tool-use-id>toolu_01M1jpsHNNtRQ3EUN7dPdLrv</tool-use-id>
+<output-file>/tmp/claude-1000/-home-vercel-sandbox-native/a40084cd-6dc4-49d0-aee2-87027c7ff064/tasks/a0ad80e70106bba11.output</output-file>
+<status>completed</status>
+<summary>Agent "Fix lint: tests" finished</summary>
+<note>A task-notification fires each time this agent stops with no live background children of its own. The user can send it another message and resume it, so the same task-id may notify more than once.</note>
+<result>All lint and type findings in `tests/**` are cleared for ruff, pyrefly (ignoring `bad-override`) and pyright, and `.venv/bin/python -m pytest tests -q` gives 764 passed. I couldn't run `ty` because it isn't installed here, so that tool is unchecked.
+
+The first full test run had one failure, `test_clean_code.py::test_no_comments_in_components`. It flagged comments in `components/chart/chart_tooltip.py` and `components/ui/dialog.py`, which are outside my scope and were being edited in parallel. The second full run was fully green, so that failure was transient or since resolved.
+
+What I changed in the test files:
+- **Annotations:** I added `-&gt; None` to the test functions that were missing return annotations. I also added parameter and return types to the helpers and parametrized tests, using `Path`, `pytest.MonkeyPatch`, `Any` and `Callable` where needed. `test_tabs.py` got a `Node = dict[str, Any]` alias for its tree helpers.
+- **Unused pyrefly ignores:** I removed the unused `# pyrefly: ignore` comments in `test_parser_source_token.py`, `test_source_codeblock.py`, `test_theme_preset_url.py` and `test_toc_links.py`.
+- **`test_toc_links.py` attribute error:** I replaced the direct attribute access with `getattr(getattr(piece, "dangerouslySetInnerHTML", None), "_var_value", None)`. The access is on the pyright-flagged lines 52 and 171, which both used the same pattern.
+- **`test_dialog.py`:** I passed `_DialogState.set_open` through a local `handler: Any`, because the checkers see it as a plain function and `on_open_change` expects an `EventHandler`.
+- **Other ruff findings:**
+  - I reworded the commented-out-code comment in `test_dashboard_introspect.py`.
+  - I made `with_guard` keyword-only in `test_tabs.py` and updated its callers.
+  - I moved the `Callable` and `Iterator` imports into `TYPE_CHECKING` blocks.
+
+The changes touch 12 files under `tests/`. I did not touch `.trunk/configs/ruff.toml` and added no suppressions, and I didn't commit.</result>
+<usage><subagent_tokens>38149</subagent_tokens><tool_uses>13</tool_uses><duration_ms>152195</duration_ms></usage>
+</task-notification>
+
+---
+
+<task-notification>
+<task-id>ab68616f1d83247cf</task-id>
+<tool-use-id>toolu_01491Q5hppyMXxBGKaGv1gUV</tool-use-id>
+<output-file>/tmp/claude-1000/-home-vercel-sandbox-native/a40084cd-6dc4-49d0-aee2-87027c7ff064/tasks/ab68616f1d83247cf.output</output-file>
+<status>completed</status>
+<summary>Agent "Fix lint: cli/native/scripts" finished</summary>
+<note>A task-notification fires each time this agent stops with no live background children of its own. The user can send it another message and resume it, so the same task-id may notify more than once.</note>
+<result>All in-scope findings are cleared for ruff, pyright, pyrefly, ty, bandit and tach. `.venv/bin/python -m pytest tests -q -x` gives 764 passed. Nothing is committed. I ran `ruff format` over the in-scope paths. The edits are not byte-for-byte pure: some code was restructured and the rest touches only types and imports.
+
+- **tach:** `native.templates` now lists `native.registry.components` in `depends_on` in `tach.toml`. The dependency is legitimate, since `_intro.py` uses `COMPONENT_REGISTRY`. `tach check` reports all modules validated.
+- **C901 / PLR0913 refactors:**
+  - **`cli/main.py`:** `resolve_dependencies` now delegates to a new `_DependencyResolver` class. `patch_rxconfig` calls a new `_inject_tailwind_plugin` helper.
+  - **`native/pages/create.py`:** `_theme_select` takes a `SelectDecor` dataclass in place of the `describe`, `icon` and `swatch` flags.
+  - **`native/templates/_get_typeset_code.py`:** `get_code_section` takes a `CopyButtonSpec` dataclass in place of `has_copy`, `copy_id` and `on_copy_click`.
+- **Other lint fixes:**
+  - **T201:** `native/engine/generator.py` now writes through a small `_out` helper using `sys.stdout.write`, so the output is unchanged.
+  - **PERF203:** `native/engine/parser.py` moves the try/except into a `_read_text_or_none` helper.
+  - **ERA001:** removed the commented-out code in `native/pages/landing.py`.
+  - **bandit B105:** renamed `TOKEN_RE` to `DIRECTIVE_PATTERN` in `scripts/generate_markdown.py`.
+- **bandit B404/B603/B311 (low, flagged beyond B105):** added `# nosec` with a reason on `cli/dev.py` lines 3 and 233 and `native/templates/_copy_btn.py` line 13. These are narrow ignores, kept next to the existing `noqa` comments.
+- **Type fixes:**
+  - Bare `dict`, `list`, `Var` and lambda annotations are now parameterized or replaced with named functions.
+  - The `layout_decorator`, `sub_layout_decorator` and `masonry_card` signatures are corrected, with overloads on `masonry_card`.
+  - `native/registry/components.py` and its generator `scripts/generate_registry.py` both got the explicit `COMPONENT_REGISTRY` type, so a regenerate won't undo it.
+  - `cli/dev.py` imports `FuzzyPrompt` directly instead of `inquirer.fuzzy`, which pyright flagged.
+  - `scripts/generate_anatomy.py` now raises `ImportError` if the module spec or loader is missing.
+- **Two `cast`s remain** in `native/engine/parser.py` and one in `native/engine/generator.py` (`render_token` install path, the source token path, and `table_of_content`). I used them to keep behavior identical rather than changing what is returned. The `install` token still returns the raw tuple instead of a component, which looks like an existing bug.
+
+**Remaining findings:** ty still reports 23 diagnostics, all in `native/lib/**`, `tests/**` and `components/**`, which are outside my scope. pyrefly and pyright show nothing in my scope. The first pyrefly run showed unrelated errors in `tests/`, which I ignored as out of scope. I could not tell whether `native/lib` is clean, because I filtered it out of every run.</result>
+<usage><subagent_tokens>86448</subagent_tokens><tool_uses>43</tool_uses><duration_ms>297342</duration_ms></usage>
+</task-notification>

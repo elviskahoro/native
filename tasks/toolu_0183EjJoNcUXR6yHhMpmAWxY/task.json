@@ -1,0 +1,14 @@
+{
+  "tool_use_id": "toolu_0183EjJoNcUXR6yHhMpmAWxY",
+  "agent_id": "a57604f2ea43343b4",
+  "task_description": "Fix lint: components",
+  "token_usage": {
+    "input_tokens": 30,
+    "cache_creation_tokens": 33997,
+    "cache_read_tokens": 352076,
+    "output_tokens": 6527,
+    "api_call_count": 15
+  },
+  "started_at": "2026-10-26T01:25:25.941515397Z",
+  "completed_at": "2026-10-26T01:27:57.796797976Z"
+}

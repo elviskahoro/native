@@ -1,0 +1,14 @@
+{
+  "tool_use_id": "toolu_01PLtkmaveNhphWtqFKJqjLM",
+  "agent_id": "a7f7fa8b4c6a311a8",
+  "task_description": "Fix lint: native/lib",
+  "token_usage": {
+    "input_tokens": 26,
+    "cache_creation_tokens": 28263,
+    "cache_read_tokens": 338265,
+    "output_tokens": 5614,
+    "api_call_count": 13
+  },
+  "started_at": "2026-10-26T01:25:30.796805519Z",
+  "completed_at": "2026-10-26T01:28:11.384429741Z"
+}

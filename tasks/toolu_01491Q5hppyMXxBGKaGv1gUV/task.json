@@ -1,0 +1,14 @@
+{
+  "tool_use_id": "toolu_01491Q5hppyMXxBGKaGv1gUV",
+  "agent_id": "ab68616f1d83247cf",
+  "task_description": "Fix lint: cli/native/scripts",
+  "token_usage": {
+    "input_tokens": 86,
+    "cache_creation_tokens": 76747,
+    "cache_read_tokens": 2500188,
+    "output_tokens": 22801,
+    "api_call_count": 43
+  },
+  "started_at": "2026-10-26T01:25:36.440628206Z",
+  "completed_at": "2026-10-26T01:30:33.650068499Z"
+}

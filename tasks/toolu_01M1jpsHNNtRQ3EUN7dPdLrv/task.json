@@ -1,0 +1,14 @@
+{
+  "tool_use_id": "toolu_01M1jpsHNNtRQ3EUN7dPdLrv",
+  "agent_id": "a0ad80e70106bba11",
+  "task_description": "Fix lint: tests",
+  "token_usage": {
+    "input_tokens": 28,
+    "cache_creation_tokens": 29380,
+    "cache_read_tokens": 389227,
+    "output_tokens": 6500,
+    "api_call_count": 14
+  },
+  "started_at": "2026-10-26T01:25:40.906366191Z",
+  "completed_at": "2026-10-26T01:28:12.722290407Z"
+}
