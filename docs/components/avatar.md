@@ -111,7 +111,7 @@ avatar.image(src="/avatars/01.png", custom_attrs={"alt": "@shadcn"})
 | Prop         | Type  | Default             |
 | ------------ | ----- | ------------------- |
 | `src`        | `str` |                      |
-| `id`         | `str` | auto-generated       |
+| `id`         | `str` | _None_               |
 | `class_name` | `str` | `""`                 |
 
 Any other prop accepted by a native `<img>` is also passed straight through.

@@ -99,9 +99,7 @@ menu.content(
 
 ## menu.item
 
-An action selection row component. Injects a DOM traversal action snippet that walks up to collapse the parent menu immediately upon clicking.
-
-> **Loop Context Warning:** If rendered inside an `rx.foreach`, pass an explicit `id` derived from your loop data (e.g. `id=f"menu-item-{item.id}"`) to prevent static template collisions.
+An action selection row component. Marks itself with `data-close-menu` so the delegated listener on `menu.root` collapses the parent menu on click. No element id is generated, so it is safe inside `rx.foreach`.
 
 ```python
 menu.item("Profile", variant="default", close_on_click=True)
@@ -111,7 +109,7 @@ menu.item("Profile", variant="default", close_on_click=True)
 | ---------------- | ----------------------------------- | ---------------- | ------------------------------------------------------------------------- |
 | `variant`        | `Literal["default", "destructive"]` | `"default"`      | Toggles destructive textual accents and item highlight colors.            |
 | `close_on_click` | `bool`                              | `True`           | Instructs the item to close the menu container window instantly on click. |
-| `id`             | `str`                               | _Auto-generated_ | Custom tracking string. Required if rendering within `rx.foreach`.        |
+| `id`             | `str`                               | _None_            | Optional element id (not generated; safe in `rx.foreach`).                |
 | `on_click`       | `Union[EventHandler, list]`         | `None`           | Trigger callbacks executed when the item row is pressed.                  |
 | `class_name`     | `str`                               | `""`             | Additional item styling overrides.                                        |
 
@@ -125,7 +123,7 @@ menu.close("Cancel Action", class_name="text-center justify-center")
 
 | Prop         | Type  | Default          | Description                                                              |
 | ------------ | ----- | ---------------- | ------------------------------------------------------------------------ |
-| `id`         | `str` | _Auto-generated_ | HTML selector element identity hook used by the internal layout manager. |
+| `id`         | `str` | _None_            | Optional element id (not generated).                                       |
 | `class_name` | `str` | `""`             | Visual styling definitions injected onto the close component row.        |
 
 ## menu.separator
