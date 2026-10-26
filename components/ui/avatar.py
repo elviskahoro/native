@@ -92,7 +92,7 @@ class AvatarRoot(Div, CoreComponent):
 
 class AvatarImage(CoreComponent):
     @classmethod
-    def create(cls, **props: Any) -> rx.Component:
+    def create(cls, **props: Any) -> rx.Component:  # pyrefly: ignore[bad-override]
         custom_classes = props.pop("class_name", "")
         props["data-slot"] = "avatar-image"
         cls.set_class_name(cn(ClassNames.IMAGE, custom_classes), props)
