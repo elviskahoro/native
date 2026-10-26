@@ -1,4 +1,3 @@
-import uuid
 from typing import Any
 
 import reflex as rx
@@ -32,10 +31,64 @@ class ClassNames:
     CLOSE_ICON = "!absolute !top-2 !right-2"
 
 
+GLOBAL_HANDLERS_JS = """
+(function () {
+    if (window.__dialogGlobalHandlersAttached) return;
+    window.__dialogGlobalHandlersAttached = true;
+    function popupFor(el) {
+        var root = el.closest('[data-slot="dialog-root"]');
+        return root
+            ? root.querySelector('dialog[data-slot="dialog-content"]')
+            : null;
+    }
+    document.addEventListener('click', function (e) {
+        var target = e.target;
+        if (!target || !target.closest) return;
+        var trigger = target.closest('[data-slot="dialog-trigger"]');
+        if (trigger) {
+            var opened = popupFor(trigger);
+            if (opened) opened.showModal();
+            return;
+        }
+        var closer = target.closest('[data-slot="dialog-close"]');
+        if (closer) {
+            var closing = popupFor(closer);
+            if (closing) closing.close();
+            return;
+        }
+        if (
+            target.matches('dialog[data-slot="dialog-content"]')
+            && target.getAttribute('data-dismissible') === 'true'
+        ) {
+            target.close();
+        }
+    }, true);
+})();
+"""
+
+
 class DialogRoot(CoreComponent):
+    """Scoping wrapper that owns the delegated dialog click handler.
+
+    A single capturing document ``click`` listener (attached once per page)
+    resolves trigger / close / backdrop clicks from the runtime DOM, so no
+    build-time element ids are baked in and ``rx.foreach`` copies stay
+    independent.
+    """
+
     @classmethod
     def create(cls, *children: Any, **props: Any) -> rx.Component:
         props["data-slot"] = "dialog-root"
+
+        user_on_mount = props.pop("on_mount", None)
+        mount_handlers = [rx.call_script(GLOBAL_HANDLERS_JS)]
+        if user_on_mount is not None:
+            if isinstance(user_on_mount, list):
+                mount_handlers.extend(user_on_mount)
+            else:
+                mount_handlers.append(user_on_mount)
+        props["on_mount"] = mount_handlers
+
         cls.set_class_name("contents", props)
         return rx.el.div(*children, **props)
 
@@ -45,28 +98,7 @@ class DialogTrigger(CoreComponent):
     def create(cls, *children: Any, **props: Any) -> rx.Component:
         custom_classes = props.pop("class_name", "")
         props["data-slot"] = "dialog-trigger"
-
-        trigger_id = props.get("id") or f"dialog-trigger-{uuid.uuid4().hex[:8]}"
-        props["id"] = trigger_id
-
         cls.set_class_name(cn("contents", custom_classes), props)
-
-        props["on_mount"] = rx.call_script(
-            f"""
-            (function() {{
-                var trigger = document.getElementById('{trigger_id}');
-                if (!trigger || trigger.__dialogTriggerAttached) return;
-                trigger.__dialogTriggerAttached = true;
-                trigger.addEventListener('click', function (e) {{
-                    var root = trigger.closest('[data-slot="dialog-root"]');
-                    var dlg = root
-                        ? root.querySelector('dialog[data-slot="dialog-content"]')
-                        : null;
-                    if (dlg) dlg.showModal();
-                }}, true);
-            }})()
-            """,
-        )
         return rx.el.div(*children, **props)
 
 
@@ -92,33 +124,8 @@ class DialogPopup(BaseDialog, CoreComponent):
             props["on_close"] = lambda: on_open_change(False)
         if not dismissible:
             props["on_cancel"] = rx.prevent_default
-
-        if dismissible:
-            popup_id = props.get("id") or f"dialog-content-{uuid.uuid4().hex[:8]}"
-            props["id"] = popup_id
-
-            existing_on_mount = props.pop("on_mount", None)
-            close_on_backdrop_script = rx.call_script(
-                f"""
-                (function() {{
-                    var dlg = document.getElementById('{popup_id}');
-                    if (!dlg || dlg.__dialogBackdropAttached) return;
-                    dlg.__dialogBackdropAttached = true;
-                    dlg.addEventListener('click', function (e) {{
-                        if (e.target === dlg) dlg.close();
-                    }});
-                }})()
-                """,
-            )
-            if existing_on_mount is not None:
-                events = (
-                    existing_on_mount
-                    if isinstance(existing_on_mount, list)
-                    else [existing_on_mount]
-                )
-                props["on_mount"] = [*events, close_on_backdrop_script]
-            else:
-                props["on_mount"] = close_on_backdrop_script
+        else:
+            props["data-dismissible"] = "true"
 
         return super().create(*children, **props)
 
@@ -128,28 +135,7 @@ class DialogClose(CoreComponent):
     def create(cls, *children: Any, **props: Any) -> rx.Component:
         custom_classes = props.pop("class_name", "")
         props["data-slot"] = "dialog-close"
-
-        close_id = props.get("id") or f"dialog-close-{uuid.uuid4().hex[:8]}"
-        props["id"] = close_id
-
         cls.set_class_name(cn("contents", custom_classes), props)
-
-        props["on_mount"] = rx.call_script(
-            f"""
-            (function() {{
-                var closer = document.getElementById('{close_id}');
-                if (!closer || closer.__dialogCloseAttached) return;
-                closer.__dialogCloseAttached = true;
-                closer.addEventListener('click', function (e) {{
-                    var root = closer.closest('[data-slot="dialog-root"]');
-                    var dlg = root
-                        ? root.querySelector('dialog[data-slot="dialog-content"]')
-                        : null;
-                    if (dlg) dlg.close();
-                }}, true);
-            }})()
-            """,
-        )
         return rx.el.div(*children, **props)
 
 

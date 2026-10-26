@@ -73,7 +73,6 @@ from reflex.components.component import ComponentNamespace
 from ..core.core import CoreComponent, cn
 
 _menu_id_counter = itertools.count()
-_menu_item_counter = itertools.count()
 
 
 class ClassNames:
@@ -125,6 +124,13 @@ class MenuRoot(CoreComponent):
                 });
 
                 document.addEventListener('click', function (e) {
+                    var closer = e.target && e.target.closest
+                        ? e.target.closest('[data-close-menu="true"]')
+                        : null;
+                    var owner = closer
+                        ? closer.closest('details[data-slot="menu"]')
+                        : null;
+                    if (owner) owner.open = false;
                     document
                         .querySelectorAll('details[data-slot="menu"][open]')
                         .forEach(function (el) {
@@ -132,7 +138,7 @@ class MenuRoot(CoreComponent):
                                 el.open = false;
                             }
                         });
-                });
+                }, true);
             }
             """,
         )
@@ -191,10 +197,9 @@ class MenuContent(CoreComponent):
 
 
 class MenuItem(CoreComponent):
-    """Note: if rendered inside rx.foreach, the auto-generated sequential ID is baked in
-    once at template-build time and shared across all rendered items. Pass
-    an explicit `id` derived from your loop data in that case, e.g.
-    id=f"menu-item-{item.id}".
+    """Menu row. ``close_on_click`` is handled by the delegated click listener
+    that ``MenuRoot`` attaches (via ``data-close-menu``), so no build-time id is
+    baked in and the item is safe inside ``rx.foreach``.
     """
 
     @classmethod
@@ -210,30 +215,8 @@ class MenuItem(CoreComponent):
         variant = props.pop("variant", "default")
         props["data-variant"] = variant
 
-        item_id = props.get("id") or f"menu-item-{next(_menu_item_counter)}"
-        props["id"] = item_id
-
-        user_on_click = props.pop("on_click", None)
-        click_events = []
-
-        if user_on_click is not None:
-            if isinstance(user_on_click, list):
-                click_events.extend(user_on_click)
-            else:
-                click_events.append(user_on_click)
-
         if close_on_click:
-            close_script = rx.call_script(
-                f"""
-                const item = document.getElementById('{item_id}');
-                const root = item ? item.closest('[data-slot="menu"]') : null;
-                if (root) root.open = false;
-                """,
-            )
-            click_events.append(close_script)
-
-        if click_events:
-            props["on_click"] = click_events
+            props["data-close-menu"] = "true"
 
         return rx.el.div(*children, **props)
 
@@ -243,17 +226,7 @@ class MenuClose(CoreComponent):
     def create(cls, *children: Any, **props: Any) -> rx.Component:
         props["data-slot"] = "menu-close"
         props.setdefault("type", "button")
-
-        close_id = props.get("id") or f"menu-item-{next(_menu_item_counter)}"
-        props["id"] = close_id
-
-        props["on_click"] = rx.call_script(
-            f"""
-            const btn = document.getElementById('{close_id}');
-            const root = btn ? btn.closest('[data-slot="menu"]') : null;
-            if (root) root.open = false;
-            """,
-        )
+        props["data-close-menu"] = "true"
 
         cls.set_class_name(ClassNames.ITEM, props)
         return rx.el.div(*children, **props)
@@ -433,9 +406,7 @@ menu.content(
 
 ## menu.item
 
-An action selection row component. Injects a DOM traversal action snippet that walks up to collapse the parent menu immediately upon clicking.
-
-> **Loop Context Warning:** If rendered inside an `rx.foreach`, pass an explicit `id` derived from your loop data (e.g. `id=f"menu-item-{item.id}"`) to prevent static template collisions.
+An action selection row component. Marks itself with `data-close-menu` so the delegated listener on `menu.root` collapses the parent menu on click. No element id is generated, so it is safe inside `rx.foreach`.
 
 ```python
 menu.item("Profile", variant="default", close_on_click=True)
@@ -445,7 +416,7 @@ menu.item("Profile", variant="default", close_on_click=True)
 | ---------------- | ----------------------------------- | ---------------- | ------------------------------------------------------------------------- |
 | `variant`        | `Literal["default", "destructive"]` | `"default"`      | Toggles destructive textual accents and item highlight colors.            |
 | `close_on_click` | `bool`                              | `True`           | Instructs the item to close the menu container window instantly on click. |
-| `id`             | `str`                               | _Auto-generated_ | Custom tracking string. Required if rendering within `rx.foreach`.        |
+| `id`             | `str`                               | _None_            | Optional element id (not generated; safe in `rx.foreach`).                |
 | `on_click`       | `Union[EventHandler, list]`         | `None`           | Trigger callbacks executed when the item row is pressed.                  |
 | `class_name`     | `str`                               | `""`             | Additional item styling overrides.                                        |
 
@@ -459,7 +430,7 @@ menu.close("Cancel Action", class_name="text-center justify-center")
 
 | Prop         | Type  | Default          | Description                                                              |
 | ------------ | ----- | ---------------- | ------------------------------------------------------------------------ |
-| `id`         | `str` | _Auto-generated_ | HTML selector element identity hook used by the internal layout manager. |
+| `id`         | `str` | _None_            | Optional element id (not generated).                                       |
 | `class_name` | `str` | `""`             | Visual styling definitions injected onto the close component row.        |
 
 ## menu.separator
