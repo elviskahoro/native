@@ -59,7 +59,7 @@ class CoreComponent(Component):
         ]
 
 
-def cn(*classes: Var | str | tuple | list | None) -> Var:
+def cn(*classes: Var[Any] | str | tuple[Any, ...] | list[Any] | None) -> Var[str]:
     return CN.call(*classes).to(str)
 ```
 
@@ -102,7 +102,7 @@ BADGE_VARIANTS = {
 }
 
 
-def badge_variants(variant: str = "default") -> Var:
+def badge_variants(variant: str = "default") -> Var[str]:
     return cn(
         ClassNames.BASE,
         BADGE_VARIANTS.get(variant, BADGE_VARIANTS["default"]),

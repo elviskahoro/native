@@ -59,7 +59,7 @@ class CoreComponent(Component):
         ]
 
 
-def cn(*classes: Var | str | tuple | list | None) -> Var:
+def cn(*classes: Var[Any] | str | tuple[Any, ...] | list[Any] | None) -> Var[str]:
     return CN.call(*classes).to(str)
 ```
 
@@ -196,7 +196,7 @@ class Button(BaseButton, CoreComponent):
         return [*super()._exclude_props(), "size", "variant"]
 
 
-def button_variants(variant: str = "default", size: str = "default") -> Var:
+def button_variants(variant: str = "default", size: str = "default") -> Var[str]:
     return cn(
         DEFAULT_CLASS_NAME,
         BUTTON_VARIANTS["variant"].get(variant, ""),

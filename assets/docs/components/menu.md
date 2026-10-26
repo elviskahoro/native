@@ -59,7 +59,7 @@ class CoreComponent(Component):
         ]
 
 
-def cn(*classes: Var | str | tuple | list | None) -> Var:
+def cn(*classes: Var[Any] | str | tuple[Any, ...] | list[Any] | None) -> Var[str]:
     return CN.call(*classes).to(str)
 ```
 
