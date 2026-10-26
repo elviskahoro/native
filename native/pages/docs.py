@@ -1,7 +1,8 @@
 from pathlib import Path
+from typing import Any
 
 from reflex.components.component import Component
-from reflex.event import call_script
+from reflex.event import EventSpec, call_script
 from reflex_base.vars.base import Var
 from reflex_components_core.el import a, div, h3, h4, p, span
 
@@ -17,7 +18,7 @@ DOCS_RESOURCES_PATH = Path("docs/resources")
 FRONTMATTER_PARTS = 3
 
 
-def parse_frontmatter(content: str) -> tuple[dict, str]:
+def parse_frontmatter(content: str) -> tuple[dict[str, Any], str]:
     """Parses frontmatter metadata (like order and description) from Markdown content."""
     metadata = {}
     if not content.startswith("---"):
@@ -93,7 +94,7 @@ def get_links(source_dir: Path, url_prefix: str) -> list[Component]:
             content = file.read_text(encoding="utf-8")
             metadata, _ = parse_frontmatter(content)
         except (OSError, ValueError):
-            metadata = {}
+            metadata: dict[str, Any] = {}
 
         # Extract order (default to 999 if missing so unordered pages go to the end)
         order = metadata.get("order", 999)
@@ -205,7 +206,11 @@ resources_links = get_links(
 )
 
 
-def filter_script(value: Var) -> Var:
+def _on_filter_change(value: Var[Any]) -> EventSpec:
+    return call_script(filter_script(value))
+
+
+def filter_script(value: Var[Any]) -> Var[Any]:
     return Var(
         f"""
 (function(term) {{
@@ -245,7 +250,7 @@ def filter_script(value: Var) -> Var:
     search=input_group.root(
         input_group.input(
             placeholder="Search documentation...",
-            on_change=lambda value: call_script(filter_script(value)),
+            on_change=_on_filter_change,
         ),
         input_group.addon(
             hi(

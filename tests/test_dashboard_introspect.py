@@ -49,7 +49,7 @@ def test_dependency_buckets_only_use_known_bucket_names() -> None:
 
 
 # ---------------------------------------------------------------------------
-# _classify_import
+# Helper: import classification
 # ---------------------------------------------------------------------------
 
 
@@ -71,7 +71,7 @@ def test_dependency_buckets_only_use_known_bucket_names() -> None:
     ],
     ids=lambda case: f"{case[0]}->{case[1]}",  # pyright: ignore[reportUnknownLambdaType]
 )
-def test_classify_import(case: tuple[str, str | None]):
+def test_classify_import(case: tuple[str, str | None]) -> None:
     module_path, expected = case
     assert _classify_import(module_path) == expected
 
@@ -81,7 +81,7 @@ def test_classify_import(case: tuple[str, str | None]):
 # ---------------------------------------------------------------------------
 
 
-def test_extract_dependencies_buckets_mixed_imports():
+def test_extract_dependencies_buckets_mixed_imports() -> None:
     """Charts, blocks, UI/core components, and untracked externals are all
     classified together without cross-contamination."""
     source = (
@@ -98,7 +98,7 @@ def test_extract_dependencies_buckets_mixed_imports():
     }
 
 
-def test_extract_dependencies_dedupes_and_uses_asname():
+def test_extract_dependencies_dedupes_and_uses_asname() -> None:
     """The same imported name from two chart modules is recorded once, and
     ``from x import a as b`` records the alias ``b`` (mirrors the
     ``alias.asname or alias.name`` logic in the extractor)."""
@@ -111,7 +111,7 @@ def test_extract_dependencies_dedupes_and_uses_asname():
     assert deps["components"] == ["area_chart_with_gradient", "av"]
 
 
-def test_extract_dependencies_ignores_plain_import_statements():
+def test_extract_dependencies_ignores_plain_import_statements() -> None:
     """``_extract_dependencies`` only inspects ``from ... import ...``
     (ast.ImportFrom); bare ``import X`` statements must not be bucketed."""
     source = (
@@ -131,7 +131,7 @@ def test_extract_dependencies_ignores_plain_import_statements():
 
 
 @pytest.mark.parametrize("dashboard_id", ["dashboard_02", "dashboard_03"])  # pyright: ignore[reportUntypedFunctionDecorator]
-def test_dashboards_02_03_chart_routes_to_components(dashboard_id: str):
+def test_dashboards_02_03_chart_routes_to_components(dashboard_id: str) -> None:
     """``area_chart_with_gradient`` lives under ``native/lib/charts/`` and is
     the central rendered element of dashboards 02 and 03, so it must appear in
     their ``components`` bucket (the user-visible badge fix) and not in
@@ -143,7 +143,7 @@ def test_dashboards_02_03_chart_routes_to_components(dashboard_id: str):
     assert "area_chart_with_gradient" not in deps["blocks"]
 
 
-def test_dashboard_01_chart_stays_in_blocks_not_components():
+def test_dashboard_01_chart_stays_in_blocks_not_components() -> None:
     """``bar_chart_02`` lives under ``native/lib/blocks/``, so it remains in the
     ``blocks`` bucket even though charts now route to ``components``. Locks in
     the file-tree-derived asymmetric routing (each chart is bucketed by the lib
@@ -161,7 +161,10 @@ def test_dashboard_01_chart_stays_in_blocks_not_components():
 
 
 @pytest.mark.parametrize("dashboard_id", ["dashboard_02", "dashboard_03"])  # pyright: ignore[reportUntypedFunctionDecorator]
-def test_load_dashboard_example_includes_chart_badge(dashboard_id: str, monkeypatch):
+def test_load_dashboard_example_includes_chart_badge(
+    dashboard_id: str,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
     """End-to-end guard for the user-visible defect: the public API consumed
     by ``native/templates/_dashboard_example.py`` must surface
     ``area_chart_with_gradient`` in ``components`` for the dashboards whose

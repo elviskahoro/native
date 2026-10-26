@@ -1,10 +1,11 @@
 from datetime import datetime
+from typing import Any
 
 import reflex as rx
 
 from components.chart.chart_tooltip import chart_tooltip, chart_tooltip_content
 
-data = [
+data: list[dict[str, Any]] = [
     {"date": "2024-04-01", "desktop": 222, "mobile": 150},
     {"date": "2024-04-02", "desktop": 97, "mobile": 180},
     {"date": "2024-04-03", "desktop": 167, "mobile": 120},

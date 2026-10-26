@@ -45,6 +45,7 @@ import ast
 import importlib.util
 import sys
 from pathlib import Path
+from typing import Any
 
 DEFAULT_SRC = "native/registry/anatomy"
 DEFAULT_OUT = "native/registry/anatomy.py"
@@ -58,14 +59,14 @@ NOT_USER_FACING = {"core", "hugeicon", "chart_tooltip"}
 BLOCK_PATH_PREFIX = "native/lib"
 
 
-def is_block(name: str, registry: dict) -> bool:
+def is_block(name: str, registry: dict[str, Any]) -> bool:
     entry = registry.get(name)
     if not entry:
         return False
     return any(f.startswith(BLOCK_PATH_PREFIX) for f in entry.get("files", []))
 
 
-def load_registry(repo_root: Path) -> dict:
+def load_registry(repo_root: Path) -> dict[str, Any]:
     sys.path.insert(0, str(repo_root))
     try:
         from native.registry.components import COMPONENT_REGISTRY
@@ -102,6 +103,9 @@ def validate_by_importing(path: Path, repo_root: Path) -> None:
     """
     module_name = f"_anatomy_validate_{path.stem}"
     spec = importlib.util.spec_from_file_location(module_name, path)
+    if spec is None or spec.loader is None:
+        msg = f"Cannot load module from {path}"
+        raise ImportError(msg)
     module = importlib.util.module_from_spec(spec)
     sys.path.insert(0, str(repo_root))
     try:

@@ -23,7 +23,7 @@ import pathlib
 import re
 from collections.abc import Iterator
 from pathlib import Path
-from typing import TypedDict
+from typing import Any, TypedDict, cast
 
 import markdown
 import reflex as rx
@@ -44,8 +44,8 @@ _TOKEN_MATCH_RE = re.compile(r"--([\w_]+)(?:\(([^)]+)\))?--")
 # Live registry: import every file once, remember whatever it publicly
 # defines. No inspect.getmembers() gymnastics, no per-render reflection.
 # --------------------------------------------------------------------------
-def _build_live_registry(dirs: list[str]) -> dict[str, tuple[object, str]]:
-    registry: dict[str, tuple[object, str]] = {}
+def _build_live_registry(dirs: list[str]) -> dict[str, tuple[Any, str]]:
+    registry: dict[str, tuple[Any, str]] = {}
 
     for folder in dirs:
         for py_file in (_PROJECT_ROOT / folder).rglob("*.py"):
@@ -78,7 +78,7 @@ _LIVE_REGISTRY = _build_live_registry(["native/lib", "components/"])
 
 def get_all_dependencies(
     name: str,
-    registry: dict[str, dict] = COMPONENT_REGISTRY,
+    registry: dict[str, dict[str, Any]] = COMPONENT_REGISTRY,
 ) -> list[str]:
     """Recursively resolve install-time dependencies in install order."""
     ordered: list[str] = []
@@ -102,18 +102,25 @@ def _clean_arg(raw_arg: str) -> str:
     return (raw_arg or "").strip().strip("'\"[]{}").lower()
 
 
+def _read_text_or_none(path: str) -> str | None:
+    try:
+        return Path(path).read_text().strip()
+    except OSError:
+        return None
+
+
 def _render_install(name: str) -> tuple[str, list[tuple[str, str]]] | rx.Component:
     all_deps = get_all_dependencies(name)
     if not all_deps:
         return rx.el.p(f"Installation payload empty for {name}")
 
-    files_data = []
+    files_data: list[tuple[str, str]] = []
     for dep in all_deps:
         for f_path in COMPONENT_REGISTRY.get(dep, {}).get("files", []):
-            try:
-                files_data.append((f_path, Path(f_path).read_text().strip()))
-            except OSError:  # first unreadable file aborts the render
+            content = _read_text_or_none(f_path)
+            if content is None:  # first unreadable file aborts the render
                 return rx.el.p(f"Error reading file dependency path: {f_path}")
+            files_data.append((f_path, content))
 
     return name, files_data
 
@@ -122,7 +129,8 @@ def render_token(cmd: str, raw_arg: str) -> rx.Component:
     name = _clean_arg(raw_arg)
 
     if cmd == "install":
-        return _render_install(name)
+        # Historical behavior: the raw install payload is passed through.
+        return cast("rx.Component", _render_install(name))
 
     if "intro" in cmd:
         return intro(raw_arg)
@@ -134,7 +142,9 @@ def render_token(cmd: str, raw_arg: str) -> rx.Component:
         from native.templates._source import source
 
         result = _render_install(name)
-        return result if not isinstance(result, tuple) else source(result[1])
+        if isinstance(result, tuple):
+            return source(cast("list[tuple[str, str]]", result[1]))
+        return result
 
     entry = _LIVE_REGISTRY.get(name)
     if not entry:
@@ -146,7 +156,11 @@ def render_token(cmd: str, raw_arg: str) -> rx.Component:
 
     obj, _preferred_name = entry
     if "demo" in cmd:
-        source = Path(inspect.getsourcefile(obj)).read_text().strip()
+        source_file = inspect.getsourcefile(obj)
+        if source_file is None:
+            msg = f"No source file for {name}"
+            raise TypeError(msg)
+        source = Path(source_file).read_text().strip()
         return demo(obj(), source)
     return rx.el.div()
 
@@ -194,7 +208,7 @@ def render_markdown_chunk(text: str) -> rx.Component:
 
 
 def parse_and_render(content: str) -> list[rx.Component]:
-    pieces = []
+    pieces: list[rx.Component] = []
     cursor = 0
 
     for match in _TOKEN_MATCH_RE.finditer(content):

@@ -1,3 +1,5 @@
+from typing import Any
+
 import reflex as rx
 
 from components.ui.button import button
@@ -27,7 +29,7 @@ items = [
 @masonry_card(label="Finance")
 def card_05() -> rx.Component:
 
-    def menu_item(item: dict) -> rx.Component:
+    def menu_item(item: dict[str, Any]) -> rx.Component:
         return button(
             rx.el.div(
                 rx.el.div(

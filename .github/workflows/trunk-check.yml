@@ -9,7 +9,8 @@
 #   gates only on issues the queued PR introduces.
 # - push to main: checks the files changed in that push (post-merge net).
 #
-# All three modes are file-diff gated; touched-file correctness is on the contributor.
+# check-mode: all additionally checks every finding in the repository (the
+# lint baseline from #45 is cleared), so new findings can't hide in untouched files.
 #
 # The job name "Trunk Check" is a live status name referenced by
 # .trunk/trunk.yaml -> merge.required_statuses: renaming it breaks the queue.
@@ -49,3 +50,5 @@ jobs:
         run: uv sync --group dev
       - name: Trunk Code Quality
         uses: trunk-io/trunk-action@04ba50e7658c81db7356da96657e6e77f220bfa3 # v1.3.1
+        with:
+          check-mode: all

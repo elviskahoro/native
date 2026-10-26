@@ -1,3 +1,5 @@
+from typing import Any
+
 import reflex as rx
 
 from components.ui.card import card
@@ -21,7 +23,7 @@ def card_15() -> rx.Component:
         {"bg": "bg-chart-5", "label": "-chart-5"},
     ]
 
-    def swatch(color: dict) -> rx.Component:
+    def swatch(color: dict[str, Any]) -> rx.Component:
         border_class = "border border-input" if color.get("border") else ""
         return rx.el.div(
             rx.el.div(

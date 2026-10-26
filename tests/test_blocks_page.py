@@ -16,10 +16,10 @@ import re
 from native.pages import blocks
 
 
-def _disk_prefixes():
+def _disk_prefixes() -> set[str]:
     """Block prefixes discoverable on disk, matching the loader's
     ``<prefix>_<digits>.py`` naming convention (excludes ``__init__.py``)."""
-    prefixes = set()
+    prefixes: set[str] = set()
     pattern = re.compile(r"^([a-z_]+)_(\d+)\.py$")
     for path in blocks.BLOCKS_PATH.glob("*.py"):
         match = pattern.match(path.name)
@@ -28,7 +28,7 @@ def _disk_prefixes():
     return prefixes
 
 
-def test_block_groups_match_block_prefixes_on_disk():
+def test_block_groups_match_block_prefixes_on_disk() -> None:
     """Every block prefix present on disk must be declared in
     ``BLOCK_GROUPS`` (and vice versa) so every block category is rendered on
     the showcase page."""

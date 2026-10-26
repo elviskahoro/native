@@ -33,7 +33,7 @@ import pathlib
 import re
 from typing import Any
 
-import pytest  # pyrefly: ignore
+import pytest
 
 import native.pages.create as create_module
 from cli.preset_codec import DEFAULT_PRESET_CODE, decode_seed

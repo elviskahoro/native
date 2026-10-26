@@ -1,3 +1,5 @@
+from typing import Any
+
 import reflex as rx
 
 from components.ui.button import button
@@ -31,7 +33,7 @@ def card_10() -> rx.Component:
         },
     ]
 
-    def checkbox_row(item: dict) -> rx.Component:
+    def checkbox_row(item: dict[str, Any]) -> rx.Component:
         return rx.el.label(
             checkbox.root(
                 checkbox.indicator(),

@@ -1,7 +1,8 @@
 from pathlib import Path
+from typing import Any
 
 from reflex.components.component import Component
-from reflex.event import call_script
+from reflex.event import EventSpec, call_script
 from reflex_base.vars.base import Var
 from reflex_components_core.el import a, div, h3, h4, p, span
 
@@ -208,7 +209,11 @@ utility_links = get_utility_links()
 chart_links = get_chart_links()
 
 
-def filter_script(value: Var) -> Var:
+def _on_filter_change(value: Var[Any]) -> EventSpec:
+    return call_script(filter_script(value))
+
+
+def filter_script(value: Var[Any]) -> Var[Any]:
     return Var(
         f"""
 (function(term) {{
@@ -248,7 +253,7 @@ def filter_script(value: Var) -> Var:
     search=input_group.root(
         input_group.input(
             placeholder="Search categories...",
-            on_change=lambda value: call_script(filter_script(value)),
+            on_change=_on_filter_change,
         ),
         input_group.addon(
             hi(

@@ -1,11 +1,11 @@
 import argparse
 import os
-import subprocess
+import subprocess  # nosec B404 - fixed-argv dev runner
 from pathlib import Path
 
 import questionary
-from InquirerPy import inquirer
 from InquirerPy.base.control import Choice
+from InquirerPy.prompts.fuzzy import FuzzyPrompt
 
 DOCS_DIR = Path("docs")
 MIN_PATH_PARTS = 2
@@ -191,7 +191,7 @@ def select_pages_fuzzy(sections: dict[str, list[str]]) -> list[str] | None:
             path = f"{section}/{page}"
             choices.append(Choice(value=path, name=f"  {path}"))
 
-    result = inquirer.fuzzy(
+    result = FuzzyPrompt(
         message=(
             "Search pages (type to filter, tab to select multiple, enter to confirm):"
         ),
@@ -230,7 +230,7 @@ def run_reflex(env: str, pages: list[str] | None) -> str | None:
 
     cmd = ["uv", "run", "reflex", "run", "--env", env]
 
-    process = subprocess.Popen(  # noqa: S603  # fixed argv, env validated upstream
+    process = subprocess.Popen(  # noqa: S603  # nosec B603 - fixed argv, env validated upstream
         cmd,
         stdout=subprocess.PIPE,
         stderr=subprocess.STDOUT,

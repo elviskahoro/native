@@ -1,4 +1,11 @@
+from __future__ import annotations
+
+from typing import TYPE_CHECKING, Any
+
 from components.ui.tabs import tabs
+
+if TYPE_CHECKING:
+    from collections.abc import Iterator
 
 DEMO_MODULES = {
     "basic": ("native.lib.components.tabs_basic", "tabs_basic"),
@@ -8,18 +15,20 @@ DEMO_MODULES = {
     "vertical": ("native.lib.components.tabs_vertical", "tabs_vertical"),
 }
 
+Node = dict[str, Any]
+
 GUARD_SUBSTRING = "closest('[data-slot=\"tabs\"]') !== root"
 
 
-def _walk_components(comp):
+def _walk_components(comp: Any) -> Iterator[Any]:
     yield comp
     for child in getattr(comp, "children", []) or []:
         if hasattr(child, "custom_attrs") or hasattr(child, "event_triggers"):
             yield from _walk_components(child)
 
 
-def _extract_on_click_js(comp):
-    out = []
+def _extract_on_click_js(comp: Any) -> list[str]:
+    out: list[str] = []
     for node in _walk_components(comp):
         et = getattr(node, "event_triggers", {}) or {}
         spec = et.get("on_click")
@@ -39,7 +48,7 @@ def _extract_on_click_js(comp):
     return out
 
 
-def _build_nested_tree(default_inner="profile"):
+def _build_nested_tree(default_inner: str = "profile") -> Any:
     return tabs.root(
         tabs.list(
             tabs.trigger("Home", value="home", id="outer-home"),
@@ -61,7 +70,7 @@ def _build_nested_tree(default_inner="profile"):
     )
 
 
-def _dom_tree(comp):
+def _dom_tree(comp: Any) -> Node:
     ca = getattr(comp, "custom_attrs", {}) or {}
     return {
         "slot": ca.get("data-slot"),
@@ -76,7 +85,11 @@ def _dom_tree(comp):
     }
 
 
-def _index_parents(node, parent=None, mapping=None):
+def _index_parents(
+    node: Node,
+    parent: Node | None = None,
+    mapping: dict[int, Node | None] | None = None,
+) -> dict[int, Node | None]:
     if mapping is None:
         mapping = {}
     mapping[id(node)] = parent
@@ -85,7 +98,7 @@ def _index_parents(node, parent=None, mapping=None):
     return mapping
 
 
-def _closest(node, slot, parents):
+def _closest(node: Node, slot: str, parents: dict[int, Node | None]) -> Node | None:
     cur = node
     while cur is not None:
         if cur.get("slot") == slot:
@@ -94,8 +107,8 @@ def _closest(node, slot, parents):
     return None
 
 
-def _descendants_with_slot(node, slot):
-    out = []
+def _descendants_with_slot(node: Node, slot: str) -> list[Node]:
+    out: list[Node] = []
     for child in node["children"]:
         if child.get("slot") == slot:
             out.append(child)
@@ -103,7 +116,7 @@ def _descendants_with_slot(node, slot):
     return out
 
 
-def _find_by_id(node, node_id):
+def _find_by_id(node: Node, node_id: str) -> Node | None:
     if node.get("id") == node_id:
         return node
     for child in node["children"]:
@@ -113,8 +126,8 @@ def _find_by_id(node, node_id):
     return None
 
 
-def _all_triggers(node):
-    out = []
+def _all_triggers(node: Node) -> list[Node]:
+    out: list[Node] = []
     for child in node["children"]:
         if child.get("slot") == "tabs-trigger":
             out.append(child)
@@ -122,7 +135,7 @@ def _all_triggers(node):
     return out
 
 
-def _simulate_mount(root):
+def _simulate_mount(root: Node) -> None:
     parents = _index_parents(root)
     for trigger in _all_triggers(root):
         group = _closest(trigger, "tabs", parents)
@@ -131,7 +144,7 @@ def _simulate_mount(root):
         )
 
 
-def _simulate_click(root, trigger_node, with_guard):
+def _simulate_click(root: Node, trigger_node: Node, *, with_guard: bool) -> None:
     parents = _index_parents(root)
     group = _closest(trigger_node, "tabs", parents)
     if group is None:
@@ -145,14 +158,14 @@ def _simulate_click(root, trigger_node, with_guard):
         target["active"] = "true" if target.get("value") == clicked_value else "false"
 
 
-def test_on_click_handler_contains_scope_guard():
+def test_on_click_handler_contains_scope_guard() -> None:
     trigger = tabs.trigger("Home", value="home", id="t1")
     handlers = _extract_on_click_js(trigger)
     assert len(handlers) == 1
     assert GUARD_SUBSTRING in handlers[0]
 
 
-def test_guard_preserves_nested_highlight_after_outer_click():
+def test_guard_preserves_nested_highlight_after_outer_click() -> None:
     nested = _build_nested_tree(default_inner="profile")
     dom = _dom_tree(nested)
     _simulate_mount(dom)
@@ -180,7 +193,7 @@ def test_guard_preserves_nested_highlight_after_outer_click():
     )
 
 
-def test_nested_inner_group_remains_independently_switchable_with_guard():
+def test_nested_inner_group_remains_independently_switchable_with_guard() -> None:
     nested = _build_nested_tree(default_inner="profile")
     dom = _dom_tree(nested)
     _simulate_mount(dom)
@@ -200,7 +213,7 @@ def test_nested_inner_group_remains_independently_switchable_with_guard():
     assert outer_root["value"] == "settings"
 
 
-def test_flat_demo_guard_is_noop_for_outer_only_group():
+def test_flat_demo_guard_is_noop_for_outer_only_group() -> None:
     import importlib
 
     for label, (module_path, fn_name) in DEMO_MODULES.items():

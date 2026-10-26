@@ -1,3 +1,5 @@
+from typing import Any
+
 import reflex as rx
 
 from components.ui.button import button
@@ -23,7 +25,7 @@ savings_goals = [
 @masonry_card(label="Finance")
 def card_04() -> rx.Component:
 
-    def goal_item(goal: dict) -> rx.Component:
+    def goal_item(goal: dict[str, Any]) -> rx.Component:
         return rx.el.div(
             rx.el.div(
                 rx.el.p(

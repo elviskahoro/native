@@ -1,5 +1,6 @@
 import json
 from pathlib import Path
+from typing import Any
 
 import reflex as rx
 
@@ -27,7 +28,7 @@ from native.templates.navbar import navbar
 def _typeset_select(
     id_: str,
     label: str,
-    options: list[dict],
+    options: list[dict[str, Any]],
     default_id: str,
 ) -> rx.Component:
     return rx.el.div(

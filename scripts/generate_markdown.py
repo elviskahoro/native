@@ -5,6 +5,7 @@ import re
 import shutil
 import sys
 from pathlib import Path
+from typing import Any
 
 # Add project root
 ROOT_DIR = Path(__file__).parent.parent
@@ -32,7 +33,7 @@ DYNAMIC_LOAD_DIRS = [
 # ---------------------------------------------------------
 
 
-def build_live_registry(dirs: list[str]) -> dict[str, tuple[object, str]]:
+def build_live_registry(dirs: list[str]) -> dict[str, tuple[Any, str]]:
     registry = {}
 
     for folder in dirs:
@@ -135,7 +136,7 @@ def read_component_files(name: str) -> list[str]:
 # TOKEN CONVERSION
 # ---------------------------------------------------------
 
-TOKEN_RE = r"--([\w_]+)(?:\((.*)\))?--"
+DIRECTIVE_PATTERN = r"--([\w_]+)(?:\((.*)\))?--"
 
 
 def convert_to_markdown(content: str) -> str:
@@ -207,7 +208,7 @@ def convert_to_markdown(content: str) -> str:
         except Exception as e:
             return f"\n> Error processing `{cmd}`: {e}\n"
 
-    return re.sub(TOKEN_RE, replace, content)
+    return re.sub(DIRECTIVE_PATTERN, replace, content)
 
 
 # ---------------------------------------------------------

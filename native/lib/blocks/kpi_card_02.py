@@ -1,9 +1,11 @@
+from typing import Any
+
 import reflex as rx
 
 from components.chart.chart_tooltip import chart_tooltip, chart_tooltip_content
 from components.ui.card import card
 
-data = [
+data: list[dict[str, Any]] = [
     {"date": "Jan 23", "users": 234, "sessions": 1432, "churn": 5.2},
     {"date": "Feb 23", "users": 431, "sessions": 1032, "churn": 4.3},
     {"date": "Mar 23", "users": 543, "sessions": 1089, "churn": 5.1},
@@ -18,7 +20,7 @@ data = [
     {"date": "Dec 23", "users": 275, "sessions": 873, "churn": 0},
 ]
 
-categories: list[dict[str, str | int | float]] = [
+categories: list[dict[str, Any]] = [
     {
         "name": "Monthly users",
         "key": "users",

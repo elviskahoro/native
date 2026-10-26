@@ -1,3 +1,5 @@
+from typing import Any
+
 import reflex as rx
 
 from components.core.hugeicon import hi
@@ -174,7 +176,7 @@ def render_status_badge(status: str) -> rx.Component:
     )
 
 
-def render_row(inv: dict) -> rx.Component:
+def render_row(inv: dict[str, Any]) -> rx.Component:
     formatted_amount = f"{inv['amount']:,.2f}"
 
     return table.row(

@@ -1,22 +1,28 @@
 import os
+import sys
 from pathlib import Path
+from typing import Any, cast
 
 from native.engine import constants
 from native.engine.parser import extract_toc_data, parse_and_render
 from native.engine.utils import parse_frontmatter
 
 
+def _out(message: str) -> None:
+    sys.stdout.write(message + "\n")
+
+
 def generate_docs_library() -> list[constants.DocDataStruct]:
-    docs = []
+    docs: list[constants.DocDataStruct] = []
     dev_mode = os.environ.get("BURIDAN_DEV_MODE") == "true"
 
     if not constants.DOCS_BASE_DIR.exists():
-        print(f"Warning: Docs base directory not found: {constants.DOCS_BASE_DIR}")
+        _out(f"Warning: Docs base directory not found: {constants.DOCS_BASE_DIR}")
         return []
 
     # Create a mapping from URL slug to file path for all markdown files
     all_md_files = list(constants.DOCS_BASE_DIR.glob("**/*.md"))
-    slug_to_path_map = {}
+    slug_to_path_map: dict[str, Path] = {}
     for md_file in all_md_files:
         relative_path = md_file.relative_to(constants.DOCS_BASE_DIR)
         slug = "/".join(
@@ -26,21 +32,21 @@ def generate_docs_library() -> list[constants.DocDataStruct]:
 
     md_files_to_process = []
     if dev_mode:
-        print("--- Development Mode Enabled ---")
+        _out("--- Development Mode Enabled ---")
         pages_str = os.environ.get("BURIDAN_DEV_PAGES", "")
         if not pages_str:
-            print("Warning: BURIDAN_DEV_PAGES is not set. Loading no pages.")
+            _out("Warning: BURIDAN_DEV_PAGES is not set. Loading no pages.")
             return []
 
         page_slugs = [slug.strip() for slug in pages_str.split(",")]
-        print(f"Loading specified pages: {page_slugs}")
-        print("Loading specified URLs:")
+        _out(f"Loading specified pages: {page_slugs}")
+        _out("Loading specified URLs:")
         for slug in page_slugs:
-            print(f"http://localhost:3000/docs/{slug}")
+            _out(f"http://localhost:3000/docs/{slug}")
             if slug in slug_to_path_map:
                 md_files_to_process.append(slug_to_path_map[slug])
             else:
-                print(f"Warning: Markdown file not found for slug: {slug}")
+                _out(f"Warning: Markdown file not found for slug: {slug}")
     else:
         md_files_to_process = all_md_files
 
@@ -61,7 +67,7 @@ def generate_docs_library() -> list[constants.DocDataStruct]:
             url=url_path,
             description=md_data.get("description", ""),
             component=parse_and_render(md_content),
-            table_of_content=toc_data,  # type: ignore[reportArgumentType]
+            table_of_content=cast("list[dict[str, Any]]", toc_data),
         )
 
         docs.append(doc)

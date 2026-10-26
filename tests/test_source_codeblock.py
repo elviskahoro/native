@@ -23,7 +23,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-import reflex as rx  # pyrefly: ignore
+import reflex as rx
 
 from native.templates._copy_btn import create_copy_button
 from native.templates._dashboard import dashboard_demo
