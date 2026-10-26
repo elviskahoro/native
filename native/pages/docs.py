@@ -8,45 +8,11 @@ from reflex_components_core.el import a, div, h3, h4, p, span
 from components.core.hugeicon import hi
 from components.ui.button import button
 from components.ui.input_group import input_group
+from native.core.utils import parse_frontmatter
 from native.templates.sublayout import sub_layout_decorator
 
 DOCS_GETTING_STARTED_PATH = Path("docs/getting_started")
 DOCS_RESOURCES_PATH = Path("docs/resources")
-
-
-FRONTMATTER_PARTS = 3
-
-
-def parse_frontmatter(content: str) -> tuple[dict, str]:
-    """Parses frontmatter metadata (like order and description) from Markdown content."""
-    metadata = {}
-    if not content.startswith("---"):
-        return metadata, content
-
-    parts = content.split("---", 2)
-    if len(parts) < FRONTMATTER_PARTS:
-        return metadata, content
-
-    frontmatter = parts[1]
-    rest_of_content = parts[2]
-
-    for line in frontmatter.strip().split("\n"):
-        if ":" in line:
-            key, value = line.split(":", 1)
-            key = key.strip()
-            value = value.strip()
-
-            if (value.startswith('"') and value.endswith('"')) or (
-                value.startswith("'") and value.endswith("'")
-            ):
-                value = value[1:-1]
-
-            if key == "order" and value.isdigit():
-                value = int(value)
-
-            metadata[key] = value
-
-    return metadata, rest_of_content.lstrip()
 
 
 def link_card(name: str, href: str, description: str = "") -> Component:

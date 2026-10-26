@@ -27,8 +27,12 @@ def parse_frontmatter(content: str) -> tuple[dict[str, Any], str]:
             ):
                 value = value[1:-1]
 
-            if key == "order" and value.isdigit():
-                value = int(value)
+            if key == "order":
+                try:
+                    value = int(value)
+                except ValueError:
+                    # Invalid order: omit so call-site defaults apply
+                    continue
 
             metadata[key] = value
 
