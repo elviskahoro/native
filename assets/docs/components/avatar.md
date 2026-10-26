@@ -159,6 +159,16 @@ class AvatarRoot(Div, CoreComponent):
 def avatar_image(**props: Any) -> rx.Component:
     custom_classes = props.pop("class_name", "")
     props["data-slot"] = "avatar-image"
+
+    user_on_mount = props.pop("on_mount", None)
+    mount_handlers = [rx.call_script(PROBE_IMAGES_JS)]
+    if user_on_mount is not None:
+        if isinstance(user_on_mount, list):
+            mount_handlers.extend(user_on_mount)
+        else:
+            mount_handlers.append(user_on_mount)
+    props["on_mount"] = mount_handlers
+
     CoreComponent.set_class_name(cn(ClassNames.IMAGE, custom_classes), props)
     return rx.el.img(**props)
 

@@ -138,7 +138,7 @@ class MenuRoot(CoreComponent):
                                 el.open = false;
                             }
                         });
-                });
+                }, true);
             }
             """,
         )
@@ -416,7 +416,7 @@ menu.item("Profile", variant="default", close_on_click=True)
 | ---------------- | ----------------------------------- | ---------------- | ------------------------------------------------------------------------- |
 | `variant`        | `Literal["default", "destructive"]` | `"default"`      | Toggles destructive textual accents and item highlight colors.            |
 | `close_on_click` | `bool`                              | `True`           | Instructs the item to close the menu container window instantly on click. |
-| `id`             | `str`                               | _Auto-generated_ | Custom tracking string. Required if rendering within `rx.foreach`.        |
+| `id`             | `str`                               | _None_            | Optional element id (not generated; safe in `rx.foreach`).                |
 | `on_click`       | `Union[EventHandler, list]`         | `None`           | Trigger callbacks executed when the item row is pressed.                  |
 | `class_name`     | `str`                               | `""`             | Additional item styling overrides.                                        |
 
@@ -430,7 +430,7 @@ menu.close("Cancel Action", class_name="text-center justify-center")
 
 | Prop         | Type  | Default          | Description                                                              |
 | ------------ | ----- | ---------------- | ------------------------------------------------------------------------ |
-| `id`         | `str` | _Auto-generated_ | HTML selector element identity hook used by the internal layout manager. |
+| `id`         | `str` | _None_            | Optional element id (not generated).                                       |
 | `class_name` | `str` | `""`             | Visual styling definitions injected onto the close component row.        |
 
 ## menu.separator

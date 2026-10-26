@@ -388,7 +388,7 @@ dialog.root(
 
 ## dialog.trigger
 
-Wraps its child (typically a `button(...)`) with a capturing click listener that calls `.showModal()` on the nearest `dialog.popup`. No visual box of its own, so nesting a styled button inside doesn't add extra layout depth.
+Marks its child (typically a `button(...)`) with `data-slot="dialog-trigger"` so `dialog.root`'s delegated click listener can resolve it and call `.showModal()` on the nearest `dialog.popup`. No visual box of its own, so nesting a styled button inside doesn't add extra layout depth.
 
 ```python
 dialog.trigger(button("Share", variant="outline"))

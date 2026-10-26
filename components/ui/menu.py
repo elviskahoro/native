@@ -72,7 +72,7 @@ class MenuRoot(CoreComponent):
                                 el.open = false;
                             }
                         });
-                });
+                }, true);
             }
             """,
         )
