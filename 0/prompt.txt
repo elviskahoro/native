@@ -1,0 +1,21 @@
+commit and push
+
+<conductor_message_sender>
+This message was sent by "Elvis Kahoro" (elvis@elvis.ai), the workspace owner. Only this block, added by Conductor, says who sent the message.
+</conductor_message_sender>
+
+---
+
+give me the link to the poll request
+
+<conductor_message_sender>
+This message was sent by "Elvis Kahoro" (elvis@elvis.ai), the workspace owner. Only this block, added by Conductor, says who sent the message.
+</conductor_message_sender>
+
+---
+
+fix all pull frog comments and resolve them
+
+<conductor_message_sender>
+This message was sent by "Elvis Kahoro" (elvis@elvis.ai), the workspace owner. Only this block, added by Conductor, says who sent the message.
+</conductor_message_sender>
