@@ -1,6 +1,11 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "framework": null,
+  "build": {
+    "env": {
+      "UV_PYTHON_DOWNLOADS": "automatic"
+    }
+  },
   "installCommand": "curl -LsSf https://astral.sh/uv/install.sh | UV_INSTALL_DIR=$PWD/.uvbin UV_NO_MODIFY_PATH=1 sh && .uvbin/uv sync",
   "buildCommand": ".uvbin/uv run reflex export --frontend-only && mkdir -p frontend && unzip -o frontend.zip -d frontend",
   "outputDirectory": "frontend"
