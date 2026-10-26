@@ -39,3 +39,10 @@ def test_unstyled_strips_defaults(cls: type, default: str) -> None:
     out = _class_name(cls.create(class_name="user-x", unstyled=True))
     assert "user-x" in out
     assert default not in out
+
+
+@pytest.mark.parametrize(("cls", "_default"), CASES)
+def test_unstyled_renders_only_user_class(cls: type, _default: str) -> None:
+    """The inner button/input/textarea must not re-apply its own defaults."""
+    assert _class_name(cls.create(class_name="user-x", unstyled=True)) == "user-x"
+    assert _class_name(cls.create(unstyled=True)) == ""
