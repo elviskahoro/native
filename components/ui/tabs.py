@@ -105,7 +105,7 @@ class TabsTrigger(CoreComponent):
         click_script = rx.Var(
             "(_e.currentTarget.setAttribute('data-tabs-clicked', '1'), "
             + json.dumps(js_on_click)
-            + ")"
+            + ")",
         )
 
         click_handlers = [rx.call_script(click_script)]
