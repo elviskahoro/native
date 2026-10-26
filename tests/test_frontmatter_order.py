@@ -21,7 +21,5 @@ def test_invalid_order_is_omitted(raw: str) -> None:
 
 def test_mixed_orders_sort_without_type_error() -> None:
     docs = ["order: 2", "order: abc", "order: 1", "title: none"]
-    orders = [
-        parse_frontmatter(f"---\n{d}\n---\n")[0].get("order", 999) for d in docs
-    ]
+    orders = [parse_frontmatter(f"---\n{d}\n---\n")[0].get("order", 999) for d in docs]
     assert sorted(orders) == [1, 2, 999, 999]
