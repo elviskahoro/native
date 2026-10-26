@@ -230,7 +230,7 @@ def run_reflex(env: str, pages: list[str] | None) -> str | None:
 
     cmd = ["uv", "run", "reflex", "run", "--env", env]
 
-    process = subprocess.Popen(  # noqa: S603  # fixed argv, env validated upstream
+    process = subprocess.Popen(  # fixed argv, env validated upstream
         cmd,
         stdout=subprocess.PIPE,
         stderr=subprocess.STDOUT,

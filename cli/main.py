@@ -617,11 +617,7 @@ def find_legacy_theme_pair(lines: list[str]) -> tuple[int, int] | None:
     i = 0
     while i < len(lines):
         stripped = lines[i].strip()
-        if (
-            depth == 0
-            and stripped.startswith(":root {")
-            and stripped.endswith("{")
-        ):
+        if depth == 0 and stripped.startswith(":root {") and stripped.endswith("{"):
             root_end = _find_theme_block_end(lines, i)
             j = root_end + 1
             while j < len(lines) and not lines[j].strip():
