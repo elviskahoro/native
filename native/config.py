@@ -36,7 +36,7 @@ def generate_doc_routes(section_folder: str, base_path: str) -> list[dict[str, A
     return routes
 
 
-DOC_SECTIONS: list[tuple[str, str, str, list[dict[str, str]]]] = [
+DOC_SECTIONS: list[tuple[str, str, str, list[dict[str, str | int]]]] = [
     (
         "getting_started",
         "docs/getting-started/",
