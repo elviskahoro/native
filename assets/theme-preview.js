@@ -671,7 +671,7 @@
 
   document.addEventListener("click", function (e) {
     // --- 1. COPY ACTION ---
-    if (e.target.id === "copy-css-preset") {
+    if (e.target.closest && e.target.closest("#copy-css-preset")) {
       navigator.clipboard.writeText(getThemeCSS());
 
       const text = document.getElementById("css-theme-copy-text");
@@ -684,7 +684,7 @@
     }
 
     // --- 2. GET CODE / OPEN PANE ACTION ---
-    if (e.target.id === "copy-theme-button") {
+    if (e.target.closest && e.target.closest("#copy-theme-button")) {
       var target = document.getElementById("get-css-theme");
       if (target) {
         target.textContent = getThemeCSS();
