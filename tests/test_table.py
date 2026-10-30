@@ -89,6 +89,28 @@ def test_tbody_is_re_queried_per_render() -> None:
     )
 
 
+def test_selection_pruned_to_live_rows_inside_render() -> None:
+    """A state-driven row deletion fires no ``change`` event, so without an
+    explicit prune ``state.selected`` keeps values of rows no longer in the DOM
+    and a re-added row recycling a deleted id renders pre-checked. render() must
+    intersect ``state.selected`` with the live rows' checkbox values on every
+    pass. This is the core behavioral fix of the commit, so it gets its own
+    structural pin: deleting the pruning block must fail this test."""
+    assert "var liveValues = {};" in DATA_TABLE_JS, (
+        "render must build a set of live checkbox values to prune against"
+    )
+    assert "if (!liveValues[v]) state.selected.delete(v);" in DATA_TABLE_JS, (
+        "render must delete stale values from state.selected"
+    )
+    # The prune must run inside render() after the :scope > tr re-snapshot.
+    render_idx = DATA_TABLE_JS.index("var render = function")
+    snapshot_idx = DATA_TABLE_JS.index("querySelectorAll(':scope > tr')")
+    prune_idx = DATA_TABLE_JS.index("var liveValues = {};")
+    assert render_idx < snapshot_idx < prune_idx, (
+        "the selection prune must sit inside render() after the row re-snapshot"
+    )
+
+
 def test_mutation_observer_auto_rerenders_on_dom_change() -> None:
     """A ``MutationObserver`` on the root must re-render on row add/remove so a
     newly inserted row is re-filtered/re-paginated without any user
