@@ -173,7 +173,25 @@ if (typeof window !== "undefined") {
           if (observer) observer.observe(root, { childList: true, subtree: true });
           return;
         }
-        var rows = Array.prototype.slice.call(tbody.querySelectorAll('tr'));
+        // Scope to direct children so rows of a table nested inside a cell
+        // are not swept by the filter/pagination pass or moved into this
+        // <tbody> by the re-order appendChild below.
+        var rows = Array.prototype.slice.call(tbody.querySelectorAll(':scope > tr'));
+
+        // Prune the selection to live rows. A state-driven row deletion
+        // (rx.foreach removing a <tr>) fires no `change` event, so without
+        // this state.selected keeps values whose checkboxes no longer exist
+        // and a re-added row recycling a deleted id would render pre-checked
+        // via syncRowCheckboxes. Pagination hides rows via display, never
+        // detaches, so every live row's checkbox is in the DOM.
+        var liveValues = {};
+        rows.forEach(function (r) {
+          var cb = getSelectCb(r);
+          if (cb && cb.value) liveValues[cb.value] = true;
+        });
+        state.selected.forEach(function (v) {
+          if (!liveValues[v]) state.selected.delete(v);
+        });
 
         // visibleRows = every row matching the current search, across ALL
         // pages — this is what "select all" operates on, not just the page.

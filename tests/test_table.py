@@ -16,7 +16,7 @@ snapshot from the live DOM:
 * deleted ``<tr>`` elements still existed as detached node references in
   ``rows`` and were re-inserted into the live ``tbody`` by ``tbody.appendChild(r)``
   in ``render()`` (rows visibly resurrected, sometimes duplicated);
-* count labels ("1–5 of 10", "Page 1 of 2") derived from ``rows.length`` went
+* count labels ("1-5 of 10", "Page 1 of 2") derived from ``rows.length`` went
   stale; and
 * a table whose ``<tbody>`` mounted after ``init`` was permanently dead, because
   ``root.__dtInitialized`` was set before the ``if (!tbody) return`` bail-out.
@@ -42,7 +42,7 @@ via Playwright.
 
 from __future__ import annotations
 
-from typing import Any, TYPE_CHECKING
+from typing import TYPE_CHECKING, Any
 
 import pytest
 import reflex as rx
@@ -61,15 +61,16 @@ if TYPE_CHECKING:
 
 
 def test_re_snapshot_lives_inside_render_not_at_init() -> None:
-    """The frozen mount-time snapshot was ``var rows = ...querySelectorAll('tr')``
-    captured *before* ``var render``. After the fix the only ``querySelectorAll('tr')``
-    call is made *inside* ``render`` on every pass, so the snapshot index must
+    """The frozen mount-time snapshot was ``var rows = ...querySelectorAll(':scope > tr')``
+    captured *before* ``var render``. After the fix the only
+    ``querySelectorAll(':scope > tr')`` call is made *inside* ``render`` on every
+    pass, so the snapshot index must
     land after the ``render`` definition. This single ordering assertion is the
     structural signature that distinguishes the re-snapshot design from the
     frozen one (in both designs the call appears exactly once; only its
     position relative to ``var render`` changes)."""
     render_idx = DATA_TABLE_JS.index("var render = function")
-    snapshot_idx = DATA_TABLE_JS.index("querySelectorAll('tr')")
+    snapshot_idx = DATA_TABLE_JS.index("querySelectorAll(':scope > tr')")
     assert render_idx < snapshot_idx, (
         "the <tbody><tr> re-snapshot must be made inside render(); before the"
         " fix it was captured once at init (before render) and frozen forever"
@@ -114,7 +115,8 @@ def test_render_disconnects_observer_during_dom_writes() -> None:
     # the appendChild; the no-tbody early-return branch also observes, so a
     # naive .index() would pick that earlier occurrence and lose the ordering.
     recon_idx = DATA_TABLE_JS.find(
-        "observer.observe(root, { childList: true, subtree: true })", append_idx
+        "observer.observe(root, { childList: true, subtree: true })",
+        append_idx,
     )
     assert recon_idx != -1, "render must reconnect the observer after its writes"
     assert disc_idx < append_idx < recon_idx, (
@@ -184,7 +186,9 @@ def _walk_components(comp: Any) -> Iterator[Any]:
 
 
 def _extract_event_js(
-    comp: Any, trigger_name: str, needle: str | None = None
+    comp: Any,
+    trigger_name: str,
+    needle: str | None = None,
 ) -> list[str]:
     """Walk the rendered component tree and pull the JS string(s) injected into a
     given event trigger. Mirrors the pattern in ``test_tabs.py`` so the on_mount
