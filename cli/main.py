@@ -476,11 +476,37 @@ def _inject_plugins_into_new(
     return False
 
 
+_TAILWIND_PLUGIN_RE = re.compile(
+    r"rx\.plugins\.TailwindV4Plugin"
+    r"\(\s*(?:config=TailwindConfig\((?:[^()]|\([^()]*\))*\)\s*)?\),?",
+    re.DOTALL,
+)
+
+
 def _cleanup_duplicate_plugins(content: str) -> str:
-    """Remove duplicate TailwindV4Plugin references after injection."""
-    content = content.replace("rx.plugins.TailwindV4Plugin(),", "")
-    content = content.replace("rx.plugins.TailwindV4Plugin()", "")
-    return content.replace(",,", ",")
+    """Coalesce duplicate TailwindV4Plugin entries down to a single one.
+
+    Matches both the single-line ``rx.plugins.TailwindV4Plugin()`` form and
+    the multi-line ``TailwindV4Plugin(config=TailwindConfig(...))`` form the
+    CLI injects. The first occurrence is kept; subsequent ones (along with
+    their trailing comma) are removed. Dangling list separators left behind
+    by the removal are repaired so the result stays syntactically valid.
+    """
+    matches = list(_TAILWIND_PLUGIN_RE.finditer(content))
+    if len(matches) <= 1:
+        return content
+
+    pieces: list[str] = [content[: matches[0].end()]]
+    cursor = matches[0].end()
+    for match in matches[1:]:
+        pieces.append(content[cursor : match.start()])
+        cursor = match.end()
+    pieces.append(content[cursor:])
+
+    out = "".join(pieces)
+    out = re.sub(r",\s*,", ",", out)
+    out = re.sub(r"\[\s*,", "[", out)
+    return re.sub(r",\s*\]", "]", out)
 
 
 def _inject_tailwind_plugin(
@@ -515,11 +541,23 @@ def _inject_tailwind_plugin(
 
 
 def patch_rxconfig(config_path: Path) -> None:
-    """Inject TailwindV4 plugin into rxconfig.py if not already present."""
+    """Inject TailwindV4 plugin into rxconfig.py if not already present.
+
+    Idempotent: a config that already registers ``TailwindV4Plugin`` is left
+    in place. A config carrying duplicate ``TailwindV4Plugin`` entries left
+    behind by an older, buggy CLI run is coalesced back down to a single
+    registration so re-running ``buridan init`` repairs rather than compounds
+    the damage.
+    """
     content = config_path.read_text()
 
-    if "var(--background)" in content:
-        print("• rxconfig.py already contains Buridan UI theme tokens.")
+    if "TailwindV4Plugin" in content:
+        cleaned = _cleanup_duplicate_plugins(content)
+        if cleaned != content:
+            config_path.write_text(cleaned)
+            print("• rxconfig.py: removed duplicate TailwindV4Plugin entries.")
+        else:
+            print("• rxconfig.py already contains TailwindV4Plugin — skipping.")
         return
 
     try:
