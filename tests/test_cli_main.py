@@ -212,6 +212,31 @@ class TestCmdApply:
         with pytest.raises(SystemExit):
             cmd_apply("invalid_preset_xyz")
 
+    def test_cmd_apply_out_of_range_inheritable_preset_exits(
+        self,
+        temp_project: Path,
+        monkeypatch: pytest.MonkeyPatch,
+        capsys: pytest.CaptureFixture[str],
+    ) -> None:
+        # "arn28" is a v2 code that packs color=31, chart=31, radius=15 — every
+        # inheritable field at its bit-field maximum, all past the registry
+        # length (COLOR_THEMES=10, RADII_OPTIONS=4). Before the decode_seed
+        # fix this decoded to a valid all-inherit preset and was applied as a
+        # real theme; it must now hit the caller's intended error path exactly
+        # like any other invalid code, mirroring theme-preview.js returning
+        # false for the identical packed value.
+        monkeypatch.chdir(temp_project)
+        with pytest.raises(SystemExit):
+            cmd_apply("arn28")
+        captured = capsys.readouterr()
+        assert "Error: Invalid preset ID 'arn28'" in captured.err
+        assert "Applied preset" not in captured.out
+        # No theme block written and no manifest theme entry recorded.
+        assert not (temp_project / "assets" / "globals.css").exists()
+        manifest_path = temp_project / "components.json"
+        if manifest_path.exists():
+            assert "theme" not in json.loads(manifest_path.read_text())
+
     def test_cmd_apply_missing_rxconfig_exits(
         self,
         monkeypatch: pytest.MonkeyPatch,
