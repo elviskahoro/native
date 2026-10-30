@@ -46,7 +46,9 @@ class RadioGroupRoot(CoreComponent):
     ) -> rx.Component:
         custom_classes = props.pop("class_name", "")
         props["data-slot"] = "radio-group"
-        props["role"] = "radiogroup"
+        custom_attrs = props.pop("custom_attrs", {})
+        custom_attrs.setdefault("role", "radiogroup")
+        props["custom_attrs"] = custom_attrs
         if disabled:
             props["disabled"] = True
         cls.set_class_name(cn(ClassNames.ROOT, custom_classes), props)
