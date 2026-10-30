@@ -224,6 +224,36 @@ class TestCleanupDuplicatePlugins:
         assert _count_plugin_calls(out) == 1
         assert _is_valid_python(out)
 
+    def test_user_customized_entry_wins_over_cli_boilerplate(self) -> None:
+        """When duplicates differ, the user's customized (last) entry survives.
+
+        The CLI's injection prepends its snippet right after ``plugins=[``,
+        so in a config corrupted by the old bug the CLI's default boilerplate
+        sits *above* a user-customized duplicate. Coalescing must keep the
+        user's entry, not silently delete it in favor of the default.
+        """
+        customized = (
+            "rx.plugins.TailwindV4Plugin("
+            'config=TailwindConfig(plugins=["@tailwindcss/typography", '
+            '"@tailwindcss/forms"]))'
+        )
+        src = (
+            "config = rx.Config(\n"
+            "    plugins=[\n"
+            f"{_INJECTED_SNIPPET},\n"
+            f"{customized},\n"
+            "    ],\n"
+            ")\n"
+        )
+        assert _is_valid_python(src)
+        out = _cleanup_duplicate_plugins(src)
+        assert _count_plugin_calls(out) == 1
+        assert _is_valid_python(out)
+        assert "@tailwindcss/forms" in out, "user-customized entry was dropped"
+        assert customized in out, (
+            "the surviving entry must be the user's, not the CLI boilerplate"
+        )
+
     def test_unrelated_plugins_preserved(self) -> None:
         """Coalescing duplicates must keep neighboring plugins intact and the
         resulting list syntactically valid.

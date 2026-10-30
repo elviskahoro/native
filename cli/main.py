@@ -488,25 +488,29 @@ def _cleanup_duplicate_plugins(content: str) -> str:
 
     Matches both the single-line ``rx.plugins.TailwindV4Plugin()`` form and
     the multi-line ``TailwindV4Plugin(config=TailwindConfig(...))`` form the
-    CLI injects. The first occurrence is kept; subsequent ones (along with
-    their trailing comma) are removed. Dangling list separators left behind
-    by the removal are repaired so the result stays syntactically valid.
+    CLI injects. The CLI's injection always splices its snippet immediately
+    after ``plugins=[`` (``_inject_plugins_into_existing``), so in a config
+    corrupted by the old bug the CLI's boilerplate sits *above* any
+    user-customized duplicate. The **last** occurrence is therefore the
+    user's own registration and is the one kept; earlier ones (along with
+    their trailing comma) are removed. Each removed match carries its own
+    trailing comma, so the resulting list stays syntactically valid without
+    reformatting the surrounding hand-maintained file.
     """
     matches = list(_TAILWIND_PLUGIN_RE.finditer(content))
     if len(matches) <= 1:
         return content
 
-    pieces: list[str] = [content[: matches[0].end()]]
-    cursor = matches[0].end()
-    for match in matches[1:]:
+    kept = matches[-1]
+    pieces: list[str] = [content[: matches[0].start()]]
+    cursor = matches[0].start()
+    for match in matches[:-1]:
         pieces.append(content[cursor : match.start()])
         cursor = match.end()
-    pieces.append(content[cursor:])
-
-    out = "".join(pieces)
-    out = re.sub(r",\s*,", ",", out)
-    out = re.sub(r"\[\s*,", "[", out)
-    return re.sub(r",\s*\]", "]", out)
+    pieces.append(content[cursor : kept.start()])
+    pieces.append(content[kept.start() : kept.end()])
+    pieces.append(content[kept.end() :])
+    return "".join(pieces)
 
 
 def _inject_tailwind_plugin(
