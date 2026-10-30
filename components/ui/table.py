@@ -102,9 +102,7 @@ if (typeof window !== "undefined") {
         visibleRows: [],
       };
 
-      var tbody = root.querySelector('tbody');
-      if (!tbody) return;
-      var rows = Array.prototype.slice.call(tbody.querySelectorAll('tr'));
+      var observer = null;
 
       // Strict check: the ENTIRE string must be a number, not just a numeric
       // prefix. parseFloat("2026-06-30") === 2026, which would make every
@@ -164,6 +162,19 @@ if (typeof window !== "undefined") {
       };
 
       var render = function () {
+        // Re-snapshot the live <tbody><tr> set on every render. A mount-time
+        // snapshot freezes out rows added/removed by rx.foreach over State
+        // and holds detached node references that tbody.appendChild would
+        // resurrect. Disconnect the observer while we write to the DOM so the
+        // re-order appendChild below does not re-trigger this render.
+        if (observer) observer.disconnect();
+        var tbody = root.querySelector('tbody');
+        if (!tbody) {
+          if (observer) observer.observe(root, { childList: true, subtree: true });
+          return;
+        }
+        var rows = Array.prototype.slice.call(tbody.querySelectorAll('tr'));
+
         // visibleRows = every row matching the current search, across ALL
         // pages — this is what "select all" operates on, not just the page.
         var visible = !state.search ? rows.slice() : rows.filter(function (r) {
@@ -218,6 +229,7 @@ if (typeof window !== "undefined") {
         if (nextBtn) nextBtn.disabled = state.page >= totalPages - 1;
 
         updateSortIcons();
+        if (observer) observer.observe(root, { childList: true, subtree: true });
       };
 
       root.querySelectorAll('[data-dt-sort]').forEach(function (btn) {
@@ -234,9 +246,10 @@ if (typeof window !== "undefined") {
       if (prevBtn) prevBtn.addEventListener('click', function () { state.page = Math.max(0, state.page - 1); render(); });
       if (nextBtn) nextBtn.addEventListener('click', function () { state.page += 1; render(); });
 
-      // Delegated listener catches every row checkbox, including ones that
-      // scroll into view only after pagination/sort re-renders.
-      tbody.addEventListener('change', function (e) {
+      // Delegated listener on root (not tbody) catches every row checkbox,
+      // including ones that scroll into view only after pagination/sort
+      // re-renders, and survives <tbody> replacement by rx.foreach.
+      root.addEventListener('change', function (e) {
         var cb = e.target.closest('[data-dt-select]');
         if (!cb || !cb.value) return;
         if (cb.checked) state.selected.add(cb.value); else state.selected.delete(cb.value);
@@ -258,18 +271,34 @@ if (typeof window !== "undefined") {
         });
       }
 
+      // Re-render whenever the table's DOM changes — rows added/removed by
+      // rx.foreach over State, or a <tbody> that mounts after init. render()
+      // disconnects the observer while it writes to the DOM, so the
+      // re-order appendChild never re-triggers this callback.
+      observer = new MutationObserver(function () { render(); });
+      observer.observe(root, { childList: true, subtree: true });
+
       // Exposed so any search input — the built-in toolbar one, or one
       // placed anywhere else via <TableSearch for_table="..."> — can drive
-      // this table's search state without caring where it's mounted.
+      // this table's search state without caring where it's mounted. The
+      // refresh() hook lets callers force a re-snapshot/re-render on demand.
       this.registry[tableId] = {
         setSearch: function (value) {
           state.search = value;
           state.page = 0;
           render();
         },
+        refresh: function () {
+          render();
+        },
       };
 
       render();
+    },
+
+    refresh(tableId) {
+      var entry = this.registry[tableId];
+      if (entry) entry.refresh();
     },
   };
 
