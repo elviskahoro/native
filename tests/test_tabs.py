@@ -541,7 +541,7 @@ def test_global_handlers_js_syncs_content_panels() -> None:
     class or any other foreach-bug signature (baked id lookup, f-string
     placeholder, baked string-literal compare/assign)."""
     assert '[data-slot="tabs-content"]' in GLOBAL_HANDLERS_JS
-    assert GLOBAL_HANDLERS_JS.count(GUARD_SUBSTRING) >= 2, (
+    assert GLOBAL_HANDLERS_JS.count(GUARD_SUBSTRING) >= 2, (  # noqa: PLR2004
         "the nested-scope guard must protect content panels as well as triggers"
     )
     assert "group-data-[value" not in GLOBAL_HANDLERS_JS
