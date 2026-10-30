@@ -60,7 +60,18 @@ GLOBAL_HANDLERS_JS = """
             target.matches('dialog[data-slot="dialog-content"]')
             && target.getAttribute('data-dismissible') === 'true'
         ) {
-            target.close();
+            // A native <dialog> is both the ::backdrop target (retargeted
+            // outside clicks) and the hit-test box for the card itself, so
+            // a target match alone can't tell a true backdrop click from an
+            // interior click on the card's own padding/gaps. Only close when
+            // the click landed outside the dialog's bounding box.
+            var r = target.getBoundingClientRect();
+            if (
+                e.clientX < r.left || e.clientX > r.right
+                || e.clientY < r.top || e.clientY > r.bottom
+            ) {
+                target.close();
+            }
         }
     }, true);
 })();
