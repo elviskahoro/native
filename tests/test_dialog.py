@@ -111,7 +111,7 @@ def _dispatch(popup: dict[str, Any], kind: str, cx: int, cy: int) -> None:
 def test_global_handlers_js_backdrop_close_is_gated_by_bounds_check() -> None:
     """The shipped JS must distinguish a true backdrop click from a click on
     the dialog's own padding/gap with a client-coordinate bounds check -- the
-    naive ``target.close()`` after only a target/disisible match closed the
+    naive ``target.close()`` after only a target/dismissible match closed the
     dialog on interior clicks. Pin the fix's structural pieces in the actual
     JS string so the regression can't silently return."""
     from components.ui.dialog import GLOBAL_HANDLERS_JS
