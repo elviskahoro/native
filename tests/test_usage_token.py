@@ -20,7 +20,7 @@ from __future__ import annotations
 
 import re
 from pathlib import Path
-from typing import Iterator
+from typing import TYPE_CHECKING
 
 import pytest
 import reflex as rx
@@ -28,8 +28,14 @@ import reflex as rx
 from native.engine.parser import parse_and_render, render_token
 from native.templates.anatomy import ANATOMY
 
+if TYPE_CHECKING:
+    from collections.abc import Iterator
+
 # A valid usage import line: `from components.ui.<id> import <id>`.
 _IMPORT_RE = re.compile(r"^from components\.ui\.([A-Za-z_]\w*) import ([A-Za-z_]\w*)$")
+
+# A usage block renders at least an import line and an anatomy example.
+_MIN_USAGE_CODE_BLOCKS = 2
 
 
 # ---------------------------------------------------------------------------
@@ -76,8 +82,8 @@ def _code_blocks(root: object) -> list[str | None]:
 def _usage_codes(arg: str) -> list[str | None]:
     """Code blocks of the usage block for `arg`: `[import, anatomy]`."""
     blocks = _code_blocks(render_token("usage", arg))
-    assert len(blocks) >= 2, (
-        f"usage({arg!r}) rendered {len(blocks)} code blocks, need >=2"
+    assert len(blocks) >= _MIN_USAGE_CODE_BLOCKS, (
+        f"usage({arg!r}) rendered {len(blocks)} code blocks, need >={_MIN_USAGE_CODE_BLOCKS}"
     )
     return blocks
 
