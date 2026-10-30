@@ -288,3 +288,77 @@ class TestPresetCodecInterop:
         packed_default = _encode_base62(0x20000000)
         assert packed_default != DEFAULT_PRESET_CODE
         assert _decode(packed_default) == _decode(DEFAULT_PRESET_CODE)
+
+    @pytest.mark.parametrize(  # pyright: ignore[reportUntypedFunctionDecorator]
+        ("field", "index"),
+        [
+            ("color", len(COLOR_THEMES) + 1),
+            ("color", len(COLOR_THEMES) + 5),
+            ("chart", len(COLOR_THEMES) + 1),
+            ("chart", len(COLOR_THEMES) + 5),
+            ("radius", len(RADII_OPTIONS) + 1),
+            ("radius", len(RADII_OPTIONS) + 3),
+        ],
+        ids=[
+            "color-one-past",
+            "color-mid-out-of-range",
+            "chart-one-past",
+            "chart-mid-out-of-range",
+            "radius-one-past",
+            "radius-mid-out-of-range",
+        ],
+    )
+    def test_out_of_range_inheritable_indices_rejected(
+        self,
+        field: str,
+        index: int,
+    ) -> None:
+        # theme-preview.js's applyCodeToState rejects an out-of-range
+        # color/chart/radius index outright (`registries.color[colorIdx - 1]`
+        # is undefined -> `return false`). The Python port must match bit-for-
+        # bit: a mistyped or future preset whose color/chart/radius field
+        # exceeds the registry length must decode to None, not be silently
+        # coerced to the "inherit" default and applied as a valid theme.
+        code = _encode_v2(**{field: index})
+        assert _decode(code) is None, (
+            f"out-of-range {field}={index} (code {code!r}) must be rejected, "
+            f"not silently decoded to an inherit-defaulted preset"
+        )
+
+    @pytest.mark.parametrize(  # pyright: ignore[reportUntypedFunctionDecorator]
+        ("field", "index", "expected_key", "expected_value"),
+        [
+            ("color", len(COLOR_THEMES), "colorId", COLOR_THEMES[-1]["id"]),
+            ("chart", len(COLOR_THEMES), "chartId", COLOR_THEMES[-1]["id"]),
+            ("radius", len(RADII_OPTIONS), "radius", RADII_OPTIONS[-1]["value"]),
+        ],
+        ids=["color-max-valid", "chart-max-valid", "radius-max-valid"],
+    )
+    def test_max_valid_inheritable_index_decodes(
+        self,
+        field: str,
+        index: int,
+        expected_key: str,
+        expected_value: object,
+    ) -> None:
+        # The largest *valid* inheritable index (== registry length, the last
+        # entry) must still decode rather than be rejected. Guards against
+        # the new range check accidentally using `>=` instead of `>`, which
+        # would forbid a legitimately-specified last registry entry.
+        code = _encode_v2(**{field: index})
+        result = _decode(code)
+        assert result is not None, (
+            f"max-valid {field}={index} (code {code!r}) must decode, not be rejected"
+        )
+        assert result[expected_key] == expected_value
+
+    def test_all_max_field_values_rejected(self) -> None:
+        # color/chart fields are 5 bits (0-31), radius is 4 bits (0-15), but
+        # the registries only hold 10 colors and 4 radii. Packing every
+        # inheritable field to its bit-field maximum (color=31, chart=31,
+        # radius=15) is exactly the "all free bits set" shape a mistyped code
+        # is likely to land on, and must be rejected the same way as the
+        # browser tool rejects it (all three regs lookups index past the end).
+        code = _encode_v2(color=31, chart=31, radius=15)
+        assert code == "arn28"
+        assert _decode(code) is None
