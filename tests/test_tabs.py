@@ -4,7 +4,7 @@ from typing import TYPE_CHECKING, Any
 
 import reflex as rx
 
-from components.ui.tabs import GLOBAL_HANDLERS_JS, tabs
+from components.ui.tabs import GLOBAL_HANDLERS_JS, ClassNames, tabs
 
 if TYPE_CHECKING:
     from collections.abc import Iterator
@@ -60,6 +60,11 @@ def _extract_on_click_js(comp: Any) -> list[str]:
 
 def _extract_on_mount_js(comp: Any) -> list[str]:
     return _extract_event_js(comp, "on_mount", needle="addEventListener")
+
+
+def _class_name_str(component: Any) -> str:
+    cls = getattr(component, "class_name", None)
+    return "" if cls is None else str(cls)
 
 
 def _build_nested_tree(default_inner: str = "profile") -> Any:
@@ -149,12 +154,39 @@ def _all_triggers(node: Node) -> list[Node]:
     return out
 
 
+def _all_content(node: Node) -> list[Node]:
+    out: list[Node] = []
+    for child in node["children"]:
+        if child.get("slot") == "tabs-content":
+            out.append(child)
+        out.extend(_all_content(child))
+    return out
+
+
+def _content_by_value(node: Node, value: Any) -> Node | None:
+    for content in _all_content(node):
+        if content.get("value") == value:
+            return content
+    return None
+
+
+def _content_node(node: Node, value: Any) -> Node:
+    content = _content_by_value(node, value)
+    assert content is not None, f"no tabs-content panel with data-value={value!r}"
+    return content
+
+
 def _simulate_mount(root: Node) -> None:
     parents = _index_parents(root)
     for trigger in _all_triggers(root):
         group = _closest(trigger, "tabs", parents)
         trigger["active"] = (
             "true" if group and group.get("value") == trigger.get("value") else "false"
+        )
+    for content in _all_content(root):
+        group = _closest(content, "tabs", parents)
+        content["active"] = (
+            "true" if group and group.get("value") == content.get("value") else "false"
         )
 
 
@@ -166,6 +198,11 @@ def _simulate_click(root: Node, trigger_node: Node, *, with_guard: bool) -> None
     clicked_value = trigger_node.get("value")
     group["value"] = clicked_value
     for target in _descendants_with_slot(group, "tabs-trigger"):
+        own_group = _closest(target, "tabs", parents)
+        if with_guard and own_group is not group:
+            continue
+        target["active"] = "true" if target.get("value") == clicked_value else "false"
+    for target in _descendants_with_slot(group, "tabs-content"):
         own_group = _closest(target, "tabs", parents)
         if with_guard and own_group is not group:
             continue
@@ -450,3 +487,132 @@ def test_flat_demo_guard_is_noop_for_outer_only_group() -> None:
                 f"{label}: click {trigger['value']} did not yield a single active trigger"
             )
             assert trigger["active"] == "true"
+
+
+def test_content_class_names_constant_has_no_baked_value() -> None:
+    """The shipped CONTENT default class must default to hidden and expose a
+    static ``data-[active=true]:block`` variant driven by the runtime
+    ``data-active`` attribute. It must never carry a ``group-data-[value=...]``
+    token (which bakes the per-item value into a build-time string Tailwind v4
+    cannot extract when the value is a Var)."""
+    assert "hidden" in ClassNames.CONTENT
+    assert "data-[active=true]:block" in ClassNames.CONTENT
+    assert "group-data-[value" not in ClassNames.CONTENT
+
+
+def test_content_visibility_class_is_static_independent_of_value() -> None:
+    r"""The headline content fix: the visibility class must be derived from the
+    panel's ``value`` at build time -- not at all. A ``Var`` ``value`` (as
+    produced by ``rx.foreach``'s per-item ``item``) must compile to the exact
+    same class_name as a literal ``value`` -- a static ``data-[active=true]:
+    block`` variant over a runtime ``data-active`` attribute -- and must never
+    bake the per-item value into a ``group-data-[value='...']`` Tailwind class
+    that the v4 extractor cannot turn into CSS. The ``value`` itself still flows
+    to the DOM via the bound ``data-value`` attribute (read by the delegate
+    handler at runtime)."""
+    literal = tabs.content("panel", value="home")
+    var_panel = tabs.content("panel", value=rx.Var("item_rx_state_"))
+    literal_cls = _class_name_str(literal)
+    var_cls = _class_name_str(var_panel)
+    assert "group-data-[value=" not in literal_cls, (
+        "a literal value must no longer bake into a group-data-[value=...] class"
+    )
+    assert "group-data-[value=" not in var_cls, (
+        "a Var value must not bake into a group-data-[value=...] runtime concat"
+    )
+    assert "item_rx_state_" not in var_cls, (
+        "the Var's placeholder name must not leak into the built class string"
+    )
+    assert "data-[active=true]:block" in literal_cls
+    assert literal_cls == var_cls, (
+        "class_name must be identical for literal and Var values; visibility may"
+        " only depend on the runtime data-active attribute, never on the value"
+    )
+    assert literal.custom_attrs["data-value"] == "home"
+    assert str(var_panel.custom_attrs["data-value"]) == "item_rx_state_", (
+        "the Var value must still reach the DOM as a bound data-value attribute"
+    )
+
+
+def test_global_handlers_js_syncs_content_panels() -> None:
+    r"""The delegated handler must sync content panels (set ``data-active`` from
+    the runtime ``data-value`` comparison) with the same nested-scope guard used
+    for triggers, and must never reintroduce a baked ``group-data-[value=...]``
+    class or any other foreach-bug signature (baked id lookup, f-string
+    placeholder, baked string-literal compare/assign)."""
+    assert '[data-slot="tabs-content"]' in GLOBAL_HANDLERS_JS
+    assert GLOBAL_HANDLERS_JS.count(GUARD_SUBSTRING) >= 2, (
+        "the nested-scope guard must protect content panels as well as triggers"
+    )
+    assert "group-data-[value" not in GLOBAL_HANDLERS_JS
+    assert "document.addEventListener('click'" in GLOBAL_HANDLERS_JS
+    assert "getAttribute('data-value')" in GLOBAL_HANDLERS_JS
+    assert "getElementById" not in GLOBAL_HANDLERS_JS
+    assert "=== '" not in GLOBAL_HANDLERS_JS
+    assert "dataset.value = '" not in GLOBAL_HANDLERS_JS
+    assert "{value}" not in GLOBAL_HANDLERS_JS
+    assert "{trigger_id}" not in GLOBAL_HANDLERS_JS
+
+
+def test_nested_content_untouched_by_outer_click() -> None:
+    """An outer-tab click must update only the outer content panel scoped to the
+    clicked root; content panels belonging to a nested inner root (whose nearest
+    tabs root is the inner root) must keep their active state and the inner root
+    must keep its data-value."""
+    nested = _build_nested_tree(default_inner="profile")
+    dom = _dom_tree(nested)
+    _simulate_mount(dom)
+    assert _content_node(dom, "settings")["active"] == "true"
+    assert _content_node(dom, "profile")["active"] == "true"
+    assert _content_node(dom, "security")["active"] == "false"
+    outer_home = _find_by_id(dom, "outer-home")
+    assert outer_home is not None
+    _simulate_click(dom, outer_home, with_guard=True)
+    assert _content_node(dom, "settings")["active"] == "false", (
+        "outer settings panel must go inactive once the outer root switches to home"
+    )
+    assert _content_node(dom, "profile")["active"] == "true", (
+        "inner profile panel must remain active across an outer-tab click"
+    )
+    assert _content_node(dom, "security")["active"] == "false"
+    inner_root = _closest(_content_node(dom, "profile"), "tabs", _index_parents(dom))
+    assert inner_root is not None
+    assert inner_root["value"] == "profile"
+
+
+def test_foreach_content_panels_become_visible() -> None:
+    r"""The headline content failure: tabs built from a data list (one root per
+    item, the same content panels per group, exactly as ``rx.foreach`` would
+    render). After mount each group must show only its own default panel, and
+    clicking a trigger inside one group must activate that group's matching
+    panel only -- never disturbing another group's panels, and never leaving
+    every panel ``hidden`` forever (the prior failure mode, where the per-item
+    ``value`` Var baked into a Tailwind class v4 could not extract)."""
+    dom = _build_foreach_like_tree(_NUM_FOREACH_GROUPS)
+    _simulate_mount(dom)
+    roots = [c for c in dom["children"] if c.get("slot") == "tabs"]
+    assert len(roots) == _NUM_FOREACH_GROUPS
+    for root in roots:
+        snapshot = {c["value"]: c["active"] for c in _all_content(root)}
+        assert snapshot == {
+            "overview": "true",
+            "analytics": "false",
+            "reports": "false",
+        }, "each group shows only its own default panel after mount"
+    before = {
+        i: {c["value"]: c["active"] for c in _all_content(root)}
+        for i, root in enumerate(roots)
+    }
+    # Click root[1]'s "analytics" trigger (mirrors the foreach trigger test).
+    _simulate_click(roots[1], _all_triggers(roots[1])[1], with_guard=True)
+    assert {c["value"]: c["active"] for c in _all_content(roots[1])} == {
+        "overview": "false",
+        "analytics": "true",
+        "reports": "false",
+    }, "group[1] must now show the analytics panel"
+    for i in (0, 2):
+        after = {c["value"]: c["active"] for c in _all_content(roots[i])}
+        assert after == before[i], (
+            f"group[{i}] content was disturbed by a click in group[1]:"
+            f" {after} != {before[i]}"
+        )
