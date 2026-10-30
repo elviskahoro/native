@@ -128,6 +128,13 @@ def _render_install(name: str) -> tuple[str, list[tuple[str, str]]] | rx.Compone
 def render_token(cmd: str, raw_arg: str) -> rx.Component:
     name = _clean_arg(raw_arg)
 
+    if "tooltip" in cmd:
+        # Placeholder for tooltip_wrapper
+        return rx.el.span(
+            "💡 Tooltip Trigger Placeholder",
+            class_name="not-prose text-xs underline cursor-help text-primary",
+        )
+
     if cmd == "install":
         # Historical behavior: the raw install payload is passed through.
         return cast("rx.Component", _render_install(name))
