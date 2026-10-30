@@ -379,7 +379,7 @@ Use the following props to customize the tooltip.
 
 | Prop           | Type                             | Default    | Description                                                                                                                            |
 | :------------- | :------------------------------- | :--------- | :------------------------------------------------------------------------------------------------------------------------------------- |
-| `chart_colors` | `list[int]`                      | —          | Number of data series in the chart. Must match the number of `rx.recharts.bar` / `line` / `area` components.                           |
-| `swatch`       | `"square" \| "line" \| "border"` | `"square"` | Indicator style per item. `square` = small filled box, `line` = wide pill, `border` = left accent line per series using `--chart-{i}`. |
+| `chart_colors` | `list[int]`                      | —          | Color tokens for each data series — one per `rx.recharts.bar` / `line` / `area` component. Each tooltip swatch follows its own series' `fill` / `stroke` color, so the order of this list does not matter; `chart_colors[0]` is used only for the `border` swatch's label accent. |
+| `swatch`       | `"square" \| "line" \| "border"` | `"square"` | Indicator style per item. `square` = small filled box, `line` = wide pill (both follow each series' own color), `border` = left accent line on the tooltip label using `var(--chart-{chart_colors[0]})`. |
 
 > **chart_tooltip_content()** returns a string of Tailwind classes and must be passed to the **chart component's** class_name, not to **chart_tooltip()**.
