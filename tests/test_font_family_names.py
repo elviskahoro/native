@@ -46,7 +46,8 @@ def _quoted_font_family(entry: dict[str, Any]) -> str:
     """
     ff = entry["vars"]["--font-family"]
     assert isinstance(ff, str), (
-        f"geist entry --font-family must be a str, got {type(ff)!r}"
+        f"FONT_REGISTRY entry {entry.get('id')!r} --font-family must "
+        f"be a str, got {type(ff)!r}"
     )
     m = re.match(r'^"([^"]+)"', ff)
     assert m, (
