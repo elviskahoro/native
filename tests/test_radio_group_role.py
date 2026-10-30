@@ -106,6 +106,29 @@ def test_root_role_overridable_via_custom_attrs() -> None:
     assert "group" in (_prop_entry(_rendered_props(root), "role") or "")
 
 
+def test_root_role_overridable_via_kwarg() -> None:
+    """A caller may override the default ``role`` by passing the ``role``
+    keyword argument directly (the API table at ``docs/components/radio_group.md``
+    lists ``role`` as a settable prop, forwarding extra HTML props to the
+    ``<fieldset>``). The kwarg must reach the DOM as the rendered ``role``
+    attribute instead of being silently folded into Emotion's ``css`` object
+    (the pre-fix failure mode for the override path — ``Fieldset`` declares no
+    ``role`` prop, so the kwarg leaked into a stray ``css`` entry while the
+    default ``"radiogroup"`` won on the DOM)."""
+    root = radio_group.root(
+        radio_group.item(name="plan", value="free"),
+        role="group",
+    )
+    assert _literal(_root_custom_attrs(root).get("role")) == "group"
+    props = _rendered_props(root)
+    assert "group" in (_prop_entry(props, "role") or ""), (
+        f"role kwarg must reach the DOM; got {props}"
+    )
+    assert not _has_prop_entry(props, "css"), (
+        f"role kwarg leaked into a rendered Emotion css entry: {props}"
+    )
+
+
 def test_root_custom_attrs_without_role_keeps_default_role() -> None:
     """Passing unrelated ``custom_attrs`` (no ``role`` key) must not disable the
     default ``role="radiogroup"``; both the caller's attributes and the
