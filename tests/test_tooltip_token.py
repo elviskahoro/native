@@ -171,6 +171,6 @@ def test_no_doc_page_renders_reference_not_found_error(md_file: Path) -> None:
     matches = _NOT_FOUND_RE.findall(joined)
     assert not matches, (
         f"{md_file.relative_to(ROOT_DIR)} renders a visible 'Reference Target "
-        f"... not found' error box at a token that missd the registry lookup: "
+        f"... not found' error box at a token that missed the registry lookup: "
         f"{matches}"
     )
