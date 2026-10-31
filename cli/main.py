@@ -1,9 +1,11 @@
 import argparse
 import ast
+import io
 import json
 import re
 import shutil
 import sys
+import tokenize
 from collections.abc import Sequence
 from pathlib import Path
 from typing import Any
@@ -476,11 +478,88 @@ def _inject_plugins_into_new(
     return False
 
 
+_TAILWIND_PLUGIN_RE = re.compile(
+    r"rx\.plugins\.TailwindV4Plugin"
+    r"\(\s*(?:config=TailwindConfig\((?:[^()]|\([^()]*\))*\)\s*)?\),?",
+    re.DOTALL,
+)
+
+
+def _inert_spans(content: str) -> list[tuple[int, int]]:
+    """Return (start, end) offsets of comments and string literals in ``content``.
+
+    A ``TailwindV4Plugin`` mention inside one of these is not a registration,
+    so it must never be counted, kept, or deleted. Returns an empty list when
+    the source cannot be tokenized (the caller then falls back to raw matches).
+    """
+    # Tokenize rows are readline() lines, which break on "\n" only —
+    # str.splitlines() would also break on \r, \f or \v and misalign every
+    # row mapped after such a character.
+    line_starts = [0]
+    line_starts.extend(newline.end() for newline in re.finditer(r"\n", content))
+    spans: list[tuple[int, int]] = []
+    try:
+        for tok in tokenize.generate_tokens(io.StringIO(content).readline):
+            if tok.type in (tokenize.COMMENT, tokenize.STRING):
+                start = line_starts[tok.start[0] - 1] + tok.start[1]
+                end = line_starts[tok.end[0] - 1] + tok.end[1]
+                spans.append((start, end))
+    except (tokenize.TokenError, IndentationError, SyntaxError):
+        return []
+    return spans
+
+
+def _active_plugin_matches(content: str) -> list[re.Match[str]]:
+    """Plugin regex matches that are real code, not comments or strings."""
+    spans = _inert_spans(content)
+    return [
+        m
+        for m in _TAILWIND_PLUGIN_RE.finditer(content)
+        if not any(a <= m.start() < b for a, b in spans)
+    ]
+
+
+def _registers_tailwind_plugin(content: str) -> bool:
+    """True if the config really references ``TailwindV4Plugin`` in code."""
+    try:
+        tree = ast.parse(content)
+    except SyntaxError:
+        return "TailwindV4Plugin" in content
+    return any(
+        (isinstance(n, ast.Attribute) and n.attr == "TailwindV4Plugin")
+        or (isinstance(n, ast.Name) and n.id == "TailwindV4Plugin")
+        for n in ast.walk(tree)
+    )
+
+
 def _cleanup_duplicate_plugins(content: str) -> str:
-    """Remove duplicate TailwindV4Plugin references after injection."""
-    content = content.replace("rx.plugins.TailwindV4Plugin(),", "")
-    content = content.replace("rx.plugins.TailwindV4Plugin()", "")
-    return content.replace(",,", ",")
+    """Coalesce duplicate TailwindV4Plugin entries down to a single one.
+
+    Matches both the single-line ``rx.plugins.TailwindV4Plugin()`` form and
+    the multi-line ``TailwindV4Plugin(config=TailwindConfig(...))`` form the
+    CLI injects. The CLI's injection always splices its snippet immediately
+    after ``plugins=[`` (``_inject_plugins_into_existing``), so in a config
+    corrupted by the old bug the CLI's boilerplate sits *above* any
+    user-customized duplicate. The **last** occurrence is therefore the
+    user's own registration and is the one kept; earlier ones (along with
+    their trailing comma) are removed. Each removed match carries its own
+    trailing comma, so the resulting list stays syntactically valid without
+    reformatting the surrounding hand-maintained file.
+    """
+    matches = _active_plugin_matches(content)
+    if len(matches) <= 1:
+        return content
+
+    kept = matches[-1]
+    pieces: list[str] = [content[: matches[0].start()]]
+    cursor = matches[0].start()
+    for match in matches[:-1]:
+        pieces.append(content[cursor : match.start()])
+        cursor = match.end()
+    pieces.append(content[cursor : kept.start()])
+    pieces.append(content[kept.start() : kept.end()])
+    pieces.append(content[kept.end() :])
+    return "".join(pieces)
 
 
 def _inject_tailwind_plugin(
@@ -515,11 +594,23 @@ def _inject_tailwind_plugin(
 
 
 def patch_rxconfig(config_path: Path) -> None:
-    """Inject TailwindV4 plugin into rxconfig.py if not already present."""
+    """Inject TailwindV4 plugin into rxconfig.py if not already present.
+
+    Idempotent: a config that already registers ``TailwindV4Plugin`` is left
+    in place. A config carrying duplicate ``TailwindV4Plugin`` entries left
+    behind by an older, buggy CLI run is coalesced back down to a single
+    registration so re-running ``buridan init`` repairs rather than compounds
+    the damage.
+    """
     content = config_path.read_text()
 
-    if "var(--background)" in content:
-        print("• rxconfig.py already contains Buridan UI theme tokens.")
+    if _registers_tailwind_plugin(content):
+        cleaned = _cleanup_duplicate_plugins(content)
+        if cleaned != content:
+            config_path.write_text(cleaned)
+            print("• rxconfig.py: removed duplicate TailwindV4Plugin entries.")
+        else:
+            print("• rxconfig.py already contains TailwindV4Plugin — skipping.")
         return
 
     try:
