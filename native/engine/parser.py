@@ -136,7 +136,7 @@ def render_token(cmd: str, raw_arg: str) -> rx.Component:
         return intro(raw_arg)
 
     if cmd == "usage":
-        return usage(raw_arg)
+        return usage(name)
 
     if "source" in cmd:
         from native.templates._source import source
