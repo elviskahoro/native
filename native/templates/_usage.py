@@ -10,6 +10,9 @@ def _usage_demo(component_name: str) -> rx.Component:
 
     demo_id = generate_component_id()
     anatomy = ANATOMY.get(component_name)
+    anatomy_code = (
+        anatomy if anatomy is not None else f"# No anatomy found for {component_name}"
+    )
 
     return div(
         div(
@@ -65,7 +68,7 @@ def _usage_demo(component_name: str) -> rx.Component:
             div(
                 rx.el.pre(
                     rx.el.code(
-                        anatomy,
+                        anatomy_code,
                         class_name="language-python text-sm",
                     ),
                 ),
@@ -86,9 +89,9 @@ def _usage_demo(component_name: str) -> rx.Component:
     )
 
 
-def usage(raw_arg: str) -> rx.Component:
+def usage(component_name: str) -> rx.Component:
 
-    name = raw_arg.replace("_", " ").title()
+    name = component_name.replace("_", " ").title()
 
     return div(
         div(
@@ -102,7 +105,7 @@ def usage(raw_arg: str) -> rx.Component:
                 span(" component."),
                 class_name="text-sm text-muted-foreground",
             ),
-            _usage_demo(raw_arg),
+            _usage_demo(component_name),
             class_name="w-full flex flex-col items-start gap-4",
         ),
         class_name="w-full flex flex-col gap-6 mb-10",
