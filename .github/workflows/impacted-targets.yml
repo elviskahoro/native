@@ -1,0 +1,87 @@
+# Uploads each PR's impacted targets to the Trunk Merge Queue. Without this the
+# queue holds every PR at `trunk-not-ready` ("impacted targets have not been
+# uploaded"). Auth is the run's OIDC token via trunk-io/login; no secret needed.
+#
+# Targets are the top-level folders/files a PR touches (no build graph here).
+# Upload on every push: targets apply to a single commit.
+#
+# Not a required status (see .trunk/trunk.yaml -> merge.required_statuses);
+# the queue consumes the upload directly.
+name: Impacted targets
+on:
+  pull_request:
+    branches:
+      - main
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref || github.run_id }}
+  cancel-in-progress: true
+permissions:
+  contents: read
+  id-token: write
+jobs:
+  impacted_targets:
+    name: Upload impacted targets
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+        with:
+          fetch-depth: 0
+      - name: Compute impacted targets
+        shell: bash
+        env:
+          BASE_REF: ${{ github.base_ref }}
+        run: |
+          git diff --name-only "origin/${BASE_REF}...HEAD" \
+            | cut -d/ -f1 | sort -u > targets.txt
+      - name: Trunk login
+        id: trunk_login
+        uses: trunk-io/login@dd43b5c040326ee204a3d1f18f5522a717466ce2 # v1
+        # The Trunk API intermittently returns HTTP 500 ("internal error")
+        # on the login exchange, and trunk-io/login has no retry of its own.
+        # Don't fail the job on the first attempt; the retry step below takes
+        # over (the CLI is already on PATH from the action's install step).
+        continue-on-error: true
+      - name: Trunk login retries
+        if: steps.trunk_login.outcome == 'failure'
+        shell: bash
+        run: |
+          delay=0
+          for attempt in 1 2 3; do
+            sleep "${delay}"
+            if trunk auth login --github-actions; then
+              exit 0
+            fi
+            echo "trunk auth login attempt ${attempt}/3 failed" >&2
+            delay=$((delay + 30))
+          done
+          echo "::error::trunk auth login failed after 3 attempts"
+          exit 1
+        env:
+          # Mirrors trunk-io/login's own login step: its default api-url and
+          # the job token (which the CLI needs only on fork pull requests).
+          TRUNK_API_URL: https://api.trunk.io/v2
+          GITHUB_TOKEN: ${{ github.token }}
+      - name: Upload impacted targets
+        shell: bash
+        run: |
+          upload() {
+            if [ -s targets.txt ]; then
+              trunk mergequeue upload-impacted-targets --targets-file targets.txt
+            else
+              trunk mergequeue upload-impacted-targets --none
+            fi
+          }
+          delay=0
+          for attempt in 1 2 3; do
+            sleep "${delay}"
+            if upload; then
+              exit 0
+            fi
+            echo "upload attempt ${attempt}/3 failed" >&2
+            delay=$((delay + 30))
+          done
+          echo "::error::upload failed after 3 attempts"
+          exit 1
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
