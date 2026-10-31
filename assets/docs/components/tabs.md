@@ -96,11 +96,28 @@ class ClassNames:
         "after:absolute after:bg-foreground after:opacity-0 after:transition-opacity group-data-[orientation=horizontal]/tabs:after:inset-x-0 group-data-[orientation=horizontal]/tabs:after:bottom-[-5px] group-data-[orientation=horizontal]/tabs:after:h-0.5 group-data-[orientation=vertical]/tabs:after:inset-y-0 group-data-[orientation=vertical]/tabs:after:-right-1 group-data-[orientation=vertical]/tabs:after:w-0.5 group-data-[variant=line]/tabs-list:data-[active=true]:after:opacity-100 cursor-pointer"
     )
 
-    CONTENT = "flex-1 text-sm outline-none hidden"
+    CONTENT = "flex-1 text-sm outline-none hidden data-[active=true]:block"
 
 
 GLOBAL_HANDLERS_JS = """
 (function () {
+    function syncGroup(root) {
+        var rootValue = root.dataset.value;
+        root.querySelectorAll('[data-slot="tabs-trigger"]').forEach(function (el) {
+            if (el.closest('[data-slot="tabs"]') !== root) return;
+            el.setAttribute(
+                'data-active',
+                el.getAttribute('data-value') === rootValue ? 'true' : 'false'
+            );
+        });
+        root.querySelectorAll('[data-slot="tabs-content"]').forEach(function (el) {
+            if (el.closest('[data-slot="tabs"]') !== root) return;
+            el.setAttribute(
+                'data-active',
+                el.getAttribute('data-value') === rootValue ? 'true' : 'false'
+            );
+        });
+    }
     if (!window.__tabsGlobalHandlersAttached) {
         window.__tabsGlobalHandlersAttached = true;
         document.addEventListener('click', function (e) {
@@ -111,25 +128,12 @@ GLOBAL_HANDLERS_JS = """
             if (!trigger) return;
             var root = trigger.closest('[data-slot="tabs"]');
             if (!root) return;
-            var value = trigger.getAttribute('data-value');
-            root.dataset.value = value;
-            root.querySelectorAll('[data-slot="tabs-trigger"]').forEach(function (t) {
-                if (t.closest('[data-slot="tabs"]') !== root) return;
-                t.setAttribute(
-                    'data-active',
-                    t.getAttribute('data-value') === value ? 'true' : 'false'
-                );
-            });
+            root.dataset.value = trigger.getAttribute('data-value');
+            syncGroup(root);
         });
     }
-    document.querySelectorAll('[data-slot="tabs-trigger"]').forEach(function (t) {
-        var root = t.closest('[data-slot="tabs"]');
-        if (!root) return;
-        var rootValue = root.dataset.value;
-        t.setAttribute(
-            'data-active',
-            t.getAttribute('data-value') === rootValue ? 'true' : 'false'
-        );
+    document.querySelectorAll('[data-slot="tabs"]').forEach(function (root) {
+        syncGroup(root);
     });
 })();
 """
@@ -140,12 +144,13 @@ class TabsRoot(Div, CoreComponent):
 
     ``create`` attaches a single delegated document ``click`` listener on mount
     (guarded by ``window.__tabsGlobalHandlersAttached`` so it is only attached
-    once per page) plus a one-shot mount pass that marks every trigger against its
-    own root's ``data-value``. The listener resolves the clicked trigger from the
-    runtime DOM event target and reads its rendered ``data-value`` attribute, so
-    the same script powers active-tab highlight for every Tabs instance on the
-    page -- including triggers produced by ``rx.foreach`` or a single trigger
-    instance placed in multiple positions.
+    once per page) plus a one-shot mount pass that marks every trigger and
+    content panel against its own root's ``data-value``. The listener resolves
+    the clicked trigger from the runtime DOM event target and reads its rendered
+    ``data-value`` attribute, so the same script powers active-tab highlight and
+    panel visibility for every Tabs instance on the page -- including triggers
+    and panels produced by ``rx.foreach`` or a single trigger/content instance
+    placed in multiple positions.
 
     This deliberately avoids keys/bakes that run once at template-build time
     inside ``create()``: a build-time element id would be shared across every
@@ -153,7 +158,11 @@ class TabsRoot(Div, CoreComponent):
     copy), and interpolating the per-item ``value`` Var into the JS source would
     bake the Var's placeholder name as a string literal that matches no trigger.
     Both failure modes are structural to ``rx.foreach`` usage and are fixed here
-    by reading everything off the runtime DOM at click/mount time.
+    by reading everything off the runtime DOM at click/mount time. The content
+    half uses the same mechanism (a static ``data-[active=true]:block`` variant
+    over a runtime ``data-active`` attribute) instead of baking ``value`` into a
+    Tailwind class, so data-driven panels become visible instead of staying
+    ``hidden`` forever.
     """
 
     @classmethod
@@ -217,6 +226,19 @@ class TabsTrigger(CoreComponent):
 
 
 class TabsContent(Div, CoreComponent):
+    """A single tab panel shown for exactly one trigger value.
+
+    Visibility is driven entirely by ``data-active`` set on the panel by the
+    delegated click/mount listener that ``tabs.root`` attaches (see
+    ``components/ui/tabs.py``): it reads the root's rendered ``data-value`` and
+    the panel's rendered ``data-value`` off the DOM at click/mount time and sets
+    ``data-active`` accordingly. The panel carries no build-time class derived
+    from its ``value``, so it renders correctly even when built from
+    ``rx.foreach`` with ``value=item`` -- a ``Var`` ``value`` never bakes into a
+    build-time Tailwind class that the v4 extractor cannot turn into CSS, which
+    previously left data-driven panels ``hidden`` forever.
+    """
+
     @classmethod
     def create(cls, *children: Any, **props: Any) -> Div:
         value = props.pop("value", "")
@@ -224,9 +246,7 @@ class TabsContent(Div, CoreComponent):
         props["data-slot"] = "tabs-content"
         props["data-value"] = value
 
-        active_toggle_class = f"group-data-[value='{value}']/tabs:block"
-
-        cls.set_class_name(cn(ClassNames.CONTENT, active_toggle_class), props)
+        cls.set_class_name(ClassNames.CONTENT, props)
 
         return super().create(*children, **props)
 
@@ -467,7 +487,7 @@ tabs.trigger(
 
 ## tabs.content
 
-The structural panel containing content mapped to a specific tab trigger value. Toggles layout visibility instantly purely using CSS attribute matching.
+The structural panel containing content mapped to a specific tab trigger value. Visibility is driven by the same delegated click/mount listener that `tabs.root` attaches: it compares the root's rendered `data-value` with the panel's rendered `data-value` and sets `data-active`, with the panel's static `hidden` default overridden by the static `data-[active=true]:block` variant.
 
 ```python
 tabs.content(
