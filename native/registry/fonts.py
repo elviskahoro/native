@@ -14,7 +14,7 @@ FONT_REGISTRY: list[dict[str, Any]] = [
         "id": "geist",
         "label": "Geist Sans (Sans)",
         "category": "sans",
-        "vars": {"--font-family": '"Geist Sans", sans-serif'},
+        "vars": {"--font-family": '"Geist", sans-serif'},
     },
     {
         "id": "roboto",
