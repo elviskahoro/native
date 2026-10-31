@@ -1,9 +1,11 @@
 import argparse
 import ast
+import io
 import json
 import re
 import shutil
 import sys
+import tokenize
 from collections.abc import Sequence
 from pathlib import Path
 from typing import Any
@@ -483,6 +485,51 @@ _TAILWIND_PLUGIN_RE = re.compile(
 )
 
 
+def _inert_spans(content: str) -> list[tuple[int, int]]:
+    """Return (start, end) offsets of comments and string literals in ``content``.
+
+    A ``TailwindV4Plugin`` mention inside one of these is not a registration,
+    so it must never be counted, kept, or deleted. Returns an empty list when
+    the source cannot be tokenized (the caller then falls back to raw matches).
+    """
+    line_starts = [0]
+    for line in content.splitlines(keepends=True):
+        line_starts.append(line_starts[-1] + len(line))
+    spans: list[tuple[int, int]] = []
+    try:
+        for tok in tokenize.generate_tokens(io.StringIO(content).readline):
+            if tok.type in (tokenize.COMMENT, tokenize.STRING):
+                start = line_starts[tok.start[0] - 1] + tok.start[1]
+                end = line_starts[tok.end[0] - 1] + tok.end[1]
+                spans.append((start, end))
+    except (tokenize.TokenError, IndentationError, SyntaxError):
+        return []
+    return spans
+
+
+def _active_plugin_matches(content: str) -> list[re.Match[str]]:
+    """Plugin regex matches that are real code, not comments or strings."""
+    spans = _inert_spans(content)
+    return [
+        m
+        for m in _TAILWIND_PLUGIN_RE.finditer(content)
+        if not any(a <= m.start() < b for a, b in spans)
+    ]
+
+
+def _registers_tailwind_plugin(content: str) -> bool:
+    """True if the config really references ``TailwindV4Plugin`` in code."""
+    try:
+        tree = ast.parse(content)
+    except SyntaxError:
+        return "TailwindV4Plugin" in content
+    return any(
+        (isinstance(n, ast.Attribute) and n.attr == "TailwindV4Plugin")
+        or (isinstance(n, ast.Name) and n.id == "TailwindV4Plugin")
+        for n in ast.walk(tree)
+    )
+
+
 def _cleanup_duplicate_plugins(content: str) -> str:
     """Coalesce duplicate TailwindV4Plugin entries down to a single one.
 
@@ -497,7 +544,7 @@ def _cleanup_duplicate_plugins(content: str) -> str:
     trailing comma, so the resulting list stays syntactically valid without
     reformatting the surrounding hand-maintained file.
     """
-    matches = list(_TAILWIND_PLUGIN_RE.finditer(content))
+    matches = _active_plugin_matches(content)
     if len(matches) <= 1:
         return content
 
@@ -555,7 +602,7 @@ def patch_rxconfig(config_path: Path) -> None:
     """
     content = config_path.read_text()
 
-    if "TailwindV4Plugin" in content:
+    if _registers_tailwind_plugin(content):
         cleaned = _cleanup_duplicate_plugins(content)
         if cleaned != content:
             config_path.write_text(cleaned)

@@ -274,3 +274,31 @@ class TestCleanupDuplicatePlugins:
         assert "SomeOtherPlugin" in out
         assert "AnotherPlugin" in out
         assert _is_valid_python(out)
+
+
+class TestCommentedPluginMentions:
+    """A commented-out or string-literal mention is not a registration."""
+
+    def test_active_plugin_survives_commented_copy(self) -> None:
+        src = (
+            "config = rx.Config(\n"
+            "    plugins=[\n"
+            "        rx.plugins.TailwindV4Plugin(),\n"
+            "        # rx.plugins.TailwindV4Plugin(),\n"
+            "    ],\n"
+            ")\n"
+        )
+        assert _cleanup_duplicate_plugins(src) == src
+
+    def test_comment_only_mention_still_gets_injected(self, tmp_path: Path) -> None:
+        path = tmp_path / "rxconfig.py"
+        path.write_text(
+            "import reflex as rx\n"
+            "# rx.plugins.TailwindV4Plugin() -- disabled for now\n"
+            "config = rx.Config(app_name='x')\n",
+        )
+        patch_rxconfig(path)
+        out = path.read_text()
+        assert _count_plugin_calls(out) == 2  # the comment + the injected one
+        assert "plugins=[" in out
+        assert _is_valid_python(out)
