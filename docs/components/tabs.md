@@ -104,7 +104,7 @@ tabs.trigger(
 
 ## tabs.content
 
-The structural panel containing content mapped to a specific tab trigger value. Toggles layout visibility instantly purely using CSS attribute matching.
+The structural panel containing content mapped to a specific tab trigger value. Visibility is driven by the same delegated click/mount listener that `tabs.root` attaches: it compares the root's rendered `data-value` with the panel's rendered `data-value` and sets `data-active`, with the panel's static `hidden` default overridden by the static `data-[active=true]:block` variant.
 
 ```python
 tabs.content(
