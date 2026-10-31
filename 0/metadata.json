@@ -1,0 +1,43 @@
+{
+  "cli_version": "0.12.1",
+  "checkpoint_id": "01M69CY1HCP1XRGAK9V068SYHN",
+  "session_id": "edd1a4d9-c6fb-4772-b24d-0b0fdf3f9127",
+  "strategy": "manual-commit",
+  "created_at": "2026-10-31T16:33:26.033656Z",
+  "branch": "wt167",
+  "checkpoints_count": 1,
+  "files_touched": [
+    "cli/main.py",
+    "tests/test_cli_init.py"
+  ],
+  "agent": "Claude Code",
+  "model": "claude-sonnet-5-5",
+  "turn_id": "3dcc514279d7",
+  "checkpoint_transcript_start": 331,
+  "transcript_lines_at_start": 331,
+  "compact_transcript_start": 36,
+  "token_usage": {
+    "input_tokens": 40,
+    "cache_creation_tokens": 21999,
+    "cache_read_tokens": 1475858,
+    "output_tokens": 9157,
+    "api_call_count": 18
+  },
+  "redaction": {
+    "replacements": 6,
+    "layers": {
+      "betterleaks": 0,
+      "connection_string": 0,
+      "credential_key": 0,
+      "credential_value": 0,
+      "credentialed_uri": 0,
+      "entropy": 6,
+      "key_context": 0,
+      "provider_token": 0,
+      "shell_stdin": 0
+    }
+  },
+  "session_metrics": {
+    "turn_count": 4
+  }
+}

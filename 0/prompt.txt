@@ -1,0 +1,9 @@
+keep going through the prs that aren't working. we have trunk CLI that can help us
+
+---
+
+fix the three with problems of their own!
+
+---
+
+entire might also not run because we ran out of credits. also make sure that entire isn't a required check!
