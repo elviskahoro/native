@@ -125,9 +125,10 @@ def test_chart_doc_renders_tooltip_placeholder_without_error() -> None:
 #
 # Closes the CI gap that let this bug ship: tests/test_docs_error.py only
 # regex-scans the generated `assets/docs/` mirror (not the served `docs/`
-# source) and only for the `Component \`x\` not found` wording; the live
-# parser emits a differently-worded `Reference Target '<name>' not found`
-# string, so the existing test cannot catch this class of regression.
+# source), and when this bug shipped it only knew the `Component \`x\` not
+# found` wording; the live parser emits a differently-worded `Reference
+# Target '<name>' not found` string, so a mirror scan cannot catch a
+# live-parser regression.
 # ---------------------------------------------------------------------------
 
 

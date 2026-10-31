@@ -5,10 +5,16 @@ errors that indicate a doc's embedded demo/code reference (e.g. a
     Component `button_group_select` not found
     Component `input_group` not found
 
+and for the offline generator's fallback marker, emitted whenever a
+--TOKEN(...)-- in the doc source has no branch in its token table:
+
+    Unknown token `tooltip`
+
 These strings mean something in the doc didn't get parsed/rendered
-correctly and needs fixing in either the markdown or the component
-registry — this test exists to catch that automatically instead of
-someone spotting it by eye while browsing the docs site.
+correctly and needs fixing in the markdown, the component registry, or
+the offline generator's token table — this test exists to catch that
+automatically instead of someone spotting it by eye while browsing the
+docs site.
 """
 
 from __future__ import annotations
@@ -21,6 +27,12 @@ import pytest
 # Matches: Component `<anything except a backtick>` not found
 # Extend this if other renderers/registries use a differently-worded error.
 COMPONENT_NOT_FOUND_RE = re.compile(r"Component `([^`]+)` not found")
+
+# Matches the offline generator's fallback: Unknown token `<cmd>`, emitted
+# by scripts/generate_markdown.py for any token its token table has no
+# branch for. Without this scan a missing branch ships silently (the
+# tooltip token did exactly that in assets/docs/resources/chart.md).
+UNKNOWN_TOKEN_RE = re.compile(r"Unknown token `([^`]+)`")
 
 
 def _find_docs_dir() -> Path:
@@ -76,4 +88,20 @@ def test_no_unresolved_components(md_file: Path) -> None:
     assert not matches, (
         f"{md_file.relative_to(DOCS_DIR)} references component(s) that "
         f"failed to resolve: {', '.join(sorted(set(matches)))}"
+    )
+
+
+@pytest.mark.parametrize(
+    "md_file",
+    MARKDOWN_FILES,
+    ids=[str(p.relative_to(DOCS_DIR)) for p in MARKDOWN_FILES],
+)
+def test_no_unknown_tokens(md_file: Path) -> None:
+    content = md_file.read_text(encoding="utf-8")
+    matches = UNKNOWN_TOKEN_RE.findall(content)
+
+    assert not matches, (
+        f"{md_file.relative_to(DOCS_DIR)} contains token(s) the offline "
+        f"markdown generator has no branch for: "
+        f"{', '.join(sorted(set(matches)))}"
     )
