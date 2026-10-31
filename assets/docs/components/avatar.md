@@ -70,7 +70,7 @@ import reflex as rx
 from reflex.components.component import ComponentNamespace
 from reflex_components_core.el import Div, Span
 
-from ..core.core import CoreComponent, cn
+from ..core.core import CoreComponent
 
 
 class ClassNames:
@@ -157,7 +157,6 @@ class AvatarRoot(Div, CoreComponent):
 
 
 def avatar_image(**props: Any) -> rx.Component:
-    custom_classes = props.pop("class_name", "")
     props["data-slot"] = "avatar-image"
 
     user_on_mount = props.pop("on_mount", None)
@@ -169,7 +168,7 @@ def avatar_image(**props: Any) -> rx.Component:
             mount_handlers.append(user_on_mount)
     props["on_mount"] = mount_handlers
 
-    CoreComponent.set_class_name(cn(ClassNames.IMAGE, custom_classes), props)
+    CoreComponent.set_class_name(ClassNames.IMAGE, props)
     return rx.el.img(**props)
 
 
