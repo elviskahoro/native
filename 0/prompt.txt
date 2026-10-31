@@ -1,0 +1,21 @@
+❯ can you go through and figure out why the trunk merge queue stopped? Maybe these PRs need to be queued or we're being blocked by one that    needs submission: https://github.com/elviskahoro/native/pulls
+
+---
+
+Impacted targets have not been uploaded
+Check to make sure your workflow for uploading targets ran on the PR and did not fail
+
+---
+
+look at this:
+/Users/elvis/Documents/hq/repos/
+the repo for linear and attio have  examples of how to upload impacted targets
+
+---
+
+also this might help to as an FYI:
+https://github.com/kjanat/actionlint
+
+---
+
+create a pr!
