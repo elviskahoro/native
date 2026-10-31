@@ -55,7 +55,21 @@ jobs:
             echo "trunk auth login attempt ${attempt}/3 failed" >&2
             delay=$((delay + 30))
           done
-          echo "::error::trunk auth login failed after 3 attempts"
+          # All attempts failed. Classify with a fake-credential probe (never
+          # the run's real token): the login endpoint answering 4xx to it is
+          # healthy, so a 500 on the real login is specific to this
+          # repository's connection to Trunk; a 5xx or unreachable probe means
+          # a Trunk-side incident. The upload did not happen either way, so
+          # the job still fails.
+          probe="$(curl -sS -o /dev/null -w '%{http_code}' -X POST \
+            "${TRUNK_API_URL}/auth/github-actions/login" \
+            -H 'Content-Type: application/json' \
+            -d '{"oidcToken":"eyJhbGciOiJub25lIn0.e30.probe"}' || true)"
+          if [[ "${probe}" =~ ^[234] ]]; then
+            echo "::error::trunk auth login failed after 3 attempts while the Trunk login endpoint is healthy (fake-credential probe: HTTP ${probe}). The 500 is specific to this repository's credential: check its connection to Trunk (https://app.trunk.io — GitHub App installed, repository connected) or contact Trunk support, then re-run this job"
+          else
+            echo "::error::trunk auth login failed after 3 attempts and the Trunk login endpoint is unreachable or erroring (probe: HTTP ${probe:-no response}). Trunk-side incident: check https://status.trunk.io and re-run this job later"
+          fi
           exit 1
         env:
           # Mirrors trunk-io/login's own login step: its default api-url and
