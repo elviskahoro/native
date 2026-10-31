@@ -28,7 +28,7 @@ from typing import TYPE_CHECKING
 
 import pytest
 
-from cli.main import _cleanup_duplicate_plugins, patch_rxconfig
+from cli.main import _cleanup_duplicate_plugins, _inert_spans, patch_rxconfig
 from cli.tailwind_config import TAILWIND_CONFIG_SNIPPET
 
 if TYPE_CHECKING:
@@ -309,3 +309,24 @@ class TestCommentedPluginMentions:
         )  # the comment + the injected one
         assert "plugins=[" in out
         assert _is_valid_python(out)
+
+    def test_inert_spans_follow_tokenize_rows_not_splitlines(self) -> None:
+        """Span offsets must map tokenize rows, not ``str.splitlines`` rows.
+
+        A form feed is legal Python whitespace that ``str.splitlines`` treats
+        as a line break but tokenize does not — building the row-to-offset
+        map with ``splitlines`` shifts every span after it, so a commented
+        mention could be misclassified as active code.
+        """
+        src = (
+            "import reflex as rx\n"
+            "\fconfig = rx.Config(\n"
+            "    plugins=[\n"
+            "        rx.plugins.TailwindV4Plugin(),\n"
+            "        # rx.plugins.TailwindV4Plugin(),\n"
+            "    ],\n"
+            ")\n"
+        )
+        comment_start = src.find("# rx")
+        comment_end = src.find("\n    ],")
+        assert _inert_spans(src) == [(comment_start, comment_end)]

@@ -492,9 +492,11 @@ def _inert_spans(content: str) -> list[tuple[int, int]]:
     so it must never be counted, kept, or deleted. Returns an empty list when
     the source cannot be tokenized (the caller then falls back to raw matches).
     """
+    # Tokenize rows are readline() lines, which break on "\n" only —
+    # str.splitlines() would also break on \r, \f or \v and misalign every
+    # row mapped after such a character.
     line_starts = [0]
-    for line in content.splitlines(keepends=True):
-        line_starts.append(line_starts[-1] + len(line))
+    line_starts.extend(newline.end() for newline in re.finditer(r"\n", content))
     spans: list[tuple[int, int]] = []
     try:
         for tok in tokenize.generate_tokens(io.StringIO(content).readline):
