@@ -8,6 +8,8 @@ UI = ROOT / "components/ui"
 EX = ROOT / "native/lib/components"
 DOCS = ROOT / "docs/components"
 
+CHART_DOCS = ROOT / "docs/charts"
+
 DEMO_RE = re.compile(r"--DEMO\([^)]*\)--")
 
 EXPECTED_BUTTON_DEMOS = 12
@@ -18,6 +20,13 @@ EXPECTED_INPUT_GROUP_DEMOS = 9
 
 def _demo_count(slug: str) -> int:
     md = DOCS / f"{slug.replace('-', '_')}.md"
+    return len(DEMO_RE.findall(md.read_text()))
+
+
+def _chart_demo_count(slug: str) -> int:
+    # chart slugs carry a "-chart" suffix (e.g. "area-chart") that already maps
+    # 1:1 to docs/charts/{stem}_chart.md (e.g. "area_chart.md").
+    md = CHART_DOCS / f"{slug.removesuffix('-chart')}_chart.md"
     return len(DEMO_RE.findall(md.read_text()))
 
 
@@ -107,5 +116,51 @@ def test_module_component_links_nonempty_from_repo_root() -> None:
             "module-level component_links is empty; import-time relative-path "
             "globs did not resolve from repo root (as `reflex run` does)"
         )
+    finally:
+        os.chdir(cwd)
+
+
+# --- Chart card counts -----------------------------------------------------
+
+
+def _chart_entries() -> list[tuple[str, str, int]]:
+    from native.pages.components import get_chart_entries
+
+    return get_chart_entries()
+
+
+def _chart_cards() -> dict[str, int]:
+    return {slug: count for _, slug, count in _chart_entries()}
+
+
+def test_chart_card_count_matches_detail_page_demos() -> None:
+    cards = _chart_cards()
+    assert cards, "no chart entries found (glob returned nothing)"
+    mismatches = []
+    for slug, count in cards.items():
+        demos = _chart_demo_count(slug)
+        if count != demos:
+            mismatches.append(f"{slug}: card={count} demos={demos}")
+    assert not mismatches, (
+        "chart card counts disagree with detail-page demos:\n" + "\n".join(mismatches)
+    )
+
+
+def test_chart_module_links_nonempty_from_repo_root() -> None:
+    import native.pages.components as page
+
+    cwd = Path.cwd()
+    os.chdir(ROOT)
+    try:
+        importlib.reload(page)
+        assert len(page.chart_links) > 0, (
+            "module-level chart_links is empty; import-time relative-path "
+            "globs did not resolve from repo root (as `reflex run` does)"
+        )
+        # while reloaded under repo root, re-check the invariant end-to-end
+        for name, slug, count in page.get_chart_entries():
+            assert count == _chart_demo_count(slug), (
+                f"{name} ({slug}): card={count} demos={_chart_demo_count(slug)}"
+            )
     finally:
         os.chdir(cwd)

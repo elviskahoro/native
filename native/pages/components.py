@@ -98,7 +98,7 @@ def get_utility_links() -> list[Component]:
     ]
 
 
-def get_chart_links() -> list[Component]:
+def get_chart_entries() -> list[tuple[str, str, int]]:
     entries = []
 
     if CHART_EXAMPLES.exists():
@@ -110,15 +110,23 @@ def get_chart_links() -> list[Component]:
                 name = f"{stem.replace('_', ' ').title()} Chart"  # e.g., "Area Chart"
                 slug = f"{stem.replace('_', '-')}-chart"  # e.g., "area-chart"
 
-                # Count files inside the subfolder (native/lib/charts/area/*.py)
-                example_count = len(list(chart_dir.glob("*.py")))
+                # Count files inside the subfolder (native/lib/charts/area/*.py),
+                # excluding the __init__.py package marker which is not a demo.
+                example_count = sum(
+                    1 for f in chart_dir.glob("*.py") if f.stem != "__init__"
+                )
 
                 entries.append((name, slug, example_count))
 
     entries.sort(key=lambda x: x[0].lower())
 
+    return entries
+
+
+def get_chart_links() -> list[Component]:
     return [
-        link_card(name, f"/docs/charts/{slug}", count) for name, slug, count in entries
+        link_card(name, f"/docs/charts/{slug}", count)
+        for name, slug, count in get_chart_entries()
     ]
 
 

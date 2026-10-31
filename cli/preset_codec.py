@@ -110,21 +110,21 @@ def decode_seed(
     ):
         return None
 
-    color_id = (
-        color_themes[color_idx - 1]["id"]
-        if 0 < color_idx <= len(color_themes)
-        else None
-    )
-    chart_id = (
-        color_themes[chart_idx - 1]["id"]
-        if 0 < chart_idx <= len(color_themes)
-        else None
-    )
-    radius_value = (
-        radii_options[radius_idx - 1]["value"]
-        if 0 < radius_idx <= len(radii_options)
-        else None
-    )
+    # color/chart/radius use 0 as a sentinel for "inherit", so their valid
+    # range is 0..len(list). Mirror theme-preview.js, which rejects an
+    # out-of-range index outright rather than silently coercing it to the
+    # inherit default — a mistyped/future preset must not decode "successfully"
+    # as a partially-defaulted theme.
+    if (
+        color_idx > len(color_themes)
+        or chart_idx > len(color_themes)
+        or radius_idx > len(radii_options)
+    ):
+        return None
+
+    color_id = color_themes[color_idx - 1]["id"] if color_idx else None
+    chart_id = color_themes[chart_idx - 1]["id"] if chart_idx else None
+    radius_value = radii_options[radius_idx - 1]["value"] if radius_idx else None
 
     return {
         "baseId": base_themes[base_idx]["id"],
