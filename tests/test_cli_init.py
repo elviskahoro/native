@@ -44,6 +44,11 @@ _IMPORT_STMT = "from reflex.plugins.shared_tailwind import TailwindConfig"
 # a named constant so the regression assertions don't trip ruff's PLR2004.
 _CORRUPTED_ENTRY_COUNT = 3
 
+# A commented-out mention plus the one registration ``patch_rxconfig`` injects
+# into a config that lacked ``plugins=``. Named so the assertion below doesn't
+# trip ruff's PLR2004.
+_COMMENT_PLUS_INJECTED_COUNT = 2
+
 
 def _count_plugin_calls(content: str) -> int:
     """Count actual ``TailwindV4Plugin(...)`` call sites.
@@ -299,6 +304,8 @@ class TestCommentedPluginMentions:
         )
         patch_rxconfig(path)
         out = path.read_text()
-        assert _count_plugin_calls(out) == 2  # the comment + the injected one
+        assert (
+            _count_plugin_calls(out) == _COMMENT_PLUS_INJECTED_COUNT
+        )  # the comment + the injected one
         assert "plugins=[" in out
         assert _is_valid_python(out)
