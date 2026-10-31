@@ -45,6 +45,7 @@ from components.ui.avatar import (
     AvatarGroup,
     AvatarGroupCount,
     AvatarRoot,
+    avatar_image,
 )
 from components.ui.badge import BadgeComponent
 from components.ui.button import Button
@@ -124,6 +125,10 @@ def _tabs_content(**kw: Any) -> Div:
     return TabsContent.create("Body", value="tab", **kw)
 
 
+def _avatar_image(**kw: Any) -> rx.Component:
+    return avatar_image(src="x.png", **kw)
+
+
 def _avatar_fallback(**kw: Any) -> Span:
     return AvatarFallback.create("F", **kw)
 
@@ -170,6 +175,7 @@ SIMPLE_COMPONENTS: list[tuple[str, str, ComponentFactory]] = [
     ("TabsList", "group/tabs-list", TabsList.create),
     ("TabsContent", "flex-1 text-sm outline-none hidden", _tabs_content),
     ("AvatarRoot", "group/avatar", AvatarRoot.create),
+    ("AvatarImage", "aspect-square", _avatar_image),
     ("AvatarFallback", "bg-muted", _avatar_fallback),
     ("AvatarBadge", "bg-primary", _avatar_badge),
     ("AvatarGroup", "group/avatar-group", AvatarGroup.create),
