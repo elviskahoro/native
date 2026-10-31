@@ -34,7 +34,6 @@ class _ChartTooltip:
             "cursor": cursor,
             "item_style": _deep_merge(
                 {
-                    "color": "currentColor",
                     "display": "flex",
                     "paddingBottom": "0px",
                     "justifyContent": "space-between",
@@ -68,6 +67,9 @@ class _ChartTooltipContent:
     def __call__(self, chart_colors: list[int], swatch: Swatch = "square") -> str:
         base = """
             [&_.recharts-tooltip-item-name]:!text-muted-foreground
+            [&_.recharts-tooltip-item-value]:!text-foreground
+            [&_.recharts-tooltip-item-unit]:!text-foreground
+            [&_.recharts-tooltip-item-separator]:!text-foreground
             [&_.recharts-tooltip-item-separator]:!w-full
             [&_.recharts-tooltip-item]:!min-w-[8rem]
             [&_.recharts-tooltip-item]:!flex
@@ -85,34 +87,28 @@ class _ChartTooltipContent:
             """
             return base
 
-        lines = []
-        for i, color_idx in enumerate(chart_colors, 1):
-            if swatch == "line":
-                lines.append(
-                    f"""
-                    [&_.recharts-tooltip-item:nth-child({i})]:before:!content-['']
-                    [&_.recharts-tooltip-item:nth-child({i})]:before:!w-3
-                    [&_.recharts-tooltip-item:nth-child({i})]:before:!h-0.5
-                    [&_.recharts-tooltip-item:nth-child({i})]:before:!rounded-full
-                    [&_.recharts-tooltip-item:nth-child({i})]:before:!flex-shrink-0
-                    [&_.recharts-tooltip-item:nth-child({i})]:before:!bg-[var(--chart-{color_idx})]
-                    [&_.recharts-tooltip-item:nth-child({i})]:before:!block
-                """,
-                )
-            else:
-                lines.append(
-                    f"""
-                    [&_.recharts-tooltip-item:nth-child({i})]:before:!content-['']
-                    [&_.recharts-tooltip-item:nth-child({i})]:before:!w-3
-                    [&_.recharts-tooltip-item:nth-child({i})]:before:!h-3
-                    [&_.recharts-tooltip-item:nth-child({i})]:before:!rounded-[3px]
-                    [&_.recharts-tooltip-item:nth-child({i})]:before:!flex-shrink-0
-                    [&_.recharts-tooltip-item:nth-child({i})]:before:!bg-[var(--chart-{color_idx})]
-                    [&_.recharts-tooltip-item:nth-child({i})]:before:!block
-                """,
-                )
+        if swatch == "line":
+            swatch_classes = """
+                [&_.recharts-tooltip-item:before]:!content-['']
+                [&_.recharts-tooltip-item:before]:!w-3
+                [&_.recharts-tooltip-item:before]:!h-0.5
+                [&_.recharts-tooltip-item:before]:!rounded-full
+                [&_.recharts-tooltip-item:before]:!flex-shrink-0
+                [&_.recharts-tooltip-item:before]:!bg-current
+                [&_.recharts-tooltip-item:before]:!block
+            """
+        else:
+            swatch_classes = """
+                [&_.recharts-tooltip-item:before]:!content-['']
+                [&_.recharts-tooltip-item:before]:!w-3
+                [&_.recharts-tooltip-item:before]:!h-3
+                [&_.recharts-tooltip-item:before]:!rounded-[3px]
+                [&_.recharts-tooltip-item:before]:!flex-shrink-0
+                [&_.recharts-tooltip-item:before]:!bg-current
+                [&_.recharts-tooltip-item:before]:!block
+            """
 
-        return base + "\n".join(lines)
+        return base + swatch_classes
 
 
 chart_tooltip = _ChartTooltip()
