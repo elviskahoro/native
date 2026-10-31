@@ -203,6 +203,11 @@ def convert_to_markdown(content: str) -> str:
             if cmd == "intro":
                 return f"\n## {name.title()}\n"
 
+            if "tooltip" in cmd:
+                # Mirrors the live parser's placeholder (render_token in
+                # native/engine/parser.py) so both pipelines agree.
+                return "\n> 💡 Tooltip Trigger Placeholder\n"
+
             return f"\n> Unknown token `{cmd}`\n"
 
         except Exception as e:

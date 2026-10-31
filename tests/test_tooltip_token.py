@@ -174,3 +174,31 @@ def test_no_doc_page_renders_reference_not_found_error(md_file: Path) -> None:
         f"... not found' error box at a token that missed the registry lookup: "
         f"{matches}"
     )
+
+
+def test_markdown_mirror_renders_tooltip_placeholder() -> None:
+    """The offline mirror generator must agree with the live parser.
+
+    ``scripts/generate_markdown.py`` has its own token table; without a
+    ``tooltip`` case it shipped ``> Unknown token `tooltip` `` in
+    ``assets/docs/resources/chart.md``.
+    """
+    import importlib.util
+
+    spec = importlib.util.spec_from_file_location(
+        "generate_markdown",
+        ROOT_DIR / "scripts" / "generate_markdown.py",
+    )
+    assert spec is not None
+    assert spec.loader is not None
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+
+    out = module.convert_to_markdown("--tooltip(\\_)--")
+    assert "Unknown token" not in out
+    assert "Tooltip Trigger Placeholder" in out
+
+    mirror = (ROOT_DIR / "assets" / "docs" / "resources" / "chart.md").read_text(
+        encoding="utf-8",
+    )
+    assert "Unknown token" not in mirror
