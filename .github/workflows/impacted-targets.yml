@@ -1,0 +1,81 @@
+# Uploads each PR's impacted targets to the Trunk Merge Queue. Without this the
+# queue holds every PR at `trunk-not-ready` ("impacted targets have not been
+# uploaded").
+#
+# Auth is the TRUNK_API_KEY repo secret (Trunk app -> Settings -> Developer ->
+# API Keys) sent as a Bearer token to PUT /v2/impacted-targets. The key needs
+# the "Merge and cancel PRs" permission (none are selected by default; without
+# it every upload fails with 403 INSUFFICIENT_PERMISSIONS). The
+# secret-free OIDC path (trunk-io/login) was tried first, but Trunk's login
+# endpoint answered HTTP 500 for this repository on every attempt.
+#
+# Targets are the top-level folders/files a PR touches (no build graph here).
+# Upload on every push: targets apply to a single commit.
+#
+# Not a required status (see .trunk/trunk.yaml -> merge.required_statuses);
+# the queue consumes the upload directly.
+name: Impacted targets
+on:
+  pull_request:
+    branches:
+      - main
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref || github.run_id }}
+  cancel-in-progress: true
+permissions:
+  contents: read
+jobs:
+  impacted_targets:
+    name: Upload impacted targets
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+        with:
+          fetch-depth: 0
+      - name: Upload impacted targets
+        shell: bash
+        env:
+          TRUNK_API_KEY: ${{ secrets.TRUNK_API_KEY }}
+          # Not a secret: the Trunk repository id for elviskahoro/native
+          # (GET /v2/repositories?providerUrl=https://github.com/elviskahoro/native).
+          TRUNK_REPOSITORY_ID: 3f3e54fe-e2c9-44cf-bcad-a274b19f2440
+          BASE_REF: ${{ github.base_ref }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+          IS_FORK: ${{ github.event.pull_request.head.repo.fork }}
+        run: |
+          if [ -z "${TRUNK_API_KEY}" ]; then
+            if [ "${IS_FORK}" = "true" ]; then
+              echo "::warning::TRUNK_API_KEY is unavailable to fork PRs; skipping impacted-targets upload"
+              exit 0
+            fi
+            echo "::error::TRUNK_API_KEY is empty on a same-repo PR (secret unset or rotated away)"
+            exit 1
+          fi
+          targets="$(git diff --name-only "origin/${BASE_REF}...${HEAD_SHA}" \
+            | cut -d/ -f1 | sort -u | jq -R . | jq -sc .)"
+          body="$(jq -nc \
+            --arg repo "${TRUNK_REPOSITORY_ID}" \
+            --arg branch "${BASE_REF}" \
+            --arg sha "${HEAD_SHA}" \
+            --argjson number "${PR_NUMBER}" \
+            --argjson targets "${targets}" \
+            '{repositoryId: $repo, targetBranch: $branch, sha: $sha, number: $number, impactedTargets: $targets}')"
+          delay=0
+          for attempt in 1 2 3; do
+            sleep "${delay}"
+            code="$(curl -sS -o response.txt -D headers.txt -w '%{http_code}' -X PUT \
+              https://api.trunk.io/v2/impacted-targets \
+              -H "Authorization: Bearer ${TRUNK_API_KEY}" \
+              -H 'Content-Type: application/json' \
+              -d "${body}" || true)"
+            if [ "${code}" = "202" ]; then
+              echo "Uploaded impacted targets ${targets} for ${HEAD_SHA} (HTTP 202)"
+              exit 0
+            fi
+            echo "upload attempt ${attempt}/3 failed: HTTP ${code:-none}: $(cat response.txt 2>/dev/null) ($(grep -i '^x-request-id' headers.txt 2>/dev/null | tr -d '\r' || true))" >&2
+            delay=$((delay + 15))
+          done
+          echo "::error::impacted-targets upload failed after 3 attempts (last HTTP ${code:-none})"
+          exit 1
