@@ -337,16 +337,16 @@ merge:
   #   gh pr checks <pr-number> --json name --jq '.[].name'
   #
   # Every entry has a producer in this repo: Trunk Check
-  # (.github/workflows/trunk-check.yml), Unit tests (tests.yml), Generate &
-  # Verify Docs and Social Cards (validate-assets.yml) and pullfrog-approval
-  # (pullfrog GitHub App verdict check). The GitHub "main - PRs" ruleset
-  # additionally requires "Entire Gates", which branch protection enforces but
-  # the queue deliberately does not wait on (the Entire App may not post it on
-  # the queue's trunk-merge/** test branches, which would stall them).
+  # (.github/workflows/trunk-check.yml), Unit tests (tests.yml) and Generate &
+  # Verify Docs and Social Cards (validate-assets.yml). The GitHub "main - PRs"
+  # ruleset additionally requires "Entire Gates" and "pullfrog-approval", which
+  # branch protection enforces but the queue deliberately does not wait on: the
+  # Entire and pullfrog GitHub Apps may not post them on the queue's
+  # trunk-merge/** test branches, which fails or stalls the queue (this removed
+  # #160 and #169 from the queue on pullfrog-approval).
   # Do NOT require a workflow filtered by `pull_request.paths`; it would
   # deadlock the queue.
   required_statuses:
     - Trunk Check
     - Unit tests
     - Generate & Verify Docs and Social Cards
-    - pullfrog-approval
