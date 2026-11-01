@@ -339,10 +339,10 @@ merge:
   # Every entry has a producer in this repo: Trunk Check
   # (.github/workflows/trunk-check.yml), Unit tests (tests.yml), Generate &
   # Verify Docs and Social Cards (validate-assets.yml) and pullfrog-approval
-  # (pullfrog GitHub App verdict check). The GitHub "main - PRs" ruleset
-  # additionally requires "Entire Gates", which branch protection enforces but
-  # the queue deliberately does not wait on (the Entire App may not post it on
-  # the queue's trunk-merge/** test branches, which would stall them).
+  # (pullfrog GitHub App verdict check). "Entire Gates" is deliberately NOT
+  # required, here or in the GitHub "main - PRs" ruleset: the Entire App may
+  # not post it on the queue's trunk-merge/** test branches (which would stall
+  # them) and can be unavailable (e.g. out of credits).
   # Do NOT require a workflow filtered by `pull_request.paths`; it would
   # deadlock the queue.
   required_statuses:

@@ -118,14 +118,13 @@ Docs and Social Cards", "pullfrog-approval"). The three workflow gates
 trigger on every PR to `main` and on the queue's `trunk-merge/**` test
 branches; `pullfrog-approval` is posted by the Pullfrog App on PRs it
 reviews (the queue's Draft-PR test branches included), so merges wait for
-Pullfrog's approval verdict. The GitHub "main - PRs" ruleset requires the
-same checks plus "Entire Gates"; the queue deliberately does not wait on
-"Entire Gates" because the Entire App may not post it on the queue's
-`trunk-merge/**` test branches, which would stall them. Keep the rest of
-the two lists in sync (the ruleset pins `pullfrog-approval` to the Pullfrog
-App's integration ID). The queue
-itself is created in the Trunk web app (app.trunk.io); do not attempt to
-configure it from the repo.
+Pullfrog's approval verdict. Neither the queue nor the GitHub "main - PRs"
+ruleset waits on "Entire Gates": the Entire App may not post it on the
+queue's `trunk-merge/**` test branches (which would stall them) and it can
+be unavailable (e.g. out of credits). Keep the two lists in sync (the
+ruleset pins `pullfrog-approval` to the Pullfrog App's integration ID). The
+queue itself is created in the Trunk web app (app.trunk.io); do not attempt
+to configure it from the repo.
 
 If a queued PR stalls in Testing because `pullfrog-approval` never
 reports, run `trunk merge cancel <pr-number>`, request a review with an
@@ -134,10 +133,10 @@ repo admin can temporarily drop the check from the ruleset and
 `merge.required_statuses` (the ruleset has no bypass actors) and restore
 both afterwards.
 
-If a PR is blocked from merging on "Entire Gates" (enforced by the ruleset,
-not the queue), open the trail linked from the check, resolve or fix the
+A red "Entire Gates" check does not block merging — nothing waits on it. To
+clear one anyway, open the trail linked from the check, resolve or fix the
 listed findings or approvals, and push; the gate recomputes on the new
-head. `trunk merge cancel <pr-number>` first if it was already queued.
+head.
 
 ## Agent Skills
 
