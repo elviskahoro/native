@@ -354,7 +354,7 @@ Swatch = Literal["square", "line", "border"]
 ```
 
 
-> Unknown token `tooltip`
+> 💡 Tooltip Trigger Placeholder
 
 
 You can turn on/off any of these using the `display` prop and customize the indicator style using the `swatch` prop.
