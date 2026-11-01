@@ -3,7 +3,9 @@
 # uploaded").
 #
 # Auth is the TRUNK_API_KEY repo secret (Trunk app -> Settings -> Developer ->
-# API Keys) sent as a Bearer token to PUT /v2/impacted-targets. The
+# API Keys) sent as a Bearer token to PUT /v2/impacted-targets. The key needs
+# the "Merge and cancel PRs" permission (none are selected by default; without
+# it every upload fails with 403 INSUFFICIENT_PERMISSIONS). The
 # secret-free OIDC path (trunk-io/login) was tried first, but Trunk's login
 # endpoint answered HTTP 500 for this repository on every attempt.
 #
@@ -41,10 +43,15 @@ jobs:
           BASE_REF: ${{ github.base_ref }}
           HEAD_SHA: ${{ github.event.pull_request.head.sha }}
           PR_NUMBER: ${{ github.event.pull_request.number }}
+          IS_FORK: ${{ github.event.pull_request.head.repo.fork }}
         run: |
           if [ -z "${TRUNK_API_KEY}" ]; then
-            echo "::warning::TRUNK_API_KEY is unavailable (fork PR or secret not set); skipping impacted-targets upload"
-            exit 0
+            if [ "${IS_FORK}" = "true" ]; then
+              echo "::warning::TRUNK_API_KEY is unavailable to fork PRs; skipping impacted-targets upload"
+              exit 0
+            fi
+            echo "::error::TRUNK_API_KEY is empty on a same-repo PR (secret unset or rotated away)"
+            exit 1
           fi
           targets="$(git diff --name-only "origin/${BASE_REF}...${HEAD_SHA}" \
             | cut -d/ -f1 | sort -u | jq -R . | jq -sc .)"
@@ -58,7 +65,7 @@ jobs:
           delay=0
           for attempt in 1 2 3; do
             sleep "${delay}"
-            code="$(curl -sS -o response.txt -w '%{http_code}' -X PUT \
+            code="$(curl -sS -o response.txt -D headers.txt -w '%{http_code}' -X PUT \
               https://api.trunk.io/v2/impacted-targets \
               -H "Authorization: Bearer ${TRUNK_API_KEY}" \
               -H 'Content-Type: application/json' \
@@ -67,7 +74,7 @@ jobs:
               echo "Uploaded impacted targets ${targets} for ${HEAD_SHA} (HTTP 202)"
               exit 0
             fi
-            echo "upload attempt ${attempt}/3 failed: HTTP ${code:-none}: $(cat response.txt 2>/dev/null)" >&2
+            echo "upload attempt ${attempt}/3 failed: HTTP ${code:-none}: $(cat response.txt 2>/dev/null) ($(grep -i '^x-request-id' headers.txt 2>/dev/null | tr -d '\r' || true))" >&2
             delay=$((delay + 15))
           done
           echo "::error::impacted-targets upload failed after 3 attempts (last HTTP ${code:-none})"
