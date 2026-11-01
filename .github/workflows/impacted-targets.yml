@@ -1,6 +1,11 @@
 # Uploads each PR's impacted targets to the Trunk Merge Queue. Without this the
 # queue holds every PR at `trunk-not-ready` ("impacted targets have not been
-# uploaded"). Auth is the run's OIDC token via trunk-io/login; no secret needed.
+# uploaded").
+#
+# Auth is the TRUNK_API_KEY repo secret (Trunk app -> Settings -> Developer ->
+# API Keys) sent as a Bearer token to PUT /v2/impacted-targets. The
+# secret-free OIDC path (trunk-io/login) was tried first, but Trunk's login
+# endpoint answered HTTP 500 for this repository on every attempt.
 #
 # Targets are the top-level folders/files a PR touches (no build graph here).
 # Upload on every push: targets apply to a single commit.
@@ -17,7 +22,6 @@ concurrency:
   cancel-in-progress: true
 permissions:
   contents: read
-  id-token: write
 jobs:
   impacted_targets:
     name: Upload impacted targets
@@ -27,75 +31,44 @@ jobs:
         uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
         with:
           fetch-depth: 0
-      - name: Compute impacted targets
-        shell: bash
-        env:
-          BASE_REF: ${{ github.base_ref }}
-        run: |
-          git diff --name-only "origin/${BASE_REF}...HEAD" \
-            | cut -d/ -f1 | sort -u > targets.txt
-      - name: Trunk login
-        id: trunk_login
-        uses: trunk-io/login@dd43b5c040326ee204a3d1f18f5522a717466ce2 # v1
-        # The Trunk API intermittently returns HTTP 500 ("internal error")
-        # on the login exchange, and trunk-io/login has no retry of its own.
-        # Don't fail the job on the first attempt; the retry step below takes
-        # over (the CLI is already on PATH from the action's install step).
-        continue-on-error: true
-      - name: Trunk login retries
-        if: steps.trunk_login.outcome == 'failure'
-        shell: bash
-        run: |
-          delay=0
-          for attempt in 1 2 3; do
-            sleep "${delay}"
-            if trunk auth login --github-actions; then
-              exit 0
-            fi
-            echo "trunk auth login attempt ${attempt}/3 failed" >&2
-            delay=$((delay + 30))
-          done
-          # All attempts failed. Classify with a fake-credential probe (never
-          # the run's real token): the login endpoint answering 4xx to it is
-          # healthy, so a 500 on the real login is specific to this
-          # repository's connection to Trunk; a 5xx or unreachable probe means
-          # a Trunk-side incident. The upload did not happen either way, so
-          # the job still fails.
-          probe="$(curl -sS -o /dev/null -w '%{http_code}' -X POST \
-            "${TRUNK_API_URL}/auth/github-actions/login" \
-            -H 'Content-Type: application/json' \
-            -d '{"oidcToken":"eyJhbGciOiJub25lIn0.e30.probe"}' || true)"
-          if [[ "${probe}" =~ ^[234] ]]; then
-            echo "::error::trunk auth login failed after 3 attempts while the Trunk login endpoint is healthy (fake-credential probe: HTTP ${probe}). The 500 is specific to this repository's credential: check its connection to Trunk (https://app.trunk.io — GitHub App installed, repository connected) or contact Trunk support, then re-run this job"
-          else
-            echo "::error::trunk auth login failed after 3 attempts and the Trunk login endpoint is unreachable or erroring (probe: HTTP ${probe:-no response}). Trunk-side incident: check https://status.trunk.io and re-run this job later"
-          fi
-          exit 1
-        env:
-          # Mirrors trunk-io/login's own login step: its default api-url and
-          # the job token (which the CLI needs only on fork pull requests).
-          TRUNK_API_URL: https://api.trunk.io/v2
-          GITHUB_TOKEN: ${{ github.token }}
       - name: Upload impacted targets
         shell: bash
+        env:
+          TRUNK_API_KEY: ${{ secrets.TRUNK_API_KEY }}
+          # Not a secret: the Trunk repository id for elviskahoro/native
+          # (GET /v2/repositories?providerUrl=https://github.com/elviskahoro/native).
+          TRUNK_REPOSITORY_ID: 3f3e54fe-e2c9-44cf-bcad-a274b19f2440
+          BASE_REF: ${{ github.base_ref }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
         run: |
-          upload() {
-            if [ -s targets.txt ]; then
-              trunk mergequeue upload-impacted-targets --targets-file targets.txt
-            else
-              trunk mergequeue upload-impacted-targets --none
-            fi
-          }
+          if [ -z "${TRUNK_API_KEY}" ]; then
+            echo "::warning::TRUNK_API_KEY is unavailable (fork PR or secret not set); skipping impacted-targets upload"
+            exit 0
+          fi
+          targets="$(git diff --name-only "origin/${BASE_REF}...${HEAD_SHA}" \
+            | cut -d/ -f1 | sort -u | jq -R . | jq -sc .)"
+          body="$(jq -nc \
+            --arg repo "${TRUNK_REPOSITORY_ID}" \
+            --arg branch "${BASE_REF}" \
+            --arg sha "${HEAD_SHA}" \
+            --argjson number "${PR_NUMBER}" \
+            --argjson targets "${targets}" \
+            '{repositoryId: $repo, targetBranch: $branch, sha: $sha, number: $number, impactedTargets: $targets}')"
           delay=0
           for attempt in 1 2 3; do
             sleep "${delay}"
-            if upload; then
+            code="$(curl -sS -o response.txt -w '%{http_code}' -X PUT \
+              https://api.trunk.io/v2/impacted-targets \
+              -H "Authorization: Bearer ${TRUNK_API_KEY}" \
+              -H 'Content-Type: application/json' \
+              -d "${body}" || true)"
+            if [ "${code}" = "202" ]; then
+              echo "Uploaded impacted targets ${targets} for ${HEAD_SHA} (HTTP 202)"
               exit 0
             fi
-            echo "upload attempt ${attempt}/3 failed" >&2
-            delay=$((delay + 30))
+            echo "upload attempt ${attempt}/3 failed: HTTP ${code:-none}: $(cat response.txt 2>/dev/null)" >&2
+            delay=$((delay + 15))
           done
-          echo "::error::upload failed after 3 attempts"
+          echo "::error::impacted-targets upload failed after 3 attempts (last HTTP ${code:-none})"
           exit 1
-        env:
-          GITHUB_TOKEN: ${{ github.token }}
