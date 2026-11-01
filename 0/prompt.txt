@@ -1,0 +1,42 @@
+❯ use trunk cli to tell me about our current trunk merge queue. what PRs are in the queue and are any stuck
+
+---
+
+give me al ink to the ones that aren't ready
+
+---
+
+wait shold we have merged those two:
+42 and 40. they might be out of date badly
+
+---
+
+i merged them myself
+
+---
+
+i merged them just now
+
+---
+
+can you tell me if what PRs we have in the queue and if any are blocking? we want to get all of these PRs over the line using trunk's merge quue
+
+---
+
+give me the links to these!
+
+---
+
+i mreged these
+
+---
+
+is the merge queue working now?
+
+---
+
+let's make sure that pullfrog-approval isn't a blocking check for trunk's merge queue the trunk.yaml
+
+---
+
+create a PR so that I can merge it
