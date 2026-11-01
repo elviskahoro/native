@@ -1,0 +1,22 @@
+let's queue all of the PRs now!
+
+---
+
+let's figure out how to fix it!
+
+---
+
+trunk auth login --github-actions
+this is not a real command
+
+---
+
+maybe we need a trunk api key in the repo secrets?
+
+---
+
+added to .env.local
+
+---
+
+i set the trunk api key can you confirm if it works
