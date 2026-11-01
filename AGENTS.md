@@ -114,24 +114,26 @@ PRs land through the Trunk Merge Queue, not the GitHub Merge button.
 
 The queue gates on the statuses in `.trunk/trunk.yaml` →
 `merge.required_statuses` ("Trunk Check", "Unit tests", "Generate & Verify
-Docs and Social Cards", "pullfrog-approval"). The three workflow gates
-trigger on every PR to `main` and on the queue's `trunk-merge/**` test
-branches; `pullfrog-approval` is posted by the Pullfrog App on PRs it
-reviews (the queue's Draft-PR test branches included), so merges wait for
-Pullfrog's approval verdict. Neither the queue nor the GitHub "main - PRs"
-ruleset waits on "Entire Gates": the Entire App may not post it on the
-queue's `trunk-merge/**` test branches (which would stall them) and it can
-be unavailable (e.g. out of credits). Keep the two lists in sync (the
-ruleset pins `pullfrog-approval` to the Pullfrog App's integration ID). The
+Docs and Social Cards"). The three workflow gates trigger on every PR to
+`main` and on the queue's `trunk-merge/**` test branches. The GitHub
+"main - PRs" ruleset additionally requires `pullfrog-approval`, posted by
+the Pullfrog App on PRs it reviews (the queue's Draft-PR test branches
+included); the queue deliberately does not wait on it because the check is
+not reliably green on the queue's `trunk-merge/**` test branches (it failed
+on Trunk's test PRs #174 and #185 even though it passed on the PRs
+themselves, which removed #160 and #169 from the queue). Neither the queue
+nor the GitHub "main - PRs" ruleset waits on "Entire Gates": the Entire App
+may not post it on the queue's `trunk-merge/**` test branches (which would
+stall them) and it can be unavailable (e.g. out of credits). Keep the
+ruleset in sync with `merge.required_statuses` plus `pullfrog-approval`
+(the ruleset pins that check to the Pullfrog App's integration ID). The
 queue itself is created in the Trunk web app (app.trunk.io); do not attempt
 to configure it from the repo.
 
-If a queued PR stalls in Testing because `pullfrog-approval` never
-reports, run `trunk merge cancel <pr-number>`, request a review with an
-`@pullfrog` comment on the PR, then resubmit. During a Pullfrog outage a
-repo admin can temporarily drop the check from the ruleset and
-`merge.required_statuses` (the ruleset has no bypass actors) and restore
-both afterwards.
+The queue no longer requires `pullfrog-approval`, so it cannot stall on it;
+only the GitHub "main - PRs" ruleset still does. During a Pullfrog outage
+a repo admin can temporarily drop the check from the ruleset (the ruleset
+has no bypass actors) and restore it afterwards.
 
 A red "Entire Gates" check does not block merging — nothing waits on it. To
 clear one anyway, open the trail linked from the check, resolve or fix the
