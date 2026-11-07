@@ -21,8 +21,8 @@ tasks:
       repository: https://github.com/elviskahoro/native.git
       ref: ${{ init.commit-sha }}
 
-  # Checksum-pinned uv installer: fails closed if the script at the versioned
-  # URL ever changes. No packaged uv/install leaf exists in the RWX catalog.
+  # Checksum-pinned uv installer: fails closed if the install script at the
+  # versioned URL ever changes (the uv binary it downloads is not verified). No packaged uv/install leaf exists in the RWX catalog.
   - key: uv-install
     run: |
       set -euo pipefail
@@ -34,8 +34,8 @@ tasks:
       echo "$HOME/.local/bin" >> "$RWX_ENV/PATH"
 
   # Filtered to the lockfile inputs so this stays cached across ordinary
-  # commits. --no-install-project: sources are outside the filter; `uv run`
-  # installs the project itself.
+  # commits. --no-install-project: the checkers do static analysis and don't
+  # need the project installed, and it keeps this task source-independent.
   - key: deps
     use: [uv-install, code]
     filter:
