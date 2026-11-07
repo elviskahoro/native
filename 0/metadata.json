@@ -1,0 +1,42 @@
+{
+  "cli_version": "0.12.1",
+  "checkpoint_id": "01M6V56VBK2D1VZ0DAYBW9CH74",
+  "session_id": "e5e68253-f372-432a-bd61-c0a25bc9dddf",
+  "strategy": "manual-commit",
+  "created_at": "2026-11-07T14:04:44.091380784Z",
+  "branch": "w-817/pyright-and-pyrefly-pipelines-copy",
+  "checkpoints_count": 1,
+  "save_step_count": 1,
+  "files_touched": [
+    ".rwx/pyrefly.yml",
+    ".rwx/pyright.yml"
+  ],
+  "agent": "Claude Code",
+  "model": "claude-sonnet-5-5",
+  "turn_id": "a043b154f577",
+  "compact_transcript_start": 0,
+  "token_usage": {
+    "input_tokens": 20,
+    "cache_creation_tokens": 16416,
+    "cache_read_tokens": 220659,
+    "output_tokens": 1621,
+    "api_call_count": 9
+  },
+  "redaction": {
+    "replacements": 2,
+    "layers": {
+      "betterleaks": 0,
+      "connection_string": 0,
+      "credential_key": 0,
+      "credential_value": 0,
+      "credentialed_uri": 0,
+      "entropy": 0,
+      "key_context": 2,
+      "provider_token": 0,
+      "shell_stdin": 0
+    }
+  },
+  "session_metrics": {
+    "turn_count": 1
+  }
+}
