@@ -198,6 +198,43 @@ Location:
 .agents/skills/theming/SKILL.md
 ```
 
+### rwx
+
+Covers:
+
+- Authenticating the RWX CLI with the injected `RWX_ACCESS_TOKEN_<OWNER>` tokens
+- Running `.rwx/*.yml` pipelines on the working tree, including uncommitted changes
+- pyright and pyrefly runs without a local `.venv`
+- Reading run results and logs, sandboxes, and writing or linting RWX configs
+
+Location:
+
+```text
+.agents/skills/rwx/SKILL.md
+```
+
+## RWX CI
+
+The `rwx` CLI is installed. Tokens are injected as `RWX_ACCESS_TOKEN_<OWNER>`
+or `RWC_ACCESS_TOKEN_<OWNER>`, one per RWX workspace. The CLI reads only
+`RWX_ACCESS_TOKEN`, so export the one matching the repo owner and never print
+it:
+
+```bash
+OWNER=$(git remote get-url origin | sed -E 's#.*[:/]([^/]+)/[^/]+(\.git)?$#\1#' | tr a-z A-Z)
+export RWX_ACCESS_TOKEN="$(printenv "RWX_ACCESS_TOKEN_$OWNER" || printenv "RWC_ACCESS_TOKEN_$OWNER")"
+rwx whoami
+```
+
+Common commands (details in the `rwx` skill):
+
+- `rwx run .rwx/pyright.yml --wait` runs on the working tree, no push needed.
+- `rwx results <run-id>` and `rwx logs <task-id>` read failures.
+- `rwx lint .rwx/<name>.yml` validates a config after every edit.
+- `rwx docs search "<query>"` / `rwx docs pull <path>` read RWX docs.
+
+The `.rwx/` pipelines are manual only and are not merge gates.
+
 ## Working With Native
 
 Before implementing a feature:

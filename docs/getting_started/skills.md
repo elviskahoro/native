@@ -102,6 +102,7 @@ Buridan Skills are powered by repository-level instructions and specialized know
 | -------------------------------- | ------------------------------------------------------------- |
 | `AGENTS.md`                      | Main instructions for AI assistants working in the repository |
 | `.agents/skills/components`      | Component APIs and usage patterns                             |
+| `.agents/skills/rwx`             | RWX CLI auth, CI runs, logs, and config authoring             |
 | `.agents/skills/theming`         | Theme customization and design tokens                         |
 | `.agents/skills/getting-started` | Installation and project setup                                |
 
