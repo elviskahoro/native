@@ -49,6 +49,7 @@ rehype
 renderer
 repr
 runtimes
+rwx|RWX
 scrollable|Scrollable
 scrollbar
 scroller|scrollers

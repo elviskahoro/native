@@ -215,7 +215,8 @@ Location:
 
 ## RWX CI
 
-The `rwx` CLI is installed. Tokens are injected as `RWX_ACCESS_TOKEN_<OWNER>`
+In Conductor workspaces the `rwx` CLI is installed (CI runners such as Pullfrog's do not
+have it, so fall back to the GitHub Actions and Trunk gates there). Tokens are injected as `RWX_ACCESS_TOKEN_<OWNER>`
 or `RWC_ACCESS_TOKEN_<OWNER>`, one per RWX workspace. The CLI reads only
 `RWX_ACCESS_TOKEN`, so export the one matching the repo owner and never print
 it:
