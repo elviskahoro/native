@@ -1,16 +1,18 @@
-from typing import Any
+"""The hugeicon component."""
 
 from reflex.components.component import Component
 from reflex.utils.imports import ImportVar
 from reflex.vars.base import Var, VarData
 
-from ..core.core import CoreComponent
+from ..core.core import CoreComponent, PropValue
 
 REACT_LIBRARY = "@hugeicons/react@1.1.9"
 CORE_ICONS_LIBRARY = "@hugeicons/core-free-icons@4.2.3"
 
 
 class HugeIcon(CoreComponent):
+    """Huge icon."""
+
     library = REACT_LIBRARY
 
     tag = "HugeiconsIcon"
@@ -36,8 +38,8 @@ class HugeIcon(CoreComponent):
     disable_secondary_opacity: Var[bool]
 
     @classmethod
-    def create(cls, *children: Any, **props: Any) -> Component:
-
+    def create(cls, *children: PropValue, **props: PropValue) -> Component:
+        """Create the huge icon."""
         if children and isinstance(children[0], str) and "icon" not in props:
             props["icon"] = children[0]
             children = children[1:]

@@ -13,6 +13,8 @@ from components.ui.input import input
 ```
 
 ```python
+"""The core component."""
+
 from typing import Any
 
 from reflex.components.component import Component
@@ -20,6 +22,7 @@ from reflex.utils.imports import ImportVar
 from reflex.vars import FunctionVar, Var
 from reflex.vars.base import VarData
 
+PropValue = Any
 PACKAGE_CN = "clsx-for-tailwind@1.0.0"
 CN = Var(
     "cn",
@@ -32,6 +35,8 @@ CN = Var(
 
 
 class CoreComponent(Component):
+    """Core component."""
+
     unstyled: Var[bool]
 
     @classmethod
@@ -40,7 +45,7 @@ class CoreComponent(Component):
         default_class_name: str | Var[str],
         props: dict[str, Any],
     ) -> None:
-
+        """Set class name."""
         if "render_" in props:
             return
 
@@ -60,26 +65,30 @@ class CoreComponent(Component):
 
 
 def cn(*classes: Var[Any] | str | tuple[Any, ...] | list[Any] | None) -> Var[str]:
+    """Cn."""
     return CN.call(*classes).to(str)
 ```
 
 ```python
-from typing import Any
+"""The input component."""
 
 from reflex.components.component import ComponentNamespace
 from reflex_components_core.el import Input as BaseInput
 
-from ..core.core import CoreComponent
+from ..core.core import CoreComponent, PropValue
 
 
 class ClassNames:
+    """Class names."""
+
     INPUT = (
         "w-full file:text-foreground placeholder:text-muted-foreground "
         "selection:bg-primary selection:text-primary-foreground "
         "dark:bg-input/30 border-input "
         "h-8 w-full min-w-0 rounded-lg border bg-transparent px-3 py-1 text-base "
         "outline-none "
-        "file:inline-flex file:h-7 file:border-0 file:bg-transparent file:text-sm file:font-medium "
+        "file:inline-flex file:h-7 file:border-0 file:bg-transparent file:text-sm "
+        "file:font-medium "
         "disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50 "
         "md:text-sm "
         "focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] "
@@ -89,9 +98,11 @@ class ClassNames:
 
 
 class InputComponent(BaseInput, CoreComponent):
-    @classmethod
-    def create(cls, *children: Any, **props: Any) -> BaseInput:
+    """Input component."""
 
+    @classmethod
+    def create(cls, *children: PropValue, **props: PropValue) -> BaseInput:
+        """Create the input component."""
         props.setdefault("data_slot", "input")
 
         if "type" not in props:
@@ -103,6 +114,8 @@ class InputComponent(BaseInput, CoreComponent):
 
 
 class Input(ComponentNamespace):
+    """Input."""
+
     __call__ = staticmethod(InputComponent.create)
     class_name = ClassNames
 

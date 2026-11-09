@@ -1,13 +1,17 @@
-from typing import Any, Literal
+"""The separator component."""
+
+from typing import Literal
 
 import reflex as rx
 
-from ..core.core import CoreComponent
+from ..core.core import CoreComponent, PropValue
 
 LiteralOrientation = Literal["horizontal", "vertical"]
 
 
 class ClassNames:
+    """Class names."""
+
     SEPARATOR = (
         "shrink-0 bg-input "
         "data-[orientation=horizontal]:h-px data-[orientation=horizontal]:w-full "
@@ -16,8 +20,11 @@ class ClassNames:
 
 
 class SeparatorComponent(CoreComponent):
+    """Separator component."""
+
     @classmethod
-    def create(cls, *children: Any, **props: Any) -> rx.Component:
+    def create(cls, *children: PropValue, **props: PropValue) -> rx.Component:
+        """Create the separator component."""
         orientation: str = props.pop("orientation", "horizontal")
         decorative = props.pop("decorative", True)
         data_slot = props.pop("data_slot", "separator")

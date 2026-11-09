@@ -1,13 +1,15 @@
-from typing import Any
+"""The accordion component."""
 
 import reflex as rx
 from reflex.components.component import ComponentNamespace
 
-from ..core.core import CoreComponent, cn
+from ..core.core import CoreComponent, PropValue, cn
 from ..core.hugeicon import hi
 
 
 class ClassNames:
+    """Class names."""
+
     ROOT = "flex w-full flex-col"
 
     ITEM = "not-last:border-b border-input block group/accordion-item"
@@ -34,8 +36,11 @@ class ClassNames:
 
 
 class NativeAccordionRoot(CoreComponent):
+    """Native accordion root."""
+
     @classmethod
-    def create(cls, *children: Any, **props: Any) -> rx.Component:
+    def create(cls, *children: PropValue, **props: PropValue) -> rx.Component:
+        """Create the native accordion root."""
         data_slot = props.pop("data_slot", "accordion")
         props["data-slot"] = data_slot
         cls.set_class_name(ClassNames.ROOT, props)
@@ -43,8 +48,11 @@ class NativeAccordionRoot(CoreComponent):
 
 
 class NativeAccordionItem(CoreComponent):
+    """Native accordion item."""
+
     @classmethod
-    def create(cls, *children: Any, **props: Any) -> rx.Component:
+    def create(cls, *children: PropValue, **props: PropValue) -> rx.Component:
+        """Create the native accordion item."""
         data_slot = props.pop("data_slot", "accordion-item")
         props["data-slot"] = data_slot
         name = props.pop("name", None)
@@ -57,8 +65,11 @@ class NativeAccordionItem(CoreComponent):
 
 
 class NativeAccordionTrigger(CoreComponent):
+    """Native accordion trigger."""
+
     @classmethod
-    def create(cls, *children: Any, **props: Any) -> rx.Component:
+    def create(cls, *children: PropValue, **props: PropValue) -> rx.Component:
+        """Create the native accordion trigger."""
         data_slot = props.pop("data_slot", "accordion-trigger")
         props["data-slot"] = data_slot
         cls.set_class_name(ClassNames.TRIGGER, props)
@@ -75,8 +86,11 @@ class NativeAccordionTrigger(CoreComponent):
 
 
 class NativeAccordionPanel(CoreComponent):
+    """Native accordion panel."""
+
     @classmethod
-    def create(cls, *children: Any, **props: Any) -> rx.Component:
+    def create(cls, *children: PropValue, **props: PropValue) -> rx.Component:
+        """Create the native accordion panel."""
         data_slot = props.pop("data_slot", "accordion-panel")
         props["data-slot"] = data_slot
         inner_class = props.pop("class_name", "")
@@ -89,6 +103,8 @@ class NativeAccordionPanel(CoreComponent):
 
 
 class Accordion(ComponentNamespace):
+    """Accordion."""
+
     root = staticmethod(NativeAccordionRoot.create)
     item = staticmethod(NativeAccordionItem.create)
     trigger = staticmethod(NativeAccordionTrigger.create)

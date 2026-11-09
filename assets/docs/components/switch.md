@@ -13,6 +13,8 @@ from components.ui.switch import switch
 ```
 
 ```python
+"""The core component."""
+
 from typing import Any
 
 from reflex.components.component import Component
@@ -20,6 +22,7 @@ from reflex.utils.imports import ImportVar
 from reflex.vars import FunctionVar, Var
 from reflex.vars.base import VarData
 
+PropValue = Any
 PACKAGE_CN = "clsx-for-tailwind@1.0.0"
 CN = Var(
     "cn",
@@ -32,6 +35,8 @@ CN = Var(
 
 
 class CoreComponent(Component):
+    """Core component."""
+
     unstyled: Var[bool]
 
     @classmethod
@@ -40,7 +45,7 @@ class CoreComponent(Component):
         default_class_name: str | Var[str],
         props: dict[str, Any],
     ) -> None:
-
+        """Set class name."""
         if "render_" in props:
             return
 
@@ -60,19 +65,22 @@ class CoreComponent(Component):
 
 
 def cn(*classes: Var[Any] | str | tuple[Any, ...] | list[Any] | None) -> Var[str]:
+    """Cn."""
     return CN.call(*classes).to(str)
 ```
 
 ```python
-from typing import Any
+"""The switch component."""
 
 import reflex as rx
 from reflex.components.component import ComponentNamespace
 
-from ..core.core import CoreComponent, cn
+from ..core.core import CoreComponent, PropValue, cn
 
 
 class ClassNames:
+    """Class names."""
+
     ROOT = "inline-flex items-center gap-3 cursor-pointer select-none group/switch"
 
     INPUT = "peer sr-only"
@@ -103,16 +111,22 @@ class ClassNames:
         "inline-flex items-center "
         "relative rounded-full bg-muted "
         "outline-none "
-        "group-data-[size=default]/switch:h-[18.4px] group-data-[size=default]/switch:w-[32px] "
+        "group-data-[size=default]/switch:h-[18.4px] "
+        "group-data-[size=default]/switch:w-[32px] "
         "group-data-[size=sm]/switch:h-[14px] group-data-[size=sm]/switch:w-[24px] "
         "group-has-[input:checked]/switch:bg-primary "
-        "peer-focus-visible:ring-3 peer-focus-visible:ring-ring/50 peer-focus-visible:outline-1 peer-focus-visible:outline-ring "
-        "peer-aria-[invalid=true]:border-destructive peer-aria-[invalid=true]:ring-3 peer-aria-[invalid=true]:ring-destructive/20 "
-        "group-has-[:disabled]/switch:opacity-50 group-has-[:disabled]/switch:pointer-events-none group-has-[:disabled]/switch:cursor-not-allowed"
+        "peer-focus-visible:ring-3 peer-focus-visible:ring-ring/50 "
+        "peer-focus-visible:outline-1 peer-focus-visible:outline-ring "
+        "peer-aria-[invalid=true]:border-destructive peer-aria-[invalid=true]:ring-3 "
+        "peer-aria-[invalid=true]:ring-destructive/20 "
+        "group-has-[:disabled]/switch:opacity-50 "
+        "group-has-[:disabled]/switch:pointer-events-none "
+        "group-has-[:disabled]/switch:cursor-not-allowed"
     )
 
     THUMB = (
-        "pointer-events-none block rounded-full bg-background shadow-sm ring-0 transition-transform duration-200 "
+        "pointer-events-none block rounded-full bg-background shadow-sm ring-0 "
+        "transition-transform duration-200 "
         "group-data-[size=default]/switch:size-4 group-data-[size=sm]/switch:size-3 "
         "translate-x-0.5 "
         "group-has-[input:checked]/switch:group-data-[size=default]/switch:translate-x-[14px] "
@@ -125,8 +139,11 @@ class ClassNames:
 
 
 class NativeSwitch(CoreComponent):
+    """Native switch."""
+
     @classmethod
-    def create(cls, label_text: str = "", **props: Any) -> rx.Component:
+    def create(cls, label_text: str = "", **props: PropValue) -> rx.Component:
+        """Create the native switch."""
         size = props.pop("size", "default")
         invalid = props.pop("invalid", False)
         track_class_name = props.pop("track_class_name", "")
@@ -163,6 +180,8 @@ class NativeSwitch(CoreComponent):
 
 
 class Switch(ComponentNamespace):
+    """Switch."""
+
     root = staticmethod(NativeSwitch.create)
     class_names = ClassNames
 

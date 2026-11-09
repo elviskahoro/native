@@ -1,13 +1,15 @@
-from typing import Any
+"""The card component."""
 
 from reflex.components.component import Component, ComponentNamespace
 from reflex.vars.base import Var
 from reflex_components_core.el import Div
 
-from ..core.core import CoreComponent
+from ..core.core import CoreComponent, PropValue
 
 
 class ClassNames:
+    """Class names."""
+
     ROOT = (
         "group/card flex flex-col gap-(--card-gap) overflow-hidden rounded-xl bg-card "
         "py-(--card-padding) text-sm text-card-foreground ring-1 ring-foreground/10 "
@@ -42,10 +44,13 @@ class ClassNames:
 
 
 class CardRoot(Div, CoreComponent):
+    """Card root."""
+
     size: Var[str]
 
     @classmethod
-    def create(cls, *children: Any, **props: Any) -> Component:
+    def create(cls, *children: PropValue, **props: PropValue) -> Component:
+        """Create the card root."""
         props["data-slot"] = "card"
         if "size" in props:
             props["data-size"] = props.pop("size")
@@ -54,54 +59,74 @@ class CardRoot(Div, CoreComponent):
 
 
 class CardHeader(Div, CoreComponent):
+    """Card header."""
+
     @classmethod
-    def create(cls, *children: Any, **props: Any) -> Component:
+    def create(cls, *children: PropValue, **props: PropValue) -> Component:
+        """Create the card header."""
         props["data-slot"] = "card-header"
         cls.set_class_name(ClassNames.HEADER, props)
         return super().create(*children, **props)
 
 
 class CardTitle(Div, CoreComponent):
+    """Card title."""
+
     @classmethod
-    def create(cls, *children: Any, **props: Any) -> Component:
+    def create(cls, *children: PropValue, **props: PropValue) -> Component:
+        """Create the card title."""
         props["data-slot"] = "card-title"
         cls.set_class_name(ClassNames.TITLE, props)
         return super().create(*children, **props)
 
 
 class CardDescription(Div, CoreComponent):
+    """Card description."""
+
     @classmethod
-    def create(cls, *children: Any, **props: Any) -> Component:
+    def create(cls, *children: PropValue, **props: PropValue) -> Component:
+        """Create the card description."""
         props["data-slot"] = "card-description"
         cls.set_class_name(ClassNames.DESCRIPTION, props)
         return super().create(*children, **props)
 
 
 class CardAction(Div, CoreComponent):
+    """Card action."""
+
     @classmethod
-    def create(cls, *children: Any, **props: Any) -> Component:
+    def create(cls, *children: PropValue, **props: PropValue) -> Component:
+        """Create the card action."""
         props["data-slot"] = "card-action"
         cls.set_class_name(ClassNames.ACTION, props)
         return super().create(*children, **props)
 
 
 class CardContent(Div, CoreComponent):
+    """Card content."""
+
     @classmethod
-    def create(cls, *children: Any, **props: Any) -> Component:
+    def create(cls, *children: PropValue, **props: PropValue) -> Component:
+        """Create the card content."""
         props["data-slot"] = "card-content"
         cls.set_class_name(ClassNames.CONTENT, props)
         return super().create(*children, **props)
 
 
 class CardFooter(Div, CoreComponent):
+    """Card footer."""
+
     @classmethod
-    def create(cls, *children: Any, **props: Any) -> Component:
+    def create(cls, *children: PropValue, **props: PropValue) -> Component:
+        """Create the card footer."""
         props["data-slot"] = "card-footer"
         cls.set_class_name(ClassNames.FOOTER, props)
         return super().create(*children, **props)
 
 
 class Card(ComponentNamespace):
+    """Card."""
+
     root = staticmethod(CardRoot.create)
     header = staticmethod(CardHeader.create)
     title = staticmethod(CardTitle.create)

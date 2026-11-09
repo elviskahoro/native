@@ -1,13 +1,15 @@
-from typing import Any
+"""The collapsible component."""
 
 import reflex as rx
 from reflex.components.component import Component, ComponentNamespace
 from reflex_components_core.el import Div
 
-from ..core.core import CoreComponent
+from ..core.core import CoreComponent, PropValue
 
 
 class ClassNames:
+    """Class names."""
+
     ROOT = "flex flex-col justify-center text-secondary-12"
     TRIGGER = (
         "flex items-center gap-2 cursor-pointer select-none list-none rounded-md "
@@ -18,13 +20,16 @@ class ClassNames:
 
 
 class CollapsibleRoot(CoreComponent):
+    """Collapsible root."""
+
     @classmethod
     def create(
         cls,
-        *children: Any,
+        *children: PropValue,
         default_open: bool = False,
-        **props: Any,
+        **props: PropValue,
     ) -> Component:
+        """Create the collapsible root."""
         props["data-slot"] = "collapsible"
         if default_open:
             props.setdefault("open", True)
@@ -33,22 +38,30 @@ class CollapsibleRoot(CoreComponent):
 
 
 class CollapsibleTrigger(CoreComponent):
+    """Collapsible trigger."""
+
     @classmethod
-    def create(cls, *children: Any, **props: Any) -> Component:
+    def create(cls, *children: PropValue, **props: PropValue) -> Component:
+        """Create the collapsible trigger."""
         props["data-slot"] = "collapsible-trigger"
         cls.set_class_name(ClassNames.TRIGGER, props)
         return rx.el.summary(*children, **props)
 
 
 class CollapsiblePanel(Div, CoreComponent):
+    """Collapsible panel."""
+
     @classmethod
-    def create(cls, *children: Any, **props: Any) -> Div:
+    def create(cls, *children: PropValue, **props: PropValue) -> Div:
+        """Create the collapsible panel."""
         props["data-slot"] = "collapsible-panel"
         cls.set_class_name(ClassNames.PANEL, props)
         return super().create(*children, **props)
 
 
 class Collapsible(ComponentNamespace):
+    """Collapsible."""
+
     root = staticmethod(CollapsibleRoot.create)
     trigger = staticmethod(CollapsibleTrigger.create)
     panel = staticmethod(CollapsiblePanel.create)

@@ -13,6 +13,8 @@ from components.ui.checkbox import checkbox
 ```
 
 ```python
+"""The core component."""
+
 from typing import Any
 
 from reflex.components.component import Component
@@ -20,6 +22,7 @@ from reflex.utils.imports import ImportVar
 from reflex.vars import FunctionVar, Var
 from reflex.vars.base import VarData
 
+PropValue = Any
 PACKAGE_CN = "clsx-for-tailwind@1.0.0"
 CN = Var(
     "cn",
@@ -32,6 +35,8 @@ CN = Var(
 
 
 class CoreComponent(Component):
+    """Core component."""
+
     unstyled: Var[bool]
 
     @classmethod
@@ -40,7 +45,7 @@ class CoreComponent(Component):
         default_class_name: str | Var[str],
         props: dict[str, Any],
     ) -> None:
-
+        """Set class name."""
         if "render_" in props:
             return
 
@@ -60,23 +65,26 @@ class CoreComponent(Component):
 
 
 def cn(*classes: Var[Any] | str | tuple[Any, ...] | list[Any] | None) -> Var[str]:
+    """Cn."""
     return CN.call(*classes).to(str)
 ```
 
 ```python
-from typing import Any
+"""The hugeicon component."""
 
 from reflex.components.component import Component
 from reflex.utils.imports import ImportVar
 from reflex.vars.base import Var, VarData
 
-from ..core.core import CoreComponent
+from ..core.core import CoreComponent, PropValue
 
 REACT_LIBRARY = "@hugeicons/react@1.1.9"
 CORE_ICONS_LIBRARY = "@hugeicons/core-free-icons@4.2.3"
 
 
 class HugeIcon(CoreComponent):
+    """Huge icon."""
+
     library = REACT_LIBRARY
 
     tag = "HugeiconsIcon"
@@ -102,8 +110,8 @@ class HugeIcon(CoreComponent):
     disable_secondary_opacity: Var[bool]
 
     @classmethod
-    def create(cls, *children: Any, **props: Any) -> Component:
-
+    def create(cls, *children: PropValue, **props: PropValue) -> Component:
+        """Create the huge icon."""
         if children and isinstance(children[0], str) and "icon" not in props:
             props["icon"] = children[0]
             children = children[1:]
@@ -133,25 +141,29 @@ hi = icon = HugeIcon.create
 ```
 
 ```python
-from typing import Any
+"""The checkbox component."""
 
 import reflex as rx
 from reflex.components.component import ComponentNamespace
 
-from ..core.core import CoreComponent, cn
+from ..core.core import CoreComponent, PropValue, cn
 from ..core.hugeicon import hi
 
 
 class ClassNames:
+    """Class names."""
+
     ROOT = (
         "group relative inline-flex size-4 shrink-0 cursor-pointer items-center "
         "justify-center rounded-[4px] border border-input "
         "has-[:disabled]:cursor-not-allowed has-[:disabled]:opacity-50 "
-        "has-[:focus-visible]:border-ring has-[:focus-visible]:ring-3 has-[:focus-visible]:ring-ring/50 "
+        "has-[:focus-visible]:border-ring has-[:focus-visible]:ring-3 "
+        "has-[:focus-visible]:ring-ring/50 "
         "has-[[aria-invalid=true]]:border-destructive has-[[aria-invalid=true]]:ring-3 "
         "has-[[aria-invalid=true]]:ring-destructive/20 "
         "dark:bg-input/30 "
-        "has-[:checked]:border-primary has-[:checked]:bg-primary has-[:checked]:text-primary-foreground "
+        "has-[:checked]:border-primary has-[:checked]:bg-primary "
+        "has-[:checked]:text-primary-foreground "
         "dark:has-[:checked]:bg-primary"
     )
 
@@ -164,12 +176,14 @@ class ClassNames:
     BOX = (
         "pointer-events-none flex size-4 shrink-0 items-center justify-center "
         "rounded-[4px] border border-input "
-        "peer-focus-visible:border-ring peer-focus-visible:ring-3 peer-focus-visible:ring-ring/50 "
+        "peer-focus-visible:border-ring peer-focus-visible:ring-3 "
+        "peer-focus-visible:ring-ring/50 "
         "peer-disabled:cursor-not-allowed peer-disabled:opacity-50 "
         "peer-aria-[invalid=true]:border-destructive peer-aria-[invalid=true]:ring-3 "
         "peer-aria-[invalid=true]:ring-destructive/20 "
         "dark:bg-input/30 "
-        "peer-checked:border-primary peer-checked:bg-primary peer-checked:text-primary-foreground "
+        "peer-checked:border-primary peer-checked:bg-primary "
+        "peer-checked:text-primary-foreground "
         "dark:peer-checked:bg-primary"
     )
 
@@ -185,8 +199,11 @@ class ClassNames:
 
 
 class CheckboxRoot(CoreComponent):
+    """Checkbox root."""
+
     @classmethod
-    def create(cls, *children: Any, **props: Any) -> rx.Component:
+    def create(cls, *children: PropValue, **props: PropValue) -> rx.Component:
+        """Create the checkbox root."""
         custom_classes = props.pop("class_name", "")
 
         input_props = {}
@@ -210,8 +227,11 @@ class CheckboxRoot(CoreComponent):
 
 
 class CheckboxIndicator(CoreComponent):
+    """Checkbox indicator."""
+
     @classmethod
-    def create(cls, *children: Any, **props: Any) -> rx.Component:
+    def create(cls, *children: PropValue, **props: PropValue) -> rx.Component:
+        """Create the checkbox indicator."""
         if len(children) == 0:
             children = (hi("Tick02Icon"),)
         props["data-slot"] = "checkbox-indicator"
@@ -220,6 +240,8 @@ class CheckboxIndicator(CoreComponent):
 
 
 class Checkbox(ComponentNamespace):
+    """Checkbox."""
+
     root = staticmethod(CheckboxRoot.create)
     indicator = staticmethod(CheckboxIndicator.create)
     class_names = ClassNames

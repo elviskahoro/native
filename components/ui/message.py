@@ -1,14 +1,18 @@
-from typing import Any, Literal
+"""The message component."""
+
+from typing import Literal
 
 import reflex as rx
 from reflex.components.component import ComponentNamespace
 
-from ..core.core import CoreComponent
+from ..core.core import CoreComponent, PropValue
 
 MessageAlign = Literal["start", "end"]
 
 
 class ClassNames:
+    """Class names."""
+
     GROUP = "flex min-w-0 flex-col gap-2"
 
     ROOT = (
@@ -42,16 +46,22 @@ class ClassNames:
 
 
 class NativeMessageGroup(CoreComponent):
+    """Native message group."""
+
     @classmethod
-    def create(cls, *children: Any, **props: Any) -> rx.Component:
+    def create(cls, *children: PropValue, **props: PropValue) -> rx.Component:
+        """Create the native message group."""
         props["data-slot"] = "message-group"
         cls.set_class_name(ClassNames.GROUP, props)
         return rx.el.div(*children, **props)
 
 
 class NativeMessageRoot(CoreComponent):
+    """Native message root."""
+
     @classmethod
-    def create(cls, *children: Any, **props: Any) -> rx.Component:
+    def create(cls, *children: PropValue, **props: PropValue) -> rx.Component:
+        """Create the native message root."""
         align = props.pop("align", "start")
         props["data-slot"] = "message"
         props["data-align"] = align
@@ -60,38 +70,52 @@ class NativeMessageRoot(CoreComponent):
 
 
 class NativeMessageAvatar(CoreComponent):
+    """Native message avatar."""
+
     @classmethod
-    def create(cls, *children: Any, **props: Any) -> rx.Component:
+    def create(cls, *children: PropValue, **props: PropValue) -> rx.Component:
+        """Create the native message avatar."""
         props["data-slot"] = "message-avatar"
         cls.set_class_name(ClassNames.AVATAR, props)
         return rx.el.div(*children, **props)
 
 
 class NativeMessageContent(CoreComponent):
+    """Native message content."""
+
     @classmethod
-    def create(cls, *children: Any, **props: Any) -> rx.Component:
+    def create(cls, *children: PropValue, **props: PropValue) -> rx.Component:
+        """Create the native message content."""
         props["data-slot"] = "message-content"
         cls.set_class_name(ClassNames.CONTENT, props)
         return rx.el.div(*children, **props)
 
 
 class NativeMessageHeader(CoreComponent):
+    """Native message header."""
+
     @classmethod
-    def create(cls, *children: Any, **props: Any) -> rx.Component:
+    def create(cls, *children: PropValue, **props: PropValue) -> rx.Component:
+        """Create the native message header."""
         props["data-slot"] = "message-header"
         cls.set_class_name(ClassNames.HEADER, props)
         return rx.el.div(*children, **props)
 
 
 class NativeMessageFooter(CoreComponent):
+    """Native message footer."""
+
     @classmethod
-    def create(cls, *children: Any, **props: Any) -> rx.Component:
+    def create(cls, *children: PropValue, **props: PropValue) -> rx.Component:
+        """Create the native message footer."""
         props["data-slot"] = "message-footer"
         cls.set_class_name(ClassNames.FOOTER, props)
         return rx.el.div(*children, **props)
 
 
 class Message(ComponentNamespace):
+    """Message."""
+
     group = staticmethod(NativeMessageGroup.create)
     root = staticmethod(NativeMessageRoot.create)
     avatar = staticmethod(NativeMessageAvatar.create)

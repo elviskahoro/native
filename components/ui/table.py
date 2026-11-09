@@ -1,3 +1,5 @@
+"""The table component."""
+
 import uuid
 from typing import Any, Literal
 
@@ -15,37 +17,54 @@ from reflex_components_core.el import (
     Tr,
 )
 
-from ..core.core import CoreComponent
+from ..core.core import CoreComponent, PropValue
 from .input import ClassNames as InputStyle
 
 LiteralAlign = Literal["left", "center", "right"]
 
 
 class ClassNames:
+    """Class names."""
+
     ROOT = "w-full rounded-lg border border-input bg-card"
     SCROLL = "w-full overflow-auto"
     TABLE = "w-full caption-bottom text-sm border-collapse"
     HEADER = "[&_tr]:border-b bg-secondary/50 backdrop-blur-sm sticky top-0"
     BODY = "[&_tr:last-child]:border-0"
     FOOTER = "border-t bg-muted/50 font-medium [&>tr]:last:border-b-0"
-    ROW = "border-b transition-colors data-[state=selected]:bg-muted has-[:checked]:bg-muted/60 hover:bg-muted/50"
-    HEAD = "h-10 px-4 text-left align-middle font-semibold text-muted-foreground [&:has([role=checkbox])]:pr-0 whitespace-nowrap"
+    ROW = (
+        "border-b transition-colors data-[state=selected]:bg-muted "
+        "has-[:checked]:bg-muted/60 hover:bg-muted/50"
+    )
+    HEAD = (
+        "h-10 px-4 text-left align-middle font-semibold text-muted-foreground "
+        "[&:has([role=checkbox])]:pr-0 whitespace-nowrap"
+    )
     HEAD_SORT_BTN = (
         "flex items-center gap-1 cursor-pointer select-none hover:text-foreground"
     )
     CELL = "px-4 py-2 align-middle [&:has([role=checkbox])]:pr-0"
     CAPTION = "mt-4 text-sm text-muted-foreground"
     TOOLBAR = "flex items-center justify-between gap-2 p-3 border-b border-input"
-    SEARCH_INPUT = "h-9 w-56 rounded-md border border-input bg-background px-3 text-sm outline-hidden focus:ring-1 focus:ring-ring"
-    PAGINATION = "flex items-center justify-between gap-2 p-3 border-t border-input text-xs text-muted-foreground"
-    PAGE_BUTTON = "h-8 rounded-md border border-input px-3 text-xs disabled:opacity-40 disabled:cursor-not-allowed"
+    SEARCH_INPUT = (
+        "h-9 w-56 rounded-md border border-input bg-background px-3 text-sm "
+        "outline-hidden focus:ring-1 focus:ring-ring"
+    )
+    PAGINATION = (
+        "flex items-center justify-between gap-2 p-3 border-t border-input text-xs "
+        "text-muted-foreground"
+    )
+    PAGE_BUTTON = (
+        "h-8 rounded-md border border-input px-3 text-xs disabled:opacity-40 "
+        "disabled:cursor-not-allowed"
+    )
 
 
 def _attrs(attrs: dict[str, str]) -> dict[str, Any]:
     return dict(attrs)
 
 
-def _chevron_icon(path_d: str | list[str], **props: Any) -> Component:
+def _chevron_icon(path_d: str | list[str], **props: PropValue) -> Component:
     paths = [path_d] if isinstance(path_d, str) else path_d
     return rx.el.svg(
         *[rx.el.path(d=p) for p in paths],
@@ -335,15 +354,18 @@ if (typeof window !== "undefined") {
 
 
 class TableRoot(Div, CoreComponent):
+    """Table root."""
+
     @classmethod
     def create(
         cls,
-        *children: Any,
+        *children: PropValue,
         searchable: bool = False,
         paginate: bool = False,
         page_size: int = 5,
-        **props: Any,
+        **props: PropValue,
     ) -> Component:
+        """Create the table root."""
         table_id = props.get("id") or f"data-table-{uuid.uuid4().hex[:8]}"
         props["id"] = table_id
 
@@ -399,18 +421,22 @@ class TableRoot(Div, CoreComponent):
         return super().create(*parts, **props)
 
     def add_custom_code(self) -> list[str]:
+        """Add custom code."""
         return [DATA_TABLE_JS]
 
 
 class TableSearch(CoreComponent):
+    """Table search."""
+
     @classmethod
     def create(
         cls,
         *,
         for_table: str,
         placeholder: str = "Search\u2026",
-        **props: Any,
+        **props: PropValue,
     ) -> Component:
+        """Create the table search."""
         props.setdefault("placeholder", placeholder)
         props["data-dt-search-for"] = for_table
         cls.set_class_name(InputStyle.INPUT, props)
@@ -418,41 +444,56 @@ class TableSearch(CoreComponent):
 
 
 class TableHeader(Thead, CoreComponent):
+    """Table header."""
+
     @classmethod
-    def create(cls, *children: Any, **props: Any) -> Component:
+    def create(cls, *children: PropValue, **props: PropValue) -> Component:
+        """Create the table header."""
         cls.set_class_name(ClassNames.HEADER, props)
         return super().create(*children, **props)
 
 
 class TableBody(Tbody, CoreComponent):
+    """Table body."""
+
     @classmethod
-    def create(cls, *children: Any, **props: Any) -> Component:
+    def create(cls, *children: PropValue, **props: PropValue) -> Component:
+        """Create the table body."""
         cls.set_class_name(ClassNames.BODY, props)
         return super().create(*children, **props)
 
 
 class TableFooter(Tfoot, CoreComponent):
+    """Table footer."""
+
     @classmethod
-    def create(cls, *children: Any, **props: Any) -> Component:
+    def create(cls, *children: PropValue, **props: PropValue) -> Component:
+        """Create the table footer."""
         cls.set_class_name(ClassNames.FOOTER, props)
         return super().create(*children, **props)
 
 
 class TableRow(Tr, CoreComponent):
+    """Table row."""
+
     @classmethod
-    def create(cls, *children: Any, **props: Any) -> Component:
+    def create(cls, *children: PropValue, **props: PropValue) -> Component:
+        """Create the table row."""
         cls.set_class_name(ClassNames.ROW, props)
         return super().create(*children, **props)
 
 
 class TableHead(Th, CoreComponent):
+    """Table head."""
+
     @classmethod
     def create(
         cls,
-        *children: Any,
+        *children: PropValue,
         sort_key: str | None = None,
-        **props: Any,
+        **props: PropValue,
     ) -> Component:
+        """Create the table head."""
         cls.set_class_name(ClassNames.HEAD, props)
         if sort_key:
             children = (
@@ -467,13 +508,16 @@ class TableHead(Th, CoreComponent):
 
 
 class TableCell(Td, CoreComponent):
+    """Table cell."""
+
     @classmethod
     def create(
         cls,
-        *children: Any,
+        *children: PropValue,
         sort_value: object = None,
-        **props: Any,
+        **props: PropValue,
     ) -> Component:
+        """Create the table cell."""
         cls.set_class_name(ClassNames.CELL, props)
         if sort_value is not None:
             props["data-sort-value"] = str(sort_value)
@@ -481,13 +525,18 @@ class TableCell(Td, CoreComponent):
 
 
 class TableCaption(Caption, CoreComponent):
+    """Table caption."""
+
     @classmethod
-    def create(cls, *children: Any, **props: Any) -> Component:
+    def create(cls, *children: PropValue, **props: PropValue) -> Component:
+        """Create the table caption."""
         cls.set_class_name(ClassNames.CAPTION, props)
         return super().create(*children, **props)
 
 
 class TableNamespace(ComponentNamespace):
+    """Table namespace."""
+
     root = staticmethod(TableRoot.create)
     search = staticmethod(TableSearch.create)
     header = staticmethod(TableHeader.create)

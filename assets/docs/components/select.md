@@ -13,6 +13,8 @@ from components.ui.select import select
 ```
 
 ```python
+"""The core component."""
+
 from typing import Any
 
 from reflex.components.component import Component
@@ -20,6 +22,7 @@ from reflex.utils.imports import ImportVar
 from reflex.vars import FunctionVar, Var
 from reflex.vars.base import VarData
 
+PropValue = Any
 PACKAGE_CN = "clsx-for-tailwind@1.0.0"
 CN = Var(
     "cn",
@@ -32,6 +35,8 @@ CN = Var(
 
 
 class CoreComponent(Component):
+    """Core component."""
+
     unstyled: Var[bool]
 
     @classmethod
@@ -40,7 +45,7 @@ class CoreComponent(Component):
         default_class_name: str | Var[str],
         props: dict[str, Any],
     ) -> None:
-
+        """Set class name."""
         if "render_" in props:
             return
 
@@ -60,23 +65,26 @@ class CoreComponent(Component):
 
 
 def cn(*classes: Var[Any] | str | tuple[Any, ...] | list[Any] | None) -> Var[str]:
+    """Cn."""
     return CN.call(*classes).to(str)
 ```
 
 ```python
-from typing import Any
+"""The hugeicon component."""
 
 from reflex.components.component import Component
 from reflex.utils.imports import ImportVar
 from reflex.vars.base import Var, VarData
 
-from ..core.core import CoreComponent
+from ..core.core import CoreComponent, PropValue
 
 REACT_LIBRARY = "@hugeicons/react@1.1.9"
 CORE_ICONS_LIBRARY = "@hugeicons/core-free-icons@4.2.3"
 
 
 class HugeIcon(CoreComponent):
+    """Huge icon."""
+
     library = REACT_LIBRARY
 
     tag = "HugeiconsIcon"
@@ -102,8 +110,8 @@ class HugeIcon(CoreComponent):
     disable_secondary_opacity: Var[bool]
 
     @classmethod
-    def create(cls, *children: Any, **props: Any) -> Component:
-
+    def create(cls, *children: PropValue, **props: PropValue) -> Component:
+        """Create the huge icon."""
         if children and isinstance(children[0], str) and "icon" not in props:
             props["icon"] = children[0]
             children = children[1:]
@@ -133,18 +141,22 @@ hi = icon = HugeIcon.create
 ```
 
 ```python
-from typing import Any, Literal
+"""The select component."""
+
+from typing import Literal
 
 import reflex as rx
 from reflex.components.component import ComponentNamespace
 
-from ..core.core import CoreComponent, cn
+from ..core.core import CoreComponent, PropValue, cn
 from ..core.hugeicon import hi
 
 LiteralNativeSelectSize = Literal["default", "sm"]
 
 
 class ClassNames:
+    """Class names."""
+
     WRAPPER = "group/native-select relative w-fit has-[select:disabled]:opacity-50"
 
     SELECT = (
@@ -154,7 +166,8 @@ class ClassNames:
         "placeholder:text-muted-foreground "
         "focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50 "
         "disabled:pointer-events-none disabled:cursor-not-allowed "
-        "aria-invalid:border-destructive aria-invalid:ring-3 aria-invalid:ring-destructive/20 "
+        "aria-invalid:border-destructive aria-invalid:ring-3 "
+        "aria-invalid:ring-destructive/20 "
         "data-[size=sm]:h-7 data-[size=sm]:rounded-[min(var(--radius-md),10px)] "
         "data-[size=sm]:py-0.5 "
         "dark:bg-input/30 dark:hover:bg-input/50 "
@@ -172,8 +185,11 @@ class ClassNames:
 
 
 class NativeSelectComponent(CoreComponent):
+    """Native select component."""
+
     @classmethod
-    def create(cls, *children: Any, **props: Any) -> rx.Component:
+    def create(cls, *children: PropValue, **props: PropValue) -> rx.Component:
+        """Create the native select component."""
         size = props.pop("size", "default")
         wrapper_class_name = props.pop("wrapper_class_name", "")
         data_slot = props.pop("data_slot", "native-select")
@@ -209,22 +225,30 @@ class NativeSelectComponent(CoreComponent):
 
 
 class NativeSelectOptionComponent(CoreComponent):
+    """Native select option component."""
+
     @classmethod
-    def create(cls, *children: Any, **props: Any) -> rx.Component:
+    def create(cls, *children: PropValue, **props: PropValue) -> rx.Component:
+        """Create the native select option component."""
         props["data-slot"] = "native-select-option"
         cls.set_class_name(ClassNames.OPTION, props)
         return rx.el.option(*children, **props)
 
 
 class NativeSelectOptGroupComponent(CoreComponent):
+    """Native select opt group component."""
+
     @classmethod
-    def create(cls, *children: Any, **props: Any) -> rx.Component:
+    def create(cls, *children: PropValue, **props: PropValue) -> rx.Component:
+        """Create the native select opt group component."""
         props["data-slot"] = "native-select-optgroup"
         cls.set_class_name(ClassNames.OPTGROUP, props)
         return rx.el.optgroup(*children, **props)
 
 
 class NativeSelect(ComponentNamespace):
+    """Native select."""
+
     __call__ = staticmethod(NativeSelectComponent.create)
     option = staticmethod(NativeSelectOptionComponent.create)
     optgroup = staticmethod(NativeSelectOptGroupComponent.create)

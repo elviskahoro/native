@@ -13,6 +13,8 @@ from components.ui.dialog import dialog
 ```
 
 ```python
+"""The core component."""
+
 from typing import Any
 
 from reflex.components.component import Component
@@ -20,6 +22,7 @@ from reflex.utils.imports import ImportVar
 from reflex.vars import FunctionVar, Var
 from reflex.vars.base import VarData
 
+PropValue = Any
 PACKAGE_CN = "clsx-for-tailwind@1.0.0"
 CN = Var(
     "cn",
@@ -32,6 +35,8 @@ CN = Var(
 
 
 class CoreComponent(Component):
+    """Core component."""
+
     unstyled: Var[bool]
 
     @classmethod
@@ -40,7 +45,7 @@ class CoreComponent(Component):
         default_class_name: str | Var[str],
         props: dict[str, Any],
     ) -> None:
-
+        """Set class name."""
         if "render_" in props:
             return
 
@@ -60,10 +65,13 @@ class CoreComponent(Component):
 
 
 def cn(*classes: Var[Any] | str | tuple[Any, ...] | list[Any] | None) -> Var[str]:
+    """Cn."""
     return CN.call(*classes).to(str)
 ```
 
 ```python
+"""The dialog component."""
+
 from typing import Any, cast
 
 import reflex as rx
@@ -73,10 +81,12 @@ from reflex_components_core.el import (
     Div,
 )
 
-from ..core.core import CoreComponent, cn
+from ..core.core import CoreComponent, PropValue, cn
 
 
 class ClassNames:
+    """Class names."""
+
     POPUP = (
         "hidden open:grid m-auto w-full max-w-[calc(100%-2rem)] gap-4 rounded-xl "
         "bg-popover p-4 text-sm text-popover-foreground ring-1 ring-foreground/10 "
@@ -154,7 +164,8 @@ class DialogRoot(CoreComponent):
     """
 
     @classmethod
-    def create(cls, *children: Any, **props: Any) -> rx.Component:
+    def create(cls, *children: PropValue, **props: PropValue) -> rx.Component:
+        """Create the dialog root."""
         props["data-slot"] = "dialog-root"
 
         user_on_mount = props.pop("on_mount", None)
@@ -171,8 +182,11 @@ class DialogRoot(CoreComponent):
 
 
 class DialogTrigger(CoreComponent):
+    """Dialog trigger."""
+
     @classmethod
-    def create(cls, *children: Any, **props: Any) -> rx.Component:
+    def create(cls, *children: PropValue, **props: PropValue) -> rx.Component:
+        """Create the dialog trigger."""
         custom_classes = props.pop("class_name", "")
         props["data-slot"] = "dialog-trigger"
         cls.set_class_name(cn("contents", custom_classes), props)
@@ -180,17 +194,20 @@ class DialogTrigger(CoreComponent):
 
 
 class DialogPopup(BaseDialog, CoreComponent):
+    """Dialog popup."""
+
     on_close: rx.EventHandler = cast("Any", None)
     on_cancel: rx.EventHandler = cast("Any", None)
 
     @classmethod
     def create(
         cls,
-        *children: Any,
+        *children: PropValue,
         dismissible: bool = True,
         on_open_change: rx.EventHandler | None = None,
-        **props: Any,
+        **props: PropValue,
     ) -> rx.Component:
+        """Create the dialog popup."""
         props["data-slot"] = "dialog-content"
 
         custom_classes = props.pop("class_name", "")
@@ -208,8 +225,11 @@ class DialogPopup(BaseDialog, CoreComponent):
 
 
 class DialogClose(CoreComponent):
+    """Dialog close."""
+
     @classmethod
-    def create(cls, *children: Any, **props: Any) -> rx.Component:
+    def create(cls, *children: PropValue, **props: PropValue) -> rx.Component:
+        """Create the dialog close."""
         custom_classes = props.pop("class_name", "")
         props["data-slot"] = "dialog-close"
         cls.set_class_name(cn("contents", custom_classes), props)
@@ -217,38 +237,52 @@ class DialogClose(CoreComponent):
 
 
 class DialogTitle(CoreComponent):
+    """Dialog title."""
+
     @classmethod
-    def create(cls, *children: Any, **props: Any) -> rx.Component:
+    def create(cls, *children: PropValue, **props: PropValue) -> rx.Component:
+        """Create the dialog title."""
         props["data-slot"] = "dialog-title"
         cls.set_class_name(ClassNames.TITLE, props)
         return rx.el.h2(*children, **props)
 
 
 class DialogDescription(CoreComponent):
+    """Dialog description."""
+
     @classmethod
-    def create(cls, *children: Any, **props: Any) -> rx.Component:
+    def create(cls, *children: PropValue, **props: PropValue) -> rx.Component:
+        """Create the dialog description."""
         props["data-slot"] = "dialog-description"
         cls.set_class_name(ClassNames.DESCRIPTION, props)
         return rx.el.p(*children, **props)
 
 
 class DialogHeader(Div, CoreComponent):
+    """Dialog header."""
+
     @classmethod
-    def create(cls, *children: Any, **props: Any) -> Div:
+    def create(cls, *children: PropValue, **props: PropValue) -> Div:
+        """Create the dialog header."""
         props["data-slot"] = "dialog-header"
         cls.set_class_name(ClassNames.HEADER, props)
         return super().create(*children, **props)
 
 
 class DialogFooter(Div, CoreComponent):
+    """Dialog footer."""
+
     @classmethod
-    def create(cls, *children: Any, **props: Any) -> Div:
+    def create(cls, *children: PropValue, **props: PropValue) -> Div:
+        """Create the dialog footer."""
         props["data-slot"] = "dialog-footer"
         cls.set_class_name(ClassNames.FOOTER, props)
         return super().create(*children, **props)
 
 
 class Dialog(ComponentNamespace):
+    """Dialog."""
+
     root = staticmethod(DialogRoot.create)
     trigger = staticmethod(DialogTrigger.create)
     popup = staticmethod(DialogPopup.create)

@@ -10,6 +10,7 @@ COMPONENT_REGISTRY: dict[str, dict[str, list[str]]] = {
         "files": ["components/chart/chart_tooltip.py"],
         "dependencies": [],
     },
+
     # --- components/core ---
     "core": {
         "files": ["components/core/core.py"],
@@ -19,6 +20,7 @@ COMPONENT_REGISTRY: dict[str, dict[str, list[str]]] = {
         "files": ["components/core/hugeicon.py"],
         "dependencies": ["core"],
     },
+
     # --- components/ui ---
     "accordion": {
         "files": ["components/ui/accordion.py"],
@@ -66,7 +68,7 @@ COMPONENT_REGISTRY: dict[str, dict[str, list[str]]] = {
     },
     "field": {
         "files": ["components/ui/field.py"],
-        "dependencies": ["separator"],
+        "dependencies": ["core", "separator"],
     },
     "frame": {
         "files": ["components/ui/frame.py"],
@@ -124,6 +126,7 @@ COMPONENT_REGISTRY: dict[str, dict[str, list[str]]] = {
         "files": ["components/ui/textarea.py"],
         "dependencies": ["core"],
     },
+
     # --- native/lib/blocks ---
     "area_chart_01": {
         "files": ["native/lib/blocks/area_chart_01.py"],

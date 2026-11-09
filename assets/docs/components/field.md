@@ -13,6 +13,8 @@ from components.ui.field import field
 ```
 
 ```python
+"""The core component."""
+
 from typing import Any
 
 from reflex.components.component import Component
@@ -20,6 +22,7 @@ from reflex.utils.imports import ImportVar
 from reflex.vars import FunctionVar, Var
 from reflex.vars.base import VarData
 
+PropValue = Any
 PACKAGE_CN = "clsx-for-tailwind@1.0.0"
 CN = Var(
     "cn",
@@ -32,6 +35,8 @@ CN = Var(
 
 
 class CoreComponent(Component):
+    """Core component."""
+
     unstyled: Var[bool]
 
     @classmethod
@@ -40,7 +45,7 @@ class CoreComponent(Component):
         default_class_name: str | Var[str],
         props: dict[str, Any],
     ) -> None:
-
+        """Set class name."""
         if "render_" in props:
             return
 
@@ -60,20 +65,25 @@ class CoreComponent(Component):
 
 
 def cn(*classes: Var[Any] | str | tuple[Any, ...] | list[Any] | None) -> Var[str]:
+    """Cn."""
     return CN.call(*classes).to(str)
 ```
 
 ```python
-from typing import Any, Literal
+"""The separator component."""
+
+from typing import Literal
 
 import reflex as rx
 
-from ..core.core import CoreComponent
+from ..core.core import CoreComponent, PropValue
 
 LiteralOrientation = Literal["horizontal", "vertical"]
 
 
 class ClassNames:
+    """Class names."""
+
     SEPARATOR = (
         "shrink-0 bg-input "
         "data-[orientation=horizontal]:h-px data-[orientation=horizontal]:w-full "
@@ -82,8 +92,11 @@ class ClassNames:
 
 
 class SeparatorComponent(CoreComponent):
+    """Separator component."""
+
     @classmethod
-    def create(cls, *children: Any, **props: Any) -> rx.Component:
+    def create(cls, *children: PropValue, **props: PropValue) -> rx.Component:
+        """Create the separator component."""
         orientation: str = props.pop("orientation", "horizontal")
         decorative = props.pop("decorative", True)
         data_slot = props.pop("data_slot", "separator")
@@ -105,12 +118,15 @@ separator = SeparatorComponent.create
 ```
 
 ```python
+"""The field component."""
+
 from typing import Any, ClassVar, Literal
 
 from reflex.components.component import ComponentNamespace
 from reflex.vars.base import Var
 from reflex_components_core.el import elements
 
+from components.core.core import PropValue
 from components.ui.separator import separator
 
 LiteralOrientation = Literal["vertical", "horizontal", "responsive"]
@@ -118,11 +134,22 @@ LiteralLegendVariant = Literal["legend", "label"]
 
 
 class ClassNames:
-    FIELD_SET = "flex flex-col gap-4 has-[>[data-slot=checkbox-group]]:gap-3 has-[>[data-slot=radio-group]]:gap-3"
+    """Class names."""
 
-    FIELD_LEGEND = "mb-1.5 font-medium data-[variant=label]:text-sm data-[variant=legend]:text-base"
+    FIELD_SET = (
+        "flex flex-col gap-4 has-[>[data-slot=checkbox-group]]:gap-3 "
+        "has-[>[data-slot=radio-group]]:gap-3"
+    )
 
-    FIELD_GROUP = "group/field-group @container/field-group flex flex-col gap-5 data-[slot=checkbox-group]:gap-3 *:data-[slot=field-group]:gap-4"
+    FIELD_LEGEND = (
+        "mb-1.5 font-medium data-[variant=label]:text-sm "
+        "data-[variant=legend]:text-base"
+    )
+
+    FIELD_GROUP = (
+        "group/field-group @container/field-group flex flex-col gap-5 "
+        "data-[slot=checkbox-group]:gap-3 *:data-[slot=field-group]:gap-4"
+    )
 
     FIELD_ROOT_BASE = (
         "group/field flex w-full gap-2 data-[invalid=true]:text-destructive"
@@ -130,17 +157,42 @@ class ClassNames:
 
     FIELD_ROOT_ORIENTATIONS: ClassVar[dict[str, str]] = {
         "vertical": "flex-col *:w-full [&>.sr-only]:w-auto",
-        "horizontal": "flex-row items-center has-[>[data-slot=field-content]]:items-start *:data-[slot=field-label]:flex-auto has-[>[data-slot=field-content]]:[&>[data-slot=checkbox]]:mt-[2.5px]",
-        "responsive": "flex-col *:w-full @md/field-group:flex-row @md/field-group:items-center @md/field-group:*:w-auto @md/field-group:has-[>[data-slot=field-content]]:items-start @md/field-group:*:data-[slot=field-label]:flex-auto [&>.sr-only]:w-auto @md/field-group:has-[>[data-slot=field-content]]:[&>[data-slot=checkbox]]:mt-px",
+        "horizontal": (
+            "flex-row items-center has-[>[data-slot=field-content]]:items-start "
+            "*:data-[slot=field-label]:flex-auto "
+            "has-[>[data-slot=field-content]]:[&>[data-slot=checkbox]]:mt-[2.5px]"
+        ),
+        "responsive": (
+            "flex-col *:w-full @md/field-group:flex-row @md/field-group:items-center "
+            "@md/field-group:*:w-auto "
+            "@md/field-group:has-[>[data-slot=field-content]]:items-start "
+            "@md/field-group:*:data-[slot=field-label]:flex-auto [&>.sr-only]:w-auto "
+            "@md/field-group:has-[>[data-slot=field-content]]:[&>[data-slot=checkbox]]:mt-px"
+        ),
     }
 
     FIELD_CONTENT = "group/field-content flex flex-1 flex-col gap-0.5 leading-snug"
 
-    FIELD_LABEL = "group/field-label peer/field-label flex w-fit gap-2 leading-snug group-data-[disabled=true]/field:opacity-50 has-[:checked]:border-primary/30 has-[:checked]:bg-primary/5 has-[>[data-slot=field]]:rounded-lg has-[>[data-slot=field]]:border border-input *:data-[slot=field]:p-2.5 dark:has-[:checked]:border-primary/20 dark:has-[:checked]:bg-primary/10 has-[>[data-slot=field]]:w-full has-[>[data-slot=field]]:flex-col"
+    FIELD_LABEL = (
+        "group/field-label peer/field-label flex w-fit gap-2 leading-snug "
+        "group-data-[disabled=true]/field:opacity-50 has-[:checked]:border-primary/30 "
+        "has-[:checked]:bg-primary/5 has-[>[data-slot=field]]:rounded-lg "
+        "has-[>[data-slot=field]]:border border-input *:data-[slot=field]:p-2.5 "
+        "dark:has-[:checked]:border-primary/20 dark:has-[:checked]:bg-primary/10 "
+        "has-[>[data-slot=field]]:w-full has-[>[data-slot=field]]:flex-col"
+    )
 
-    FIELD_TITLE = "flex w-fit items-center gap-2 text-sm font-medium group-data-[disabled=true]/field:opacity-50"
+    FIELD_TITLE = (
+        "flex w-fit items-center gap-2 text-sm font-medium "
+        "group-data-[disabled=true]/field:opacity-50"
+    )
 
-    FIELD_DESCRIPTION = "text-left text-sm leading-normal font-normal text-muted-foreground group-has-data-horizontal/field:text-balance [[data-variant=legend]+&]:-mt-1.5 last:mt-0 nth-last-2:-mt-1 [&>a]:underline [&>a]:underline-offset-4 [&>a:hover]:text-primary"
+    FIELD_DESCRIPTION = (
+        "text-left text-sm leading-normal font-normal text-muted-foreground "
+        "group-has-data-horizontal/field:text-balance "
+        "[[data-variant=legend]+&]:-mt-1.5 last:mt-0 nth-last-2:-mt-1 [&>a]:underline "
+        "[&>a]:underline-offset-4 [&>a:hover]:text-primary"
+    )
 
     FIELD_SEPARATOR = (
         "relative -my-2 h-5 text-sm group-data-[variant=outline]/field-group:-mb-2"
@@ -150,8 +202,11 @@ class ClassNames:
 
 
 class FieldSet(elements.Fieldset):
+    """Field set."""
+
     @classmethod
-    def create(cls, *children: Any, **props: Any) -> elements.Fieldset:
+    def create(cls, *children: PropValue, **props: PropValue) -> elements.Fieldset:
+        """Create the field set."""
         props["data-slot"] = "field-set"
         props["class_name"] = (
             f"{ClassNames.FIELD_SET} {props.get('class_name', '')}".strip()
@@ -160,10 +215,13 @@ class FieldSet(elements.Fieldset):
 
 
 class FieldLegend(elements.Legend):
+    """Field legend."""
+
     variant: Var[LiteralLegendVariant]
 
     @classmethod
-    def create(cls, *children: Any, **props: Any) -> elements.Legend:
+    def create(cls, *children: PropValue, **props: PropValue) -> elements.Legend:
+        """Create the field legend."""
         props["data-slot"] = "field-legend"
         variant = props.pop("variant", "legend")
         props["data-variant"] = variant
@@ -174,8 +232,11 @@ class FieldLegend(elements.Legend):
 
 
 class FieldGroup(elements.Div):
+    """Field group."""
+
     @classmethod
-    def create(cls, *children: Any, **props: Any) -> elements.Div:
+    def create(cls, *children: PropValue, **props: PropValue) -> elements.Div:
+        """Create the field group."""
         props["data-slot"] = "field-group"
         props["class_name"] = (
             f"{ClassNames.FIELD_GROUP} {props.get('class_name', '')}".strip()
@@ -184,10 +245,13 @@ class FieldGroup(elements.Div):
 
 
 class FieldRoot(elements.Div):
+    """Field root."""
+
     orientation: Var[LiteralOrientation]
 
     @classmethod
-    def create(cls, *children: Any, **props: Any) -> elements.Div:
+    def create(cls, *children: PropValue, **props: PropValue) -> elements.Div:
+        """Create the field root."""
         props["role"] = "group"
         props["data-slot"] = "field"
 
@@ -204,8 +268,11 @@ class FieldRoot(elements.Div):
 
 
 class FieldContent(elements.Div):
+    """Field content."""
+
     @classmethod
-    def create(cls, *children: Any, **props: Any) -> elements.Div:
+    def create(cls, *children: PropValue, **props: PropValue) -> elements.Div:
+        """Create the field content."""
         props["data-slot"] = "field-content"
         props["class_name"] = (
             f"{ClassNames.FIELD_CONTENT} {props.get('class_name', '')}".strip()
@@ -214,8 +281,11 @@ class FieldContent(elements.Div):
 
 
 class FieldLabel(elements.Label):
+    """Field label."""
+
     @classmethod
-    def create(cls, *children: Any, **props: Any) -> elements.Label:
+    def create(cls, *children: PropValue, **props: PropValue) -> elements.Label:
+        """Create the field label."""
         props["data-slot"] = "field-label"
         props["class_name"] = (
             f"{ClassNames.FIELD_LABEL} {props.get('class_name', '')}".strip()
@@ -224,8 +294,11 @@ class FieldLabel(elements.Label):
 
 
 class FieldTitle(elements.Div):
+    """Field title."""
+
     @classmethod
-    def create(cls, *children: Any, **props: Any) -> elements.Div:
+    def create(cls, *children: PropValue, **props: PropValue) -> elements.Div:
+        """Create the field title."""
         props["data-slot"] = "field-label"
         props["class_name"] = (
             f"{ClassNames.FIELD_TITLE} {props.get('class_name', '')}".strip()
@@ -234,8 +307,11 @@ class FieldTitle(elements.Div):
 
 
 class FieldDescription(elements.P):
+    """Field description."""
+
     @classmethod
-    def create(cls, *children: Any, **props: Any) -> elements.P:
+    def create(cls, *children: PropValue, **props: PropValue) -> elements.P:
+        """Create the field description."""
         props["data-slot"] = "field-description"
         props["class_name"] = (
             f"{ClassNames.FIELD_DESCRIPTION} {props.get('class_name', '')}".strip()
@@ -244,8 +320,11 @@ class FieldDescription(elements.P):
 
 
 class FieldSeparator(elements.Div):
+    """Field separator."""
+
     @classmethod
-    def create(cls, *children: Any, **props: Any) -> elements.Div:
+    def create(cls, *children: PropValue, **props: PropValue) -> elements.Div:
+        """Create the field separator."""
         props["data-slot"] = "field-separator"
         props["data-content"] = "true" if children else "false"
         props["class_name"] = (
@@ -266,8 +345,11 @@ class FieldSeparator(elements.Div):
 
 
 class FieldError(elements.Div):
+    """Field error."""
+
     @classmethod
-    def create(cls, *children: Any, **props: Any) -> elements.Div:
+    def create(cls, *children: PropValue, **props: PropValue) -> elements.Div:
+        """Create the field error."""
         props["role"] = "alert"
         props["data-slot"] = "field-error"
         props["class_name"] = (
@@ -277,6 +359,8 @@ class FieldError(elements.Div):
 
 
 class Field(ComponentNamespace):
+    """Field."""
+
     set = staticmethod(FieldSet.create)
     legend = staticmethod(FieldLegend.create)
     group = staticmethod(FieldGroup.create)
