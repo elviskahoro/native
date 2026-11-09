@@ -71,7 +71,7 @@ def test_kit_imports_when_vendored_under_another_package(tmp_path: Path) -> None
         "assert importlib.util.find_spec('components') is None, "
         "'test env leaks a top-level components package'\n"
         f"for n in {names!r}:\n"
-        "    importlib.import_module('web.components.' + n if n else 'web.components')\n"
+        "    importlib.import_module('web.components.' + n)\n"
     )
     result = subprocess.run(  # noqa: S603  # nosec B603 - fixed argv, generated code
         [sys.executable, "-I", "-c", code],
