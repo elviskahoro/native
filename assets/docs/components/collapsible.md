@@ -13,6 +13,8 @@ from components.ui.collapsible import collapsible
 ```
 
 ```python
+"""The core component."""
+
 from typing import Any
 
 from reflex.components.component import Component
@@ -20,6 +22,7 @@ from reflex.utils.imports import ImportVar
 from reflex.vars import FunctionVar, Var
 from reflex.vars.base import VarData
 
+PropValue = Any
 PACKAGE_CN = "clsx-for-tailwind@1.0.0"
 CN = Var(
     "cn",
@@ -32,6 +35,8 @@ CN = Var(
 
 
 class CoreComponent(Component):
+    """Core component."""
+
     unstyled: Var[bool]
 
     @classmethod
@@ -40,7 +45,7 @@ class CoreComponent(Component):
         default_class_name: str | Var[str],
         props: dict[str, Any],
     ) -> None:
-
+        """Set class name."""
         if "render_" in props:
             return
 
@@ -60,20 +65,23 @@ class CoreComponent(Component):
 
 
 def cn(*classes: Var[Any] | str | tuple[Any, ...] | list[Any] | None) -> Var[str]:
+    """Cn."""
     return CN.call(*classes).to(str)
 ```
 
 ```python
-from typing import Any
+"""The collapsible component."""
 
 import reflex as rx
 from reflex.components.component import Component, ComponentNamespace
 from reflex_components_core.el import Div
 
-from ..core.core import CoreComponent
+from ..core.core import CoreComponent, PropValue
 
 
 class ClassNames:
+    """Class names."""
+
     ROOT = "flex flex-col justify-center text-secondary-12"
     TRIGGER = (
         "flex items-center gap-2 cursor-pointer select-none list-none rounded-md "
@@ -84,13 +92,16 @@ class ClassNames:
 
 
 class CollapsibleRoot(CoreComponent):
+    """Collapsible root."""
+
     @classmethod
     def create(
         cls,
-        *children: Any,
+        *children: PropValue,
         default_open: bool = False,
-        **props: Any,
+        **props: PropValue,
     ) -> Component:
+        """Create the collapsible root."""
         props["data-slot"] = "collapsible"
         if default_open:
             props.setdefault("open", True)
@@ -99,22 +110,30 @@ class CollapsibleRoot(CoreComponent):
 
 
 class CollapsibleTrigger(CoreComponent):
+    """Collapsible trigger."""
+
     @classmethod
-    def create(cls, *children: Any, **props: Any) -> Component:
+    def create(cls, *children: PropValue, **props: PropValue) -> Component:
+        """Create the collapsible trigger."""
         props["data-slot"] = "collapsible-trigger"
         cls.set_class_name(ClassNames.TRIGGER, props)
         return rx.el.summary(*children, **props)
 
 
 class CollapsiblePanel(Div, CoreComponent):
+    """Collapsible panel."""
+
     @classmethod
-    def create(cls, *children: Any, **props: Any) -> Div:
+    def create(cls, *children: PropValue, **props: PropValue) -> Div:
+        """Create the collapsible panel."""
         props["data-slot"] = "collapsible-panel"
         cls.set_class_name(ClassNames.PANEL, props)
         return super().create(*children, **props)
 
 
 class Collapsible(ComponentNamespace):
+    """Collapsible."""
+
     root = staticmethod(CollapsibleRoot.create)
     trigger = staticmethod(CollapsibleTrigger.create)
     panel = staticmethod(CollapsiblePanel.create)

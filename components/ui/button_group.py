@@ -1,26 +1,54 @@
-from typing import Any, Literal
+"""The button group component."""
+
+from typing import Literal
 
 from reflex.components.component import Component, ComponentNamespace
 from reflex.vars.base import Var
 from reflex_components_core.el import Div
 
-from ..core.core import CoreComponent
+from ..core.core import CoreComponent, PropValue
 from .separator import SeparatorComponent
 
 
 class ClassNames:
-    BASE_GROUP = "flex w-fit items-stretch *:focus-visible:relative *:focus-visible:z-10 has-[>[data-slot=button-group]]:gap-2 has-[select[aria-hidden=true]:last-child]:[&>[data-slot=select-trigger]:last-of-type]:rounded-r-lg [&>[data-slot=select-trigger]:not([class*='w-'])]:w-fit [&>input]:flex-1"
-    HORIZONTAL = "*:data-slot:rounded-r-none [&>[data-slot]:not(:has(~[data-slot]))]:rounded-r-lg! [&>[data-slot]~[data-slot]]:rounded-l-none [&>[data-slot]~[data-slot]]:border-l-0"
-    VERTICAL = "flex-col *:data-slot:rounded-b-none [&>[data-slot]:not(:has(~[data-slot]))]:rounded-b-lg! [&>[data-slot]~[data-slot]]:rounded-t-none [&>[data-slot]~[data-slot]]:border-t-0"
-    TEXT = "flex items-center gap-2 rounded-lg border bg-muted px-2.5 text-sm font-medium [&_svg]:pointer-events-none [&_svg:not([class*='size-'])]:size-4"
-    SEPARATOR = "relative self-stretch bg-input data-horizontal:mx-px data-horizontal:w-auto data-vertical:my-px data-vertical:h-auto"
+    """Class names."""
+
+    BASE_GROUP = (
+        "flex w-fit items-stretch *:focus-visible:relative *:focus-visible:z-10 "
+        "has-[>[data-slot=button-group]]:gap-2 "
+        "has-[select[aria-hidden=true]:last-child]:[&>[data-slot=select-trigger]:last-of-type]:rounded-r-lg "
+        "[&>[data-slot=select-trigger]:not([class*='w-'])]:w-fit [&>input]:flex-1"
+    )
+    HORIZONTAL = (
+        "*:data-slot:rounded-r-none "
+        "[&>[data-slot]:not(:has(~[data-slot]))]:rounded-r-lg! "
+        "[&>[data-slot]~[data-slot]]:rounded-l-none "
+        "[&>[data-slot]~[data-slot]]:border-l-0"
+    )
+    VERTICAL = (
+        "flex-col *:data-slot:rounded-b-none "
+        "[&>[data-slot]:not(:has(~[data-slot]))]:rounded-b-lg! "
+        "[&>[data-slot]~[data-slot]]:rounded-t-none "
+        "[&>[data-slot]~[data-slot]]:border-t-0"
+    )
+    TEXT = (
+        "flex items-center gap-2 rounded-lg border bg-muted px-2.5 text-sm font-medium "
+        "[&_svg]:pointer-events-none [&_svg:not([class*='size-'])]:size-4"
+    )
+    SEPARATOR = (
+        "relative self-stretch bg-input data-horizontal:mx-px data-horizontal:w-auto "
+        "data-vertical:my-px data-vertical:h-auto"
+    )
 
 
 class ButtonGroupRoot(Div, CoreComponent):
+    """Button group root."""
+
     orientation: Var[Literal["horizontal", "vertical"]]
 
     @classmethod
-    def create(cls, *children: Any, **props: Any) -> Div:
+    def create(cls, *children: PropValue, **props: PropValue) -> Div:
+        """Create the button group root."""
         props["data-slot"] = "button-group"
         orientation = props.get("orientation", "horizontal")
 
@@ -40,16 +68,22 @@ class ButtonGroupRoot(Div, CoreComponent):
 
 
 class ButtonGroupText(Div, CoreComponent):
+    """Button group text."""
+
     @classmethod
-    def create(cls, *children: Any, **props: Any) -> Div:
+    def create(cls, *children: PropValue, **props: PropValue) -> Div:
+        """Create the button group text."""
         props["data-slot"] = "button-group-text"
         cls.set_class_name(ClassNames.TEXT, props)
         return super().create(*children, **props)
 
 
 class ButtonGroupSeparator(SeparatorComponent):
+    """Button group separator."""
+
     @classmethod
-    def create(cls, *children: Any, **props: Any) -> Component:
+    def create(cls, *children: PropValue, **props: PropValue) -> Component:
+        """Create the button group separator."""
         props["data-slot"] = "button-group-separator"
 
         if "orientation" not in props:
@@ -60,6 +94,8 @@ class ButtonGroupSeparator(SeparatorComponent):
 
 
 class ButtonGroup(ComponentNamespace):
+    """Button group."""
+
     root = staticmethod(ButtonGroupRoot.create)
     text = staticmethod(ButtonGroupText.create)
     separator = staticmethod(ButtonGroupSeparator.create)

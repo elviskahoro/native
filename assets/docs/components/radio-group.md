@@ -13,6 +13,8 @@ from components.ui.radio_group import radio_group
 ```
 
 ```python
+"""The core component."""
+
 from typing import Any
 
 from reflex.components.component import Component
@@ -20,6 +22,7 @@ from reflex.utils.imports import ImportVar
 from reflex.vars import FunctionVar, Var
 from reflex.vars.base import VarData
 
+PropValue = Any
 PACKAGE_CN = "clsx-for-tailwind@1.0.0"
 CN = Var(
     "cn",
@@ -32,6 +35,8 @@ CN = Var(
 
 
 class CoreComponent(Component):
+    """Core component."""
+
     unstyled: Var[bool]
 
     @classmethod
@@ -40,7 +45,7 @@ class CoreComponent(Component):
         default_class_name: str | Var[str],
         props: dict[str, Any],
     ) -> None:
-
+        """Set class name."""
         if "render_" in props:
             return
 
@@ -60,31 +65,41 @@ class CoreComponent(Component):
 
 
 def cn(*classes: Var[Any] | str | tuple[Any, ...] | list[Any] | None) -> Var[str]:
+    """Cn."""
     return CN.call(*classes).to(str)
 ```
 
 ```python
+"""The radio group component."""
+
 from typing import Any
 
 import reflex as rx
 from reflex.components.component import ComponentNamespace
 
-from ..core.core import CoreComponent, cn
+from ..core.core import CoreComponent, PropValue, cn
 
 
 class ClassNames:
-    ROOT = "w-full flex flex-col gap-3 disabled:opacity-50 disabled:cursor-not-allowed text-sm"
+    """Class names."""
+
+    ROOT = (
+        "w-full flex flex-col gap-3 disabled:opacity-50 disabled:cursor-not-allowed "
+        "text-sm"
+    )
 
     ITEM_ROOT = (
         "group relative inline-flex size-4 shrink-0 cursor-pointer items-center "
         "justify-center rounded-full border border-input "
         "has-[:disabled]:cursor-not-allowed has-[:disabled]:opacity-50 "
-        "has-[:focus-visible]:border-ring has-[:focus-visible]:ring-3 has-[:focus-visible]:ring-ring/50 "
+        "has-[:focus-visible]:border-ring has-[:focus-visible]:ring-3 "
+        "has-[:focus-visible]:ring-ring/50 "
         "has-[[aria-invalid=true]]:border-destructive has-[[aria-invalid=true]]:ring-3 "
         "has-[[aria-invalid=true]]:ring-destructive/20 "
         "dark:bg-input/30 "
         "has-[:checked]:border-primary "
-        "peer-has-[[data-slot=field-content]]:mt-0.5 [&:has(~[data-slot=field-content])]:mt-0.5"
+        "peer-has-[[data-slot=field-content]]:mt-0.5 "
+        "[&:has(~[data-slot=field-content])]:mt-0.5"
     )
 
     ITEM_INPUT = "peer sr-only"
@@ -103,13 +118,16 @@ class ClassNames:
 
 
 class RadioGroupRoot(CoreComponent):
+    """Radio group root."""
+
     @classmethod
     def create(
         cls,
-        *children: Any,
+        *children: PropValue,
         disabled: bool = False,
-        **props: Any,
+        **props: PropValue,
     ) -> rx.Component:
+        """Create the radio group root."""
         custom_classes = props.pop("class_name", "")
         props["data-slot"] = "radio-group"
         role = props.pop("role", "radiogroup")
@@ -123,14 +141,17 @@ class RadioGroupRoot(CoreComponent):
 
 
 class RadioGroupItem(CoreComponent):
+    """Radio group item."""
+
     @classmethod
     def create(
         cls,
-        *children: Any,
+        *children: PropValue,
         name: str,
         value: str,
-        **props: Any,
+        **props: PropValue,
     ) -> rx.Component:
+        """Create the radio group item."""
         custom_classes = props.pop("class_name", "")
 
         input_props: dict[str, Any] = {"name": name, "value": value}
@@ -154,8 +175,11 @@ class RadioGroupItem(CoreComponent):
 
 
 class RadioGroupIndicator(CoreComponent):
+    """Radio group indicator."""
+
     @classmethod
-    def create(cls, *children: Any, **props: Any) -> rx.Component:
+    def create(cls, *children: PropValue, **props: PropValue) -> rx.Component:
+        """Create the radio group indicator."""
         if len(children) == 0:
             children = (rx.el.span(class_name=ClassNames.ITEM_INDICATOR_DOT),)
         props["data-slot"] = "radio-group-item-indicator"
@@ -164,6 +188,8 @@ class RadioGroupIndicator(CoreComponent):
 
 
 class RadioGroup(ComponentNamespace):
+    """Radio group."""
+
     root = staticmethod(RadioGroupRoot.create)
     item = staticmethod(RadioGroupItem.create)
     indicator = staticmethod(RadioGroupIndicator.create)

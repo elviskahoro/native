@@ -13,6 +13,8 @@ from components.ui.separator import separator
 ```
 
 ```python
+"""The core component."""
+
 from typing import Any
 
 from reflex.components.component import Component
@@ -20,6 +22,7 @@ from reflex.utils.imports import ImportVar
 from reflex.vars import FunctionVar, Var
 from reflex.vars.base import VarData
 
+PropValue = Any
 PACKAGE_CN = "clsx-for-tailwind@1.0.0"
 CN = Var(
     "cn",
@@ -32,6 +35,8 @@ CN = Var(
 
 
 class CoreComponent(Component):
+    """Core component."""
+
     unstyled: Var[bool]
 
     @classmethod
@@ -40,7 +45,7 @@ class CoreComponent(Component):
         default_class_name: str | Var[str],
         props: dict[str, Any],
     ) -> None:
-
+        """Set class name."""
         if "render_" in props:
             return
 
@@ -60,20 +65,25 @@ class CoreComponent(Component):
 
 
 def cn(*classes: Var[Any] | str | tuple[Any, ...] | list[Any] | None) -> Var[str]:
+    """Cn."""
     return CN.call(*classes).to(str)
 ```
 
 ```python
-from typing import Any, Literal
+"""The separator component."""
+
+from typing import Literal
 
 import reflex as rx
 
-from ..core.core import CoreComponent
+from ..core.core import CoreComponent, PropValue
 
 LiteralOrientation = Literal["horizontal", "vertical"]
 
 
 class ClassNames:
+    """Class names."""
+
     SEPARATOR = (
         "shrink-0 bg-input "
         "data-[orientation=horizontal]:h-px data-[orientation=horizontal]:w-full "
@@ -82,8 +92,11 @@ class ClassNames:
 
 
 class SeparatorComponent(CoreComponent):
+    """Separator component."""
+
     @classmethod
-    def create(cls, *children: Any, **props: Any) -> rx.Component:
+    def create(cls, *children: PropValue, **props: PropValue) -> rx.Component:
+        """Create the separator component."""
         orientation: str = props.pop("orientation", "horizontal")
         decorative = props.pop("decorative", True)
         data_slot = props.pop("data_slot", "separator")

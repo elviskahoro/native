@@ -1,3 +1,5 @@
+"""The core component."""
+
 from typing import Any
 
 from reflex.components.component import Component
@@ -5,6 +7,7 @@ from reflex.utils.imports import ImportVar
 from reflex.vars import FunctionVar, Var
 from reflex.vars.base import VarData
 
+PropValue = Any
 PACKAGE_CN = "clsx-for-tailwind@1.0.0"
 CN = Var(
     "cn",
@@ -17,6 +20,8 @@ CN = Var(
 
 
 class CoreComponent(Component):
+    """Core component."""
+
     unstyled: Var[bool]
 
     @classmethod
@@ -25,7 +30,7 @@ class CoreComponent(Component):
         default_class_name: str | Var[str],
         props: dict[str, Any],
     ) -> None:
-
+        """Set class name."""
         if "render_" in props:
             return
 
@@ -45,4 +50,5 @@ class CoreComponent(Component):
 
 
 def cn(*classes: Var[Any] | str | tuple[Any, ...] | list[Any] | None) -> Var[str]:
+    """Cn."""
     return CN.call(*classes).to(str)

@@ -66,7 +66,7 @@ COMPONENT_REGISTRY: dict[str, dict[str, list[str]]] = {
     },
     "field": {
         "files": ["components/ui/field.py"],
-        "dependencies": ["separator"],
+        "dependencies": ["core", "separator"],
     },
     "frame": {
         "files": ["components/ui/frame.py"],

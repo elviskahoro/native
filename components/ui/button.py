@@ -1,9 +1,11 @@
-from typing import Any, Literal
+"""The button component."""
+
+from typing import Literal
 
 from reflex.vars.base import Var
 from reflex_components_core.el import Button as BaseButton
 
-from ..core.core import CoreComponent, cn
+from ..core.core import CoreComponent, PropValue, cn
 
 LiteralButtonVariant = Literal[
     "default",
@@ -31,7 +33,8 @@ DEFAULT_CLASS_NAME = (
     "focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50 "
     "active:not-aria-[haspopup]:translate-y-px "
     "disabled:pointer-events-none disabled:opacity-50 "
-    "aria-invalid:border-destructive aria-invalid:ring-3 aria-invalid:ring-destructive/20 "
+    "aria-invalid:border-destructive aria-invalid:ring-3 "
+    "aria-invalid:ring-destructive/20 "
     "dark:aria-invalid:border-destructive/50 dark:aria-invalid:ring-destructive/40 "
     "[&_svg]:pointer-events-none [&_svg]:shrink-0 "
     "[&_svg:not([class*='size-'])]:size-4"
@@ -102,11 +105,14 @@ BUTTON_VARIANTS = {
 
 
 class Button(BaseButton, CoreComponent):
+    """Button."""
+
     variant: Var[LiteralButtonVariant]
     size: Var[LiteralButtonSize]
 
     @classmethod
-    def create(cls, *children: Any, **props: Any) -> BaseButton:
+    def create(cls, *children: PropValue, **props: PropValue) -> BaseButton:
+        """Create the button."""
         variant = props.pop("variant", "default")
         size = props.pop("size", "default")
         data_slot = props.pop("data_slot", "button")
@@ -131,6 +137,7 @@ class Button(BaseButton, CoreComponent):
 
 
 def button_variants(variant: str = "default", size: str = "default") -> Var[str]:
+    """Button variants."""
     return cn(
         DEFAULT_CLASS_NAME,
         BUTTON_VARIANTS["variant"].get(variant, ""),

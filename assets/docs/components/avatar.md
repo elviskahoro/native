@@ -13,6 +13,8 @@ from components.ui.avatar import avatar
 ```
 
 ```python
+"""The core component."""
+
 from typing import Any
 
 from reflex.components.component import Component
@@ -20,6 +22,7 @@ from reflex.utils.imports import ImportVar
 from reflex.vars import FunctionVar, Var
 from reflex.vars.base import VarData
 
+PropValue = Any
 PACKAGE_CN = "clsx-for-tailwind@1.0.0"
 CN = Var(
     "cn",
@@ -32,6 +35,8 @@ CN = Var(
 
 
 class CoreComponent(Component):
+    """Core component."""
+
     unstyled: Var[bool]
 
     @classmethod
@@ -40,7 +45,7 @@ class CoreComponent(Component):
         default_class_name: str | Var[str],
         props: dict[str, Any],
     ) -> None:
-
+        """Set class name."""
         if "render_" in props:
             return
 
@@ -60,23 +65,27 @@ class CoreComponent(Component):
 
 
 def cn(*classes: Var[Any] | str | tuple[Any, ...] | list[Any] | None) -> Var[str]:
+    """Cn."""
     return CN.call(*classes).to(str)
 ```
 
 ```python
-from typing import Any
+"""The avatar component."""
 
 import reflex as rx
 from reflex.components.component import ComponentNamespace
 from reflex_components_core.el import Div, Span
 
-from ..core.core import CoreComponent
+from ..core.core import CoreComponent, PropValue
 
 
 class ClassNames:
+    """Class names."""
+
     ROOT = (
         "group/avatar relative flex size-8 shrink-0 rounded-full select-none "
-        "after:absolute after:inset-0 after:rounded-full after:border after:border-border "
+        "after:absolute after:inset-0 after:rounded-full after:border "
+        "after:border-border "
         "after:mix-blend-darken data-[size=xl]:size-14 data-[size=lg]:size-10 "
         "data-[size=sm]:size-6 dark:after:mix-blend-lighten"
     )
@@ -90,7 +99,8 @@ class ClassNames:
         "rounded-full bg-primary text-primary-foreground bg-blend-color "
         "ring-2 ring-background select-none "
         "group-data-[size=sm]/avatar:size-2 group-data-[size=sm]/avatar:[&>svg]:hidden "
-        "group-data-[size=default]/avatar:size-2.5 group-data-[size=default]/avatar:[&>svg]:size-2 "
+        "group-data-[size=default]/avatar:size-2.5 "
+        "group-data-[size=default]/avatar:[&>svg]:size-2 "
         "group-data-[size=lg]/avatar:size-3 group-data-[size=lg]/avatar:[&>svg]:size-2"
     )
     GROUP = (
@@ -138,7 +148,8 @@ class AvatarRoot(Div, CoreComponent):
     """
 
     @classmethod
-    def create(cls, *children: Any, **props: Any) -> Div:
+    def create(cls, *children: PropValue, **props: PropValue) -> Div:
+        """Create the avatar root."""
         size = props.pop("size", "default")
         props["data-slot"] = "avatar"
         props["data-size"] = size
@@ -156,7 +167,8 @@ class AvatarRoot(Div, CoreComponent):
         return super().create(*children, **props)
 
 
-def avatar_image(**props: Any) -> rx.Component:
+def avatar_image(**props: PropValue) -> rx.Component:
+    """Avatar image."""
     props["data-slot"] = "avatar-image"
 
     user_on_mount = props.pop("on_mount", None)
@@ -173,8 +185,11 @@ def avatar_image(**props: Any) -> rx.Component:
 
 
 class AvatarFallback(Span, CoreComponent):
+    """Avatar fallback."""
+
     @classmethod
-    def create(cls, *children: Any, **props: Any) -> Span:
+    def create(cls, *children: PropValue, **props: PropValue) -> Span:
+        """Create the avatar fallback."""
         props["data-slot"] = "avatar-fallback"
         props["style"] = {"display": "none", **props.get("style", {})}
         cls.set_class_name(ClassNames.FALLBACK, props)
@@ -182,30 +197,41 @@ class AvatarFallback(Span, CoreComponent):
 
 
 class AvatarBadge(Span, CoreComponent):
+    """Avatar badge."""
+
     @classmethod
-    def create(cls, *children: Any, **props: Any) -> Span:
+    def create(cls, *children: PropValue, **props: PropValue) -> Span:
+        """Create the avatar badge."""
         props["data-slot"] = "avatar-badge"
         cls.set_class_name(ClassNames.BADGE, props)
         return super().create(*children, **props)
 
 
 class AvatarGroup(Div, CoreComponent):
+    """Avatar group."""
+
     @classmethod
-    def create(cls, *children: Any, **props: Any) -> Div:
+    def create(cls, *children: PropValue, **props: PropValue) -> Div:
+        """Create the avatar group."""
         props["data-slot"] = "avatar-group"
         cls.set_class_name(ClassNames.GROUP, props)
         return super().create(*children, **props)
 
 
 class AvatarGroupCount(Div, CoreComponent):
+    """Avatar group count."""
+
     @classmethod
-    def create(cls, *children: Any, **props: Any) -> Div:
+    def create(cls, *children: PropValue, **props: PropValue) -> Div:
+        """Create the avatar group count."""
         props["data-slot"] = "avatar-group-count"
         cls.set_class_name(ClassNames.GROUP_COUNT, props)
         return super().create(*children, **props)
 
 
 class Avatar(ComponentNamespace):
+    """Avatar."""
+
     root = staticmethod(AvatarRoot.create)
     image = staticmethod(avatar_image)
     fallback = staticmethod(AvatarFallback.create)

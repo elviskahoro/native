@@ -13,6 +13,8 @@ from components.ui.bubble import bubble
 ```
 
 ```python
+"""The core component."""
+
 from typing import Any
 
 from reflex.components.component import Component
@@ -20,6 +22,7 @@ from reflex.utils.imports import ImportVar
 from reflex.vars import FunctionVar, Var
 from reflex.vars.base import VarData
 
+PropValue = Any
 PACKAGE_CN = "clsx-for-tailwind@1.0.0"
 CN = Var(
     "cn",
@@ -32,6 +35,8 @@ CN = Var(
 
 
 class CoreComponent(Component):
+    """Core component."""
+
     unstyled: Var[bool]
 
     @classmethod
@@ -40,7 +45,7 @@ class CoreComponent(Component):
         default_class_name: str | Var[str],
         props: dict[str, Any],
     ) -> None:
-
+        """Set class name."""
         if "render_" in props:
             return
 
@@ -60,16 +65,19 @@ class CoreComponent(Component):
 
 
 def cn(*classes: Var[Any] | str | tuple[Any, ...] | list[Any] | None) -> Var[str]:
+    """Cn."""
     return CN.call(*classes).to(str)
 ```
 
 ```python
-from typing import Any, ClassVar, Literal
+"""The bubble component."""
+
+from typing import ClassVar, Literal
 
 import reflex as rx
 from reflex.components.component import ComponentNamespace
 
-from ..core.core import CoreComponent, cn
+from ..core.core import CoreComponent, PropValue, cn
 
 BubbleVariant = Literal[
     "default",
@@ -85,6 +93,8 @@ BubbleSide = Literal["top", "bottom"]
 
 
 class ClassNames:
+    """Class names."""
+
     GROUP = "flex min-w-0 flex-col gap-2"
 
     VARIANTS: ClassVar[dict[str, str]] = {
@@ -127,7 +137,8 @@ class ClassNames:
     )
 
     CONTENT = (
-        "w-fit max-w-full min-w-0 overflow-hidden rounded-3xl border border-transparent "
+        "w-fit max-w-full min-w-0 overflow-hidden rounded-3xl border "
+        "border-transparent "
         "px-3 py-2.5 text-sm leading-relaxed break-words "
         "group-data-[align=end]/bubble:self-end"
     )
@@ -149,16 +160,22 @@ class ClassNames:
 
 
 class NativeBubbleGroup(CoreComponent):
+    """Native bubble group."""
+
     @classmethod
-    def create(cls, *children: Any, **props: Any) -> rx.Component:
+    def create(cls, *children: PropValue, **props: PropValue) -> rx.Component:
+        """Create the native bubble group."""
         props["data-slot"] = "bubble-group"
         cls.set_class_name(ClassNames.GROUP, props)
         return rx.el.div(*children, **props)
 
 
 class NativeBubbleRoot(CoreComponent):
+    """Native bubble root."""
+
     @classmethod
-    def create(cls, *children: Any, **props: Any) -> rx.Component:
+    def create(cls, *children: PropValue, **props: PropValue) -> rx.Component:
+        """Create the native bubble root."""
         variant: BubbleVariant = props.pop("variant", "default")
         align: BubbleAlign = props.pop("align", "start")
 
@@ -177,16 +194,22 @@ class NativeBubbleRoot(CoreComponent):
 
 
 class NativeBubbleContent(CoreComponent):
+    """Native bubble content."""
+
     @classmethod
-    def create(cls, *children: Any, **props: Any) -> rx.Component:
+    def create(cls, *children: PropValue, **props: PropValue) -> rx.Component:
+        """Create the native bubble content."""
         props["data-slot"] = "bubble-content"
         cls.set_class_name(ClassNames.CONTENT, props)
         return rx.el.div(*children, **props)
 
 
 class NativeBubbleReactions(CoreComponent):
+    """Native bubble reactions."""
+
     @classmethod
-    def create(cls, *children: Any, **props: Any) -> rx.Component:
+    def create(cls, *children: PropValue, **props: PropValue) -> rx.Component:
+        """Create the native bubble reactions."""
         side: BubbleSide = props.pop("side", "bottom")
         align: BubbleAlign = props.pop("align", "end")
 
@@ -206,6 +229,8 @@ class NativeBubbleReactions(CoreComponent):
 
 
 class Bubble(ComponentNamespace):
+    """Bubble."""
+
     group = staticmethod(NativeBubbleGroup.create)
     root = staticmethod(NativeBubbleRoot.create)
     content = staticmethod(NativeBubbleContent.create)

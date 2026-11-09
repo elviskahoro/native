@@ -13,6 +13,8 @@ from components.ui.marker import marker
 ```
 
 ```python
+"""The core component."""
+
 from typing import Any
 
 from reflex.components.component import Component
@@ -20,6 +22,7 @@ from reflex.utils.imports import ImportVar
 from reflex.vars import FunctionVar, Var
 from reflex.vars.base import VarData
 
+PropValue = Any
 PACKAGE_CN = "clsx-for-tailwind@1.0.0"
 CN = Var(
     "cn",
@@ -32,6 +35,8 @@ CN = Var(
 
 
 class CoreComponent(Component):
+    """Core component."""
+
     unstyled: Var[bool]
 
     @classmethod
@@ -40,7 +45,7 @@ class CoreComponent(Component):
         default_class_name: str | Var[str],
         props: dict[str, Any],
     ) -> None:
-
+        """Set class name."""
         if "render_" in props:
             return
 
@@ -60,21 +65,26 @@ class CoreComponent(Component):
 
 
 def cn(*classes: Var[Any] | str | tuple[Any, ...] | list[Any] | None) -> Var[str]:
+    """Cn."""
     return CN.call(*classes).to(str)
 ```
 
 ```python
-from typing import Any, ClassVar, Literal
+"""The marker component."""
+
+from typing import ClassVar, Literal
 
 import reflex as rx
 from reflex.components.component import ComponentNamespace
 
-from ..core.core import cn
+from ..core.core import PropValue, cn
 
 MarkerVariant = Literal["default", "separator", "border"]
 
 
 class ClassNames:
+    """Class names."""
+
     ROOT = (
         "group/marker relative flex min-h-4 w-full items-center gap-2 "
         "text-left text-sm text-muted-foreground"
@@ -98,12 +108,12 @@ class ClassNames:
 
 
 def marker_root(
-    *children: Any,
+    *children: PropValue,
     variant: MarkerVariant = "default",
     class_name: str = "",
-    **props: Any,
+    **props: PropValue,
 ) -> rx.Component:
-
+    """Marker root."""
     return rx.el.div(
         *children,
         data_slot="marker",
@@ -117,8 +127,12 @@ def marker_root(
     )
 
 
-def marker_icon(*children: Any, class_name: str = "", **props: Any) -> rx.Component:
-
+def marker_icon(
+    *children: PropValue,
+    class_name: str = "",
+    **props: PropValue,
+) -> rx.Component:
+    """Marker icon."""
     return rx.el.span(
         *children,
         data_slot="marker-icon",
@@ -128,8 +142,12 @@ def marker_icon(*children: Any, class_name: str = "", **props: Any) -> rx.Compon
     )
 
 
-def marker_content(*children: Any, class_name: str = "", **props: Any) -> rx.Component:
-
+def marker_content(
+    *children: PropValue,
+    class_name: str = "",
+    **props: PropValue,
+) -> rx.Component:
+    """Marker content."""
     return rx.el.span(
         *children,
         data_slot="marker-content",
@@ -139,6 +157,8 @@ def marker_content(*children: Any, class_name: str = "", **props: Any) -> rx.Com
 
 
 class Marker(ComponentNamespace):
+    """Marker."""
+
     root = staticmethod(marker_root)
     icon = staticmethod(marker_icon)
     content = staticmethod(marker_content)

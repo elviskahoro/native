@@ -13,6 +13,8 @@ from components.ui.menu import menu
 ```
 
 ```python
+"""The core component."""
+
 from typing import Any
 
 from reflex.components.component import Component
@@ -20,6 +22,7 @@ from reflex.utils.imports import ImportVar
 from reflex.vars import FunctionVar, Var
 from reflex.vars.base import VarData
 
+PropValue = Any
 PACKAGE_CN = "clsx-for-tailwind@1.0.0"
 CN = Var(
     "cn",
@@ -32,6 +35,8 @@ CN = Var(
 
 
 class CoreComponent(Component):
+    """Core component."""
+
     unstyled: Var[bool]
 
     @classmethod
@@ -40,7 +45,7 @@ class CoreComponent(Component):
         default_class_name: str | Var[str],
         props: dict[str, Any],
     ) -> None:
-
+        """Set class name."""
         if "render_" in props:
             return
 
@@ -60,22 +65,27 @@ class CoreComponent(Component):
 
 
 def cn(*classes: Var[Any] | str | tuple[Any, ...] | list[Any] | None) -> Var[str]:
+    """Cn."""
     return CN.call(*classes).to(str)
 ```
 
 ```python
+"""The menu component."""
+
 import itertools
-from typing import Any, ClassVar
+from typing import ClassVar
 
 import reflex as rx
 from reflex.components.component import ComponentNamespace
 
-from ..core.core import CoreComponent, cn
+from ..core.core import CoreComponent, PropValue, cn
 
 _menu_id_counter = itertools.count()
 
 
 class ClassNames:
+    """Class names."""
+
     TRIGGER = "inline-block list-none cursor-pointer [&::-webkit-details-marker]:hidden"
     TRIGGER_INNER = "flex w-fit items-center"
     CONTENT = (
@@ -90,7 +100,8 @@ class ClassNames:
         "data-[variant=destructive]:hover:bg-destructive/10 "
         "data-[variant=destructive]:hover:text-destructive "
         "data-disabled:pointer-events-none data-disabled:opacity-50 "
-        "[&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4"
+        "[&_svg]:pointer-events-none [&_svg]:shrink-0 "
+        "[&_svg:not([class*='size-'])]:size-4"
     )
     SEPARATOR = "-mx-1 my-1 h-px bg-border"
     GROUP_LABEL = "px-1.5 py-1 text-xs font-medium text-muted-foreground"
@@ -104,8 +115,11 @@ class ClassNames:
 
 
 class MenuRoot(CoreComponent):
+    """Menu root."""
+
     @classmethod
-    def create(cls, *children: Any, **props: Any) -> rx.Component:
+    def create(cls, *children: PropValue, **props: PropValue) -> rx.Component:
+        """Create the menu root."""
         props.setdefault("id", f"menu-{next(_menu_id_counter)}")
         props["data-slot"] = "menu"
         cls.set_class_name("relative inline-block", props)
@@ -147,8 +161,11 @@ class MenuRoot(CoreComponent):
 
 
 class MenuTrigger(CoreComponent):
+    """Menu trigger."""
+
     @classmethod
-    def create(cls, *children: Any, **props: Any) -> rx.Component:
+    def create(cls, *children: PropValue, **props: PropValue) -> rx.Component:
+        """Create the menu trigger."""
         props["data-slot"] = "menu-trigger"
         cls.set_class_name(ClassNames.TRIGGER, props)
         return rx.el.summary(
@@ -158,15 +175,18 @@ class MenuTrigger(CoreComponent):
 
 
 class MenuContent(CoreComponent):
+    """Menu content."""
+
     @classmethod
     def create(
         cls,
-        *children: Any,
+        *children: PropValue,
         side: str = "bottom",
         side_offset: int = 4,
         align: str = "start",
-        **props: Any,
+        **props: PropValue,
     ) -> rx.Component:
+        """Create the menu content."""
         props["data-slot"] = "menu-content"
         props["data-side"] = side
 
@@ -205,10 +225,11 @@ class MenuItem(CoreComponent):
     @classmethod
     def create(
         cls,
-        *children: Any,
+        *children: PropValue,
         close_on_click: bool = True,
-        **props: Any,
+        **props: PropValue,
     ) -> rx.Component:
+        """Create the menu item."""
         props["data-slot"] = "menu-item"
         cls.set_class_name(ClassNames.ITEM, props)
 
@@ -222,8 +243,11 @@ class MenuItem(CoreComponent):
 
 
 class MenuClose(CoreComponent):
+    """Menu close."""
+
     @classmethod
-    def create(cls, *children: Any, **props: Any) -> rx.Component:
+    def create(cls, *children: PropValue, **props: PropValue) -> rx.Component:
+        """Create the menu close."""
         props["data-slot"] = "menu-close"
         props.setdefault("type", "button")
         props["data-close-menu"] = "true"
@@ -233,30 +257,41 @@ class MenuClose(CoreComponent):
 
 
 class MenuSeparator(CoreComponent):
+    """Menu separator."""
+
     @classmethod
-    def create(cls, **props: Any) -> rx.Component:
+    def create(cls, **props: PropValue) -> rx.Component:
+        """Create the menu separator."""
         props["data-slot"] = "menu-separator"
         cls.set_class_name(ClassNames.SEPARATOR, props)
         return rx.el.div(**props)
 
 
 class MenuGroupLabel(CoreComponent):
+    """Menu group label."""
+
     @classmethod
-    def create(cls, *children: Any, **props: Any) -> rx.Component:
+    def create(cls, *children: PropValue, **props: PropValue) -> rx.Component:
+        """Create the menu group label."""
         props["data-slot"] = "menu-group-label"
         cls.set_class_name(ClassNames.GROUP_LABEL, props)
         return rx.el.div(*children, **props)
 
 
 class MenuShortcut(CoreComponent):
+    """Menu shortcut."""
+
     @classmethod
-    def create(cls, *children: Any, **props: Any) -> rx.Component:
+    def create(cls, *children: PropValue, **props: PropValue) -> rx.Component:
+        """Create the menu shortcut."""
         props["data-slot"] = "menu-shortcut"
         cls.set_class_name(ClassNames.SHORTCUT, props)
         return rx.el.span(*children, **props)
 
 
 class Menu(ComponentNamespace):
+    """Menu."""
+
     root = staticmethod(MenuRoot.create)
     trigger = staticmethod(MenuTrigger.create)
     content = staticmethod(MenuContent.create)

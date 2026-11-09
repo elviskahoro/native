@@ -134,3 +134,18 @@ buridan init
 buridan apply --preset <ID>
 buridan add button input select
 ```
+
+## Lint setup for copied components
+
+The kit passes ruff's `ANN401`, `D1xx`, and nearly all `E501` checks. A few findings are intentional, so exempt them for the copied tree only:
+
+```toml
+[tool.ruff.lint.per-file-ignores]
+"components/**" = [
+  "TID252", # relative imports keep the tree relocatable
+  "A001",   # `input` mirrors the shadcn registry API
+  "A004",
+  "E501",   # unbreakable class tokens, SVG paths and inline JS
+  "FBT003", # Reflex event handlers are invoked positionally
+]
+```

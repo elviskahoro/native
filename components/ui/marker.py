@@ -1,14 +1,18 @@
-from typing import Any, ClassVar, Literal
+"""The marker component."""
+
+from typing import ClassVar, Literal
 
 import reflex as rx
 from reflex.components.component import ComponentNamespace
 
-from ..core.core import cn
+from ..core.core import PropValue, cn
 
 MarkerVariant = Literal["default", "separator", "border"]
 
 
 class ClassNames:
+    """Class names."""
+
     ROOT = (
         "group/marker relative flex min-h-4 w-full items-center gap-2 "
         "text-left text-sm text-muted-foreground"
@@ -32,12 +36,12 @@ class ClassNames:
 
 
 def marker_root(
-    *children: Any,
+    *children: PropValue,
     variant: MarkerVariant = "default",
     class_name: str = "",
-    **props: Any,
+    **props: PropValue,
 ) -> rx.Component:
-
+    """Marker root."""
     return rx.el.div(
         *children,
         data_slot="marker",
@@ -51,8 +55,12 @@ def marker_root(
     )
 
 
-def marker_icon(*children: Any, class_name: str = "", **props: Any) -> rx.Component:
-
+def marker_icon(
+    *children: PropValue,
+    class_name: str = "",
+    **props: PropValue,
+) -> rx.Component:
+    """Marker icon."""
     return rx.el.span(
         *children,
         data_slot="marker-icon",
@@ -62,8 +70,12 @@ def marker_icon(*children: Any, class_name: str = "", **props: Any) -> rx.Compon
     )
 
 
-def marker_content(*children: Any, class_name: str = "", **props: Any) -> rx.Component:
-
+def marker_content(
+    *children: PropValue,
+    class_name: str = "",
+    **props: PropValue,
+) -> rx.Component:
+    """Marker content."""
     return rx.el.span(
         *children,
         data_slot="marker-content",
@@ -73,6 +85,8 @@ def marker_content(*children: Any, class_name: str = "", **props: Any) -> rx.Com
 
 
 class Marker(ComponentNamespace):
+    """Marker."""
+
     root = staticmethod(marker_root)
     icon = staticmethod(marker_icon)
     content = staticmethod(marker_content)

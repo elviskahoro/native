@@ -1,3 +1,5 @@
+"""The chart tooltip component."""
+
 from typing import Any, Literal
 
 import reflex as rx

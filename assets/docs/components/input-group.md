@@ -13,6 +13,8 @@ from components.ui.input_group import input_group
 ```
 
 ```python
+"""The core component."""
+
 from typing import Any
 
 from reflex.components.component import Component
@@ -20,6 +22,7 @@ from reflex.utils.imports import ImportVar
 from reflex.vars import FunctionVar, Var
 from reflex.vars.base import VarData
 
+PropValue = Any
 PACKAGE_CN = "clsx-for-tailwind@1.0.0"
 CN = Var(
     "cn",
@@ -32,6 +35,8 @@ CN = Var(
 
 
 class CoreComponent(Component):
+    """Core component."""
+
     unstyled: Var[bool]
 
     @classmethod
@@ -40,7 +45,7 @@ class CoreComponent(Component):
         default_class_name: str | Var[str],
         props: dict[str, Any],
     ) -> None:
-
+        """Set class name."""
         if "render_" in props:
             return
 
@@ -60,16 +65,19 @@ class CoreComponent(Component):
 
 
 def cn(*classes: Var[Any] | str | tuple[Any, ...] | list[Any] | None) -> Var[str]:
+    """Cn."""
     return CN.call(*classes).to(str)
 ```
 
 ```python
-from typing import Any, Literal
+"""The button component."""
+
+from typing import Literal
 
 from reflex.vars.base import Var
 from reflex_components_core.el import Button as BaseButton
 
-from ..core.core import CoreComponent, cn
+from ..core.core import CoreComponent, PropValue, cn
 
 LiteralButtonVariant = Literal[
     "default",
@@ -97,7 +105,8 @@ DEFAULT_CLASS_NAME = (
     "focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50 "
     "active:not-aria-[haspopup]:translate-y-px "
     "disabled:pointer-events-none disabled:opacity-50 "
-    "aria-invalid:border-destructive aria-invalid:ring-3 aria-invalid:ring-destructive/20 "
+    "aria-invalid:border-destructive aria-invalid:ring-3 "
+    "aria-invalid:ring-destructive/20 "
     "dark:aria-invalid:border-destructive/50 dark:aria-invalid:ring-destructive/40 "
     "[&_svg]:pointer-events-none [&_svg]:shrink-0 "
     "[&_svg:not([class*='size-'])]:size-4"
@@ -168,11 +177,14 @@ BUTTON_VARIANTS = {
 
 
 class Button(BaseButton, CoreComponent):
+    """Button."""
+
     variant: Var[LiteralButtonVariant]
     size: Var[LiteralButtonSize]
 
     @classmethod
-    def create(cls, *children: Any, **props: Any) -> BaseButton:
+    def create(cls, *children: PropValue, **props: PropValue) -> BaseButton:
+        """Create the button."""
         variant = props.pop("variant", "default")
         size = props.pop("size", "default")
         data_slot = props.pop("data_slot", "button")
@@ -197,6 +209,7 @@ class Button(BaseButton, CoreComponent):
 
 
 def button_variants(variant: str = "default", size: str = "default") -> Var[str]:
+    """Button variants."""
     return cn(
         DEFAULT_CLASS_NAME,
         BUTTON_VARIANTS["variant"].get(variant, ""),
@@ -208,22 +221,25 @@ button = Button.create
 ```
 
 ```python
-from typing import Any
+"""The input component."""
 
 from reflex.components.component import ComponentNamespace
 from reflex_components_core.el import Input as BaseInput
 
-from ..core.core import CoreComponent
+from ..core.core import CoreComponent, PropValue
 
 
 class ClassNames:
+    """Class names."""
+
     INPUT = (
         "w-full file:text-foreground placeholder:text-muted-foreground "
         "selection:bg-primary selection:text-primary-foreground "
         "dark:bg-input/30 border-input "
         "h-8 w-full min-w-0 rounded-lg border bg-transparent px-3 py-1 text-base "
         "outline-none "
-        "file:inline-flex file:h-7 file:border-0 file:bg-transparent file:text-sm file:font-medium "
+        "file:inline-flex file:h-7 file:border-0 file:bg-transparent file:text-sm "
+        "file:font-medium "
         "disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50 "
         "md:text-sm "
         "focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] "
@@ -233,9 +249,11 @@ class ClassNames:
 
 
 class InputComponent(BaseInput, CoreComponent):
-    @classmethod
-    def create(cls, *children: Any, **props: Any) -> BaseInput:
+    """Input component."""
 
+    @classmethod
+    def create(cls, *children: PropValue, **props: PropValue) -> BaseInput:
+        """Create the input component."""
         props.setdefault("data_slot", "input")
 
         if "type" not in props:
@@ -247,6 +265,8 @@ class InputComponent(BaseInput, CoreComponent):
 
 
 class Input(ComponentNamespace):
+    """Input."""
+
     __call__ = staticmethod(InputComponent.create)
     class_name = ClassNames
 
@@ -255,27 +275,37 @@ input = Input()
 ```
 
 ```python
-from typing import Any
+"""The textarea component."""
 
 from reflex_components_core.el import Textarea
 
-from ..core.core import CoreComponent
+from ..core.core import CoreComponent, PropValue
 
 
 class ClassNames:
+    """Class names."""
+
     ROOT = (
-        "flex field-sizing-content min-h-16 w-full rounded-lg border border-input bg-transparent "
-        "px-2.5 py-2 text-base transition-colors outline-none placeholder:text-muted-foreground "
-        "focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50 disabled:cursor-not-allowed "
-        "disabled:bg-input/50 disabled:opacity-50 aria-invalid:border-destructive aria-invalid:ring-3 "
-        "aria-invalid:ring-destructive/20 md:text-sm dark:bg-input/30 dark:disabled:bg-input/80 "
+        "flex field-sizing-content min-h-16 w-full rounded-lg border border-input "
+        "bg-transparent "
+        "px-2.5 py-2 text-base transition-colors outline-none "
+        "placeholder:text-muted-foreground "
+        "focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50 "
+        "disabled:cursor-not-allowed "
+        "disabled:bg-input/50 disabled:opacity-50 aria-invalid:border-destructive "
+        "aria-invalid:ring-3 "
+        "aria-invalid:ring-destructive/20 md:text-sm dark:bg-input/30 "
+        "dark:disabled:bg-input/80 "
         "dark:aria-invalid:border-destructive/50 dark:aria-invalid:ring-destructive/40"
     )
 
 
 class TextAreaComponent(Textarea, CoreComponent):
+    """Text area component."""
+
     @classmethod
-    def create(cls, *children: Any, **props: Any) -> Textarea:
+    def create(cls, *children: PropValue, **props: PropValue) -> Textarea:
+        """Create the text area component."""
         props.setdefault(
             "custom_attrs",
             {
@@ -294,7 +324,9 @@ textarea = TextAreaComponent.create
 ```
 
 ```python
-from typing import Any, Literal
+"""The input group component."""
+
+from typing import Literal
 
 from reflex.components.component import Component, ComponentNamespace
 from reflex_components_core.el import (
@@ -302,7 +334,7 @@ from reflex_components_core.el import (
     Span as ElSpan,
 )
 
-from ..core.core import CoreComponent, cn
+from ..core.core import CoreComponent, PropValue, cn
 from .button import button
 from .input import input
 from .textarea import textarea
@@ -312,52 +344,87 @@ LiteralSize = Literal["xs", "sm", "icon-xs", "icon-sm"]
 
 
 class ClassNames:
+    """Class names."""
+
     ROOT = (
-        "group/input-group relative flex h-8 w-full min-w-0 items-center rounded-lg border border-input "
+        "group/input-group relative flex h-8 w-full min-w-0 items-center rounded-lg "
+        "border border-input "
         "outline-none in-data-[slot=combobox-content]:focus-within:border-inherit "
-        "in-data-[slot=combobox-content]:focus-within:ring-0 has-disabled:bg-input/50 has-disabled:opacity-50 "
-        "has-[[data-slot=input-group-control]:focus-visible]:border-ring has-[[data-slot=input-group-control]:focus-visible]:ring-3 "
-        "has-[[data-slot=input-group-control]:focus-visible]:ring-ring/50 has-[[data-slot][aria-invalid=true]]:border-destructive "
-        "has-[[data-slot][aria-invalid=true]]:ring-3 has-[[data-slot][aria-invalid=true]]:ring-destructive/20 "
-        "has-[>[data-align=block-end]]:h-auto has-[>[data-align=block-end]]:flex-col has-[>[data-align=block-start]]:h-auto "
-        "has-[>[data-align=block-start]]:flex-col has-[>textarea]:h-auto dark:bg-input/30 dark:has-disabled:bg-input/80 "
-        "dark:has-[[data-slot][aria-invalid=true]]:ring-destructive/40 has-[>[data-align=block-end]]:[&>input]:pt-3 "
-        "has-[>[data-align=block-start]]:[&>input]:pb-3 has-[>[data-align=inline-end]]:[&>input]:pr-1.5 "
+        "in-data-[slot=combobox-content]:focus-within:ring-0 has-disabled:bg-input/50 "
+        "has-disabled:opacity-50 "
+        "has-[[data-slot=input-group-control]:focus-visible]:border-ring "
+        "has-[[data-slot=input-group-control]:focus-visible]:ring-3 "
+        "has-[[data-slot=input-group-control]:focus-visible]:ring-ring/50 "
+        "has-[[data-slot][aria-invalid=true]]:border-destructive "
+        "has-[[data-slot][aria-invalid=true]]:ring-3 "
+        "has-[[data-slot][aria-invalid=true]]:ring-destructive/20 "
+        "has-[>[data-align=block-end]]:h-auto has-[>[data-align=block-end]]:flex-col "
+        "has-[>[data-align=block-start]]:h-auto "
+        "has-[>[data-align=block-start]]:flex-col has-[>textarea]:h-auto "
+        "dark:bg-input/30 dark:has-disabled:bg-input/80 "
+        "dark:has-[[data-slot][aria-invalid=true]]:ring-destructive/40 "
+        "has-[>[data-align=block-end]]:[&>input]:pt-3 "
+        "has-[>[data-align=block-start]]:[&>input]:pb-3 "
+        "has-[>[data-align=inline-end]]:[&>input]:pr-1.5 "
         "has-[>[data-align=inline-start]]:[&>input]:pl-1.5"
     )
 
     ADDON = (
-        "flex h-auto cursor-text items-center justify-center gap-2 py-1.5 text-sm font-medium text-muted-foreground "
-        "select-none group-data-[disabled=true]/input-group:opacity-50 [&>kbd]:rounded-[calc(var(--radius)-5px)] "
+        "flex h-auto cursor-text items-center justify-center gap-2 py-1.5 text-sm "
+        "font-medium text-muted-foreground "
+        "select-none group-data-[disabled=true]/input-group:opacity-50 "
+        "[&>kbd]:rounded-[calc(var(--radius)-5px)] "
         "[&>svg:not([class*='size-'])]:size-4"
     )
 
-    TEXT = "flex items-center gap-2 text-sm text-muted-foreground [&_svg]:pointer-events-none [&_svg:not([class*='size-'])]:size-4"
+    TEXT = (
+        "flex items-center gap-2 text-sm text-muted-foreground "
+        "[&_svg]:pointer-events-none [&_svg:not([class*='size-'])]:size-4"
+    )
 
     CONTROL_INPUT = (
-        "flex-1 rounded-none border-0 bg-transparent shadow-none ring-0 focus-visible:ring-0 "
-        "disabled:bg-transparent aria-invalid:ring-0 dark:bg-transparent dark:disabled:bg-transparent"
+        "flex-1 rounded-none border-0 bg-transparent shadow-none ring-0 "
+        "focus-visible:ring-0 "
+        "disabled:bg-transparent aria-invalid:ring-0 dark:bg-transparent "
+        "dark:disabled:bg-transparent"
     )
 
     CONTROL_TEXTAREA = (
-        "flex-1 resize-none rounded-none border-0 bg-transparent py-2 shadow-none ring-0 focus-visible:ring-0 "
-        "disabled:bg-transparent aria-invalid:ring-0 dark:bg-transparent dark:disabled:bg-transparent"
+        "flex-1 resize-none rounded-none border-0 bg-transparent py-2 shadow-none "
+        "ring-0 focus-visible:ring-0 "
+        "disabled:bg-transparent aria-invalid:ring-0 dark:bg-transparent "
+        "dark:disabled:bg-transparent"
     )
 
     @classmethod
     def get_addon_align(cls, align: str) -> str:
+        """Get addon align."""
         variants = {
-            "inline-start": "order-first pl-2 has-[>button]:ml-[-0.3rem] has-[>kbd]:ml-[-0.15rem]",
-            "inline-end": "order-last pr-2 has-[>button]:mr-[-0.3rem] has-[>kbd]:mr-[-0.15rem]",
-            "block-start": "order-first w-full justify-start px-2.5 pt-2 group-has-[>input]/input-group:pt-2 [.border-b]:pb-2",
-            "block-end": "order-last w-full justify-start px-2.5 pb-2 group-has-[>input]/input-group:pb-2 [.border-t]:pt-2",
+            "inline-start": (
+                "order-first pl-2 has-[>button]:ml-[-0.3rem] has-[>kbd]:ml-[-0.15rem]"
+            ),
+            "inline-end": (
+                "order-last pr-2 has-[>button]:mr-[-0.3rem] has-[>kbd]:mr-[-0.15rem]"
+            ),
+            "block-start": (
+                "order-first w-full justify-start px-2.5 pt-2 "
+                "group-has-[>input]/input-group:pt-2 [.border-b]:pb-2"
+            ),
+            "block-end": (
+                "order-last w-full justify-start px-2.5 pb-2 "
+                "group-has-[>input]/input-group:pb-2 [.border-t]:pt-2"
+            ),
         }
         return variants.get(align, variants["inline-start"])
 
     @classmethod
     def get_button_size(cls, size: str) -> str:
+        """Get button size."""
         variants = {
-            "xs": "h-6 gap-1 rounded-[calc(var(--radius)-3px)] px-1.5 [&>svg:not([class*='size-'])]:size-3.5",
+            "xs": (
+                "h-6 gap-1 rounded-[calc(var(--radius)-3px)] px-1.5 "
+                "[&>svg:not([class*='size-'])]:size-3.5"
+            ),
             "sm": "",
             "icon-xs": "size-6 rounded-[calc(var(--radius)-3px)] p-0 has-[>svg]:p-0",
             "icon-sm": "size-8 p-0 has-[>svg]:p-0",
@@ -366,8 +433,11 @@ class ClassNames:
 
 
 class InputGroupRoot(ElDiv, CoreComponent):
+    """Input group root."""
+
     @classmethod
-    def create(cls, *children: Any, **props: Any) -> ElDiv:
+    def create(cls, *children: PropValue, **props: PropValue) -> ElDiv:
+        """Create the input group root."""
         props["role"] = "group"
         props["data_slot"] = "input-group"
 
@@ -376,8 +446,11 @@ class InputGroupRoot(ElDiv, CoreComponent):
 
 
 class InputGroupAddon(ElDiv, CoreComponent):
+    """Input group addon."""
+
     @classmethod
-    def create(cls, *children: Any, **props: Any) -> ElDiv:
+    def create(cls, *children: PropValue, **props: PropValue) -> ElDiv:
+        """Create the input group addon."""
         props["role"] = "group"
         props["data_slot"] = "input-group-addon"
 
@@ -390,7 +463,7 @@ class InputGroupAddon(ElDiv, CoreComponent):
         return super().create(*children, **props)
 
     def add_custom_code(self) -> list[str]:
-
+        """Add custom code."""
         focus_script = """
         if (typeof window !== "undefined") {
             const bindInputGroupAddons = () => {
@@ -421,15 +494,21 @@ class InputGroupAddon(ElDiv, CoreComponent):
 
 
 class InputGroupText(ElSpan, CoreComponent):
+    """Input group text."""
+
     @classmethod
-    def create(cls, *children: Any, **props: Any) -> ElSpan:
+    def create(cls, *children: PropValue, **props: PropValue) -> ElSpan:
+        """Create the input group text."""
         cls.set_class_name(ClassNames.TEXT, props)
         return super().create(*children, **props)
 
 
 class InputGroupButton(CoreComponent):
+    """Input group button."""
+
     @classmethod
-    def create(cls, *children: Any, **props: Any) -> Component:
+    def create(cls, *children: PropValue, **props: PropValue) -> Component:
+        """Create the input group button."""
         props.setdefault("type", "button")
         props.setdefault("variant", "ghost")
 
@@ -450,8 +529,11 @@ class InputGroupButton(CoreComponent):
 
 
 class InputGroupInput(CoreComponent):
+    """Input group input."""
+
     @classmethod
-    def create(cls, *children: Any, **props: Any) -> Component:
+    def create(cls, *children: PropValue, **props: PropValue) -> Component:
+        """Create the input group input."""
         props.setdefault("type", "text")
         props["data_slot"] = "input-group-control"
         unstyled = props.get("unstyled", False)
@@ -462,8 +544,11 @@ class InputGroupInput(CoreComponent):
 
 
 class InputGroupTextarea(CoreComponent):
+    """Input group textarea."""
+
     @classmethod
-    def create(cls, *children: Any, **props: Any) -> Component:
+    def create(cls, *children: PropValue, **props: PropValue) -> Component:
+        """Create the input group textarea."""
         props["data_slot"] = "input-group-control"
         unstyled = props.get("unstyled", False)
         cls.set_class_name(ClassNames.CONTROL_TEXTAREA, props)
@@ -473,6 +558,8 @@ class InputGroupTextarea(CoreComponent):
 
 
 class InputGroupNamespace(ComponentNamespace):
+    """Input group namespace."""
+
     root = staticmethod(InputGroupRoot.create)
     addon = staticmethod(InputGroupAddon.create)
     button = staticmethod(InputGroupButton.create)

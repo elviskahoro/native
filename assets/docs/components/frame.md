@@ -13,6 +13,8 @@ from components.ui.frame import frame
 ```
 
 ```python
+"""The core component."""
+
 from typing import Any
 
 from reflex.components.component import Component
@@ -20,6 +22,7 @@ from reflex.utils.imports import ImportVar
 from reflex.vars import FunctionVar, Var
 from reflex.vars.base import VarData
 
+PropValue = Any
 PACKAGE_CN = "clsx-for-tailwind@1.0.0"
 CN = Var(
     "cn",
@@ -32,6 +35,8 @@ CN = Var(
 
 
 class CoreComponent(Component):
+    """Core component."""
+
     unstyled: Var[bool]
 
     @classmethod
@@ -40,7 +45,7 @@ class CoreComponent(Component):
         default_class_name: str | Var[str],
         props: dict[str, Any],
     ) -> None:
-
+        """Set class name."""
         if "render_" in props:
             return
 
@@ -60,27 +65,35 @@ class CoreComponent(Component):
 
 
 def cn(*classes: Var[Any] | str | tuple[Any, ...] | list[Any] | None) -> Var[str]:
+    """Cn."""
     return CN.call(*classes).to(str)
 ```
 
 ```python
-from typing import Any, Literal
+"""The frame component."""
+
+from typing import Literal
 
 import reflex as rx
 from reflex.components.component import ComponentNamespace
 
-from ..core.core import CoreComponent, cn
+from ..core.core import CoreComponent, PropValue, cn
 
 LiteralVariant = Literal["default", "inverse", "ghost"]
 LiteralSpacing = Literal["xs", "sm", "default", "lg"]
 
 
 class ClassNames:
+    """Class names."""
+
     ROOT = "relative flex flex-col bg-muted/50 gap-0.75 p-0.75 rounded-xl"
     ROOT_VARIANT_DEFAULT = "border border-border bg-clip-padding"
     ROOT_VARIANT_INVERSE = "border border-border bg-background bg-clip-padding"
     ROOT_VARIANT_GHOST = ""
-    PANEL = "relative grow overflow-hidden rounded-xl border border-border bg-card bg-clip-padding shadow-xs p-(--frame-panel-p)"
+    PANEL = (
+        "relative grow overflow-hidden rounded-xl border border-border bg-card "
+        "bg-clip-padding shadow-xs p-(--frame-panel-p)"
+    )
     HEADER = "flex flex-col px-(--frame-panel-header-px) py-(--frame-panel-header-py)"
     TITLE = "text-sm font-semibold"
     DESCRIPTION = "text-muted-foreground text-sm"
@@ -96,29 +109,52 @@ VARIANT_CLASSES: dict[str, str] = {
 }
 
 SPACING_CLASSES: dict[str, str] = {
-    "xs": "[--frame-panel-p:--spacing(2)] [--frame-panel-header-px:--spacing(2)] [--frame-panel-header-py:--spacing(1)] [--frame-panel-footer-px:--spacing(2)] [--frame-panel-footer-py:--spacing(1)]",
-    "sm": "[--frame-panel-p:--spacing(3)] [--frame-panel-header-px:--spacing(3)] [--frame-panel-header-py:--spacing(2)] [--frame-panel-footer-px:--spacing(3)] [--frame-panel-footer-py:--spacing(2)]",
-    "default": "[--frame-panel-p:--spacing(4)] [--frame-panel-header-px:--spacing(4)] [--frame-panel-header-py:--spacing(3)] [--frame-panel-footer-px:--spacing(4)] [--frame-panel-footer-py:--spacing(3)]",
-    "lg": "[--frame-panel-p:--spacing(5)] [--frame-panel-header-px:--spacing(5)] [--frame-panel-header-py:--spacing(4)] [--frame-panel-footer-px:--spacing(5)] [--frame-panel-footer-py:--spacing(4)]",
+    "xs": (
+        "[--frame-panel-p:--spacing(2)] [--frame-panel-header-px:--spacing(2)] "
+        "[--frame-panel-header-py:--spacing(1)] [--frame-panel-footer-px:--spacing(2)] "
+        "[--frame-panel-footer-py:--spacing(1)]"
+    ),
+    "sm": (
+        "[--frame-panel-p:--spacing(3)] [--frame-panel-header-px:--spacing(3)] "
+        "[--frame-panel-header-py:--spacing(2)] [--frame-panel-footer-px:--spacing(3)] "
+        "[--frame-panel-footer-py:--spacing(2)]"
+    ),
+    "default": (
+        "[--frame-panel-p:--spacing(4)] [--frame-panel-header-px:--spacing(4)] "
+        "[--frame-panel-header-py:--spacing(3)] [--frame-panel-footer-px:--spacing(4)] "
+        "[--frame-panel-footer-py:--spacing(3)]"
+    ),
+    "lg": (
+        "[--frame-panel-p:--spacing(5)] [--frame-panel-header-px:--spacing(5)] "
+        "[--frame-panel-header-py:--spacing(4)] [--frame-panel-footer-px:--spacing(5)] "
+        "[--frame-panel-footer-py:--spacing(4)]"
+    ),
 }
 
 
 class FrameRoot(CoreComponent):
+    """Frame root."""
+
     @classmethod
-    def create(cls, *children: Any, **props: Any) -> rx.Component:
+    def create(cls, *children: PropValue, **props: PropValue) -> rx.Component:
+        """Create the frame root."""
         variant: LiteralVariant = props.pop("variant", "default")
         spacing: LiteralSpacing = props.pop("spacing", "default")
         stacked: bool = props.pop("stacked", False)
         dense: bool = props.pop("dense", False)
 
         stacked_class = (
-            "gap-0 *:has-[+[data-slot=frame-panel]]:rounded-b-none *:[[data-slot=frame-panel]+[data-slot=frame-panel]]:rounded-t-none *:[[data-slot=frame-panel]+[data-slot=frame-panel]]:border-t-0"
+            "gap-0 *:has-[+[data-slot=frame-panel]]:rounded-b-none "
+            "*:[[data-slot=frame-panel]+[data-slot=frame-panel]]:rounded-t-none "
+            "*:[[data-slot=frame-panel]+[data-slot=frame-panel]]:border-t-0"
             if stacked
             else ""
         )
 
         dense_class = (
-            "p-0 gap-0 [&_[data-slot=frame-panel]]:-mx-px [&_[data-slot=frame-panel]]:before:hidden [&_[data-slot=frame-panel]:last-child]:-mb-px"
+            "p-0 gap-0 [&_[data-slot=frame-panel]]:-mx-px "
+            "[&_[data-slot=frame-panel]]:before:hidden "
+            "[&_[data-slot=frame-panel]:last-child]:-mb-px"
             if dense
             else ""
         )
@@ -141,46 +177,63 @@ class FrameRoot(CoreComponent):
 
 
 class FramePanel(CoreComponent):
+    """Frame panel."""
+
     @classmethod
-    def create(cls, *children: Any, **props: Any) -> rx.Component:
+    def create(cls, *children: PropValue, **props: PropValue) -> rx.Component:
+        """Create the frame panel."""
         props["data-slot"] = "frame-panel"
         cls.set_class_name(ClassNames.PANEL, props)
         return rx.el.div(*children, **props)
 
 
 class FrameHeader(CoreComponent):
+    """Frame header."""
+
     @classmethod
-    def create(cls, *children: Any, **props: Any) -> rx.Component:
+    def create(cls, *children: PropValue, **props: PropValue) -> rx.Component:
+        """Create the frame header."""
         props["data-slot"] = "frame-panel-header"
         cls.set_class_name(ClassNames.HEADER, props)
         return rx.el.header(*children, **props)
 
 
 class FrameTitle(CoreComponent):
+    """Frame title."""
+
     @classmethod
-    def create(cls, *children: Any, **props: Any) -> rx.Component:
+    def create(cls, *children: PropValue, **props: PropValue) -> rx.Component:
+        """Create the frame title."""
         props["data-slot"] = "frame-panel-title"
         cls.set_class_name(ClassNames.TITLE, props)
         return rx.el.div(*children, **props)
 
 
 class FrameDescription(CoreComponent):
+    """Frame description."""
+
     @classmethod
-    def create(cls, *children: Any, **props: Any) -> rx.Component:
+    def create(cls, *children: PropValue, **props: PropValue) -> rx.Component:
+        """Create the frame description."""
         props["data-slot"] = "frame-panel-description"
         cls.set_class_name(ClassNames.DESCRIPTION, props)
         return rx.el.div(*children, **props)
 
 
 class FrameFooter(CoreComponent):
+    """Frame footer."""
+
     @classmethod
-    def create(cls, *children: Any, **props: Any) -> rx.Component:
+    def create(cls, *children: PropValue, **props: PropValue) -> rx.Component:
+        """Create the frame footer."""
         props["data-slot"] = "frame-panel-footer"
         cls.set_class_name(ClassNames.FOOTER, props)
         return rx.el.footer(*children, **props)
 
 
 class Frame(ComponentNamespace):
+    """Frame."""
+
     root = staticmethod(FrameRoot.create)
     panel = staticmethod(FramePanel.create)
     header = staticmethod(FrameHeader.create)

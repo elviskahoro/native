@@ -1,22 +1,26 @@
-from typing import Any
+"""The checkbox component."""
 
 import reflex as rx
 from reflex.components.component import ComponentNamespace
 
-from ..core.core import CoreComponent, cn
+from ..core.core import CoreComponent, PropValue, cn
 from ..core.hugeicon import hi
 
 
 class ClassNames:
+    """Class names."""
+
     ROOT = (
         "group relative inline-flex size-4 shrink-0 cursor-pointer items-center "
         "justify-center rounded-[4px] border border-input "
         "has-[:disabled]:cursor-not-allowed has-[:disabled]:opacity-50 "
-        "has-[:focus-visible]:border-ring has-[:focus-visible]:ring-3 has-[:focus-visible]:ring-ring/50 "
+        "has-[:focus-visible]:border-ring has-[:focus-visible]:ring-3 "
+        "has-[:focus-visible]:ring-ring/50 "
         "has-[[aria-invalid=true]]:border-destructive has-[[aria-invalid=true]]:ring-3 "
         "has-[[aria-invalid=true]]:ring-destructive/20 "
         "dark:bg-input/30 "
-        "has-[:checked]:border-primary has-[:checked]:bg-primary has-[:checked]:text-primary-foreground "
+        "has-[:checked]:border-primary has-[:checked]:bg-primary "
+        "has-[:checked]:text-primary-foreground "
         "dark:has-[:checked]:bg-primary"
     )
 
@@ -29,12 +33,14 @@ class ClassNames:
     BOX = (
         "pointer-events-none flex size-4 shrink-0 items-center justify-center "
         "rounded-[4px] border border-input "
-        "peer-focus-visible:border-ring peer-focus-visible:ring-3 peer-focus-visible:ring-ring/50 "
+        "peer-focus-visible:border-ring peer-focus-visible:ring-3 "
+        "peer-focus-visible:ring-ring/50 "
         "peer-disabled:cursor-not-allowed peer-disabled:opacity-50 "
         "peer-aria-[invalid=true]:border-destructive peer-aria-[invalid=true]:ring-3 "
         "peer-aria-[invalid=true]:ring-destructive/20 "
         "dark:bg-input/30 "
-        "peer-checked:border-primary peer-checked:bg-primary peer-checked:text-primary-foreground "
+        "peer-checked:border-primary peer-checked:bg-primary "
+        "peer-checked:text-primary-foreground "
         "dark:peer-checked:bg-primary"
     )
 
@@ -50,8 +56,11 @@ class ClassNames:
 
 
 class CheckboxRoot(CoreComponent):
+    """Checkbox root."""
+
     @classmethod
-    def create(cls, *children: Any, **props: Any) -> rx.Component:
+    def create(cls, *children: PropValue, **props: PropValue) -> rx.Component:
+        """Create the checkbox root."""
         custom_classes = props.pop("class_name", "")
 
         input_props = {}
@@ -75,8 +84,11 @@ class CheckboxRoot(CoreComponent):
 
 
 class CheckboxIndicator(CoreComponent):
+    """Checkbox indicator."""
+
     @classmethod
-    def create(cls, *children: Any, **props: Any) -> rx.Component:
+    def create(cls, *children: PropValue, **props: PropValue) -> rx.Component:
+        """Create the checkbox indicator."""
         if len(children) == 0:
             children = (hi("Tick02Icon"),)
         props["data-slot"] = "checkbox-indicator"
@@ -85,6 +97,8 @@ class CheckboxIndicator(CoreComponent):
 
 
 class Checkbox(ComponentNamespace):
+    """Checkbox."""
+
     root = staticmethod(CheckboxRoot.create)
     indicator = staticmethod(CheckboxIndicator.create)
     class_names = ClassNames
