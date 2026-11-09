@@ -15,7 +15,7 @@ FILES = sorted(UI_DIR.rglob("*.py"))
 
 @pytest.mark.parametrize("path", FILES, ids=lambda p: str(p.relative_to(UI_DIR)))
 def test_no_absolute_components_imports(path: Path) -> None:
-    offenders = []
+    offenders: list[str] = []
     for node in ast.walk(ast.parse(path.read_text())):
         if isinstance(node, ast.ImportFrom) and node.level == 0:
             mod = node.module or ""
@@ -39,7 +39,9 @@ def test_kit_imports_when_vendored_under_another_package(tmp_path: Path) -> None
 
     pkg = tmp_path / "vendored" / "web" / "components"
     shutil.copytree(
-        UI_DIR.parent, pkg, ignore=shutil.ignore_patterns("__pycache__")
+        UI_DIR.parent,
+        pkg,
+        ignore=shutil.ignore_patterns("__pycache__"),
     )
     for d in (pkg.parent.parent, pkg.parent):
         (d / "__init__.py").touch()
@@ -55,7 +57,11 @@ def test_kit_imports_when_vendored_under_another_package(tmp_path: Path) -> None
         f"for n in {names!r}:\n"
         "    importlib.import_module('web.components.ui.' + n if n != 'ui' else 'web.components.ui')\n"
     )
-    result = subprocess.run(
-        [sys.executable, "-I", "-c", code], capture_output=True, text=True, cwd=tmp_path
+    result = subprocess.run(  # noqa: S603  # nosec B603 - fixed argv, generated code
+        [sys.executable, "-I", "-c", code],
+        capture_output=True,
+        text=True,
+        cwd=tmp_path,
+        check=False,
     )
     assert result.returncode == 0, result.stderr[-2000:]
