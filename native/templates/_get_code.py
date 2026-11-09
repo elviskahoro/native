@@ -2,24 +2,6 @@ import reflex as rx
 
 from components.ui.button import button
 
-ADD_SWATCHES_JS = r"""
-(function() {
-    function injectSwatches() {
-        const block = document.getElementById("get-css-theme");
-        if (!block) return;
-        const code = block.querySelector("code") || block;
-        if (code.dataset.swatchesDone === "true") return;
-        code.innerHTML = code.textContent.replace(/oklch\([^)]+\)/g, (m) =>
-            `<span style="background-color:${m};width:.85em;height:.85em;display:inline-block;margin-right:.4em;border-radius:3px;border:1px solid rgba(255,255,255,.15);vertical-align:middle;flex-shrink:0;"></span>` + m
-        );
-        code.dataset.swatchesDone = "true";
-    }
-    setTimeout(injectSwatches, 40);
-    setTimeout(injectSwatches, 120);
-    setTimeout(injectSwatches, 300);
-})();
-"""
-
 PLUGIN_STRING = """import reflex as rx
 from reflex.plugins.shared_tailwind import TailwindConfig
 

@@ -664,9 +664,20 @@
     const textContent = code.textContent || code.dataset.rawText;
 
     // 3. Inject the color circles inline next to the oklch values
-    code.innerHTML = textContent.replace(/oklch\([^)]+\)/g, (m) => {
-      return `<span style="background-color:${m};width:.85em;height:.85em;display:inline-block;margin-right:.4em;border-radius:3px;border:1px solid rgba(255,255,255,.15);vertical-align:middle;flex-shrink:0;"></span>${m}`;
-    });
+    const frag = document.createDocumentFragment();
+    let last = 0;
+    for (const match of textContent.matchAll(/oklch\([^)]+\)/g)) {
+      const m = match[0];
+      frag.appendChild(document.createTextNode(textContent.slice(last, match.index)));
+      const swatch = document.createElement("span");
+      swatch.style.cssText = `background-color:${m};width:.85em;height:.85em;display:inline-block;margin-right:.4em;border-radius:3px;border:1px solid rgba(255,255,255,.15);vertical-align:middle;flex-shrink:0;`;
+      frag.appendChild(swatch);
+      frag.appendChild(document.createTextNode(m));
+      last = match.index + m.length;
+    }
+    frag.appendChild(document.createTextNode(textContent.slice(last)));
+    code.replaceChildren(frag);
+
   }
 
   document.addEventListener("click", function (e) {
