@@ -112,19 +112,6 @@ PRs land through the Trunk Merge Queue, not the GitHub Merge button.
 - A `Closes #N` line in the PR body auto-closes the issue when the queue lands
   the PR. Do not close the issue by hand beforehand.
 
-### When Trunk Check fails
-
-- Read the failed job log first: `gh run view <run-id> --log-failed`. It lists
-  every finding with file, line, rule and whether it is auto-fixable.
-- Fix the findings by hand, or with the tool that reported them. For Python,
-  use `ruff format --config .trunk/configs/ruff.toml <path>` and
-  `ruff check --config .trunk/configs/ruff.toml <path>`; bare `ruff` does not
-  pick up the repo config. Other linters need their own tools.
-- Run `trunk check` locally only if the log is not enough, and never in
-  memory-limited sandboxes (it can be killed with exit 137).
-- Before pushing, fetch the PR branch and check for bot fix commits (for
-  example Pullfrog) to avoid duplicate work and rejected pushes.
-
 The queue gates on the statuses in `.trunk/trunk.yaml` →
 `merge.required_statuses` ("Trunk Check", "Unit tests", "Generate & Verify
 Docs and Social Cards", "pullfrog-approval"). The three workflow gates
@@ -152,6 +139,19 @@ A red "Entire Gates" check does not block merging — nothing waits on it. To
 clear one anyway, open the trail linked from the check, resolve or fix the
 listed findings or approvals, and push; the gate recomputes on the new
 head.
+
+### When Trunk Check fails
+
+- Read the failed job log first: `gh run view <run-id> --log-failed`. It lists
+  every finding with file, line, rule and whether it is auto-fixable.
+- Fix the findings by hand, or with the tool that reported them. For Python,
+  use `ruff format --config .trunk/configs/ruff.toml <path>` and
+  `ruff check --config .trunk/configs/ruff.toml <path>`; bare `ruff` does not
+  pick up the repo config. Other linters need their own tools.
+- Run `trunk check` locally only if the log is not enough, and never in
+  memory-limited sandboxes (it can be killed with exit 137).
+- Before pushing, fetch the PR branch and check for bot fix commits (for
+  example Pullfrog) to avoid duplicate work and rejected pushes.
 
 ## Agent Skills
 
