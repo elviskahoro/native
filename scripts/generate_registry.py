@@ -274,7 +274,6 @@ def render_registry(by_name: dict[str, ComponentFile]) -> str:
             lines.append(f'        "files": ["{comp.rel_path}"],')
             lines.append(f'        "dependencies": [{deps}],')
             lines.append("    },")
-        lines.append("")
 
     if lines[-1] == "":
         lines.pop()
