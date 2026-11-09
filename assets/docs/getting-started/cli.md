@@ -135,9 +135,9 @@ buridan apply --preset <ID>
 buridan add button input select
 ```
 
-## Lint setup for vendored components
+## Lint setup for copied components
 
-The kit passes ruff's `ANN401`, `D1xx`, and nearly all `E501` checks. A few findings are intentional, so exempt them for the vendored tree only:
+The kit passes ruff's `ANN401`, `D1xx`, and nearly all `E501` checks. A few findings are intentional, so exempt them for the copied tree only:
 
 ```toml
 [tool.ruff.lint.per-file-ignores]

@@ -56,7 +56,9 @@ def marker_root(
 
 
 def marker_icon(
-    *children: PropValue, class_name: str = "", **props: PropValue,
+    *children: PropValue,
+    class_name: str = "",
+    **props: PropValue,
 ) -> rx.Component:
     """Marker icon."""
     return rx.el.span(
@@ -69,7 +71,9 @@ def marker_icon(
 
 
 def marker_content(
-    *children: PropValue, class_name: str = "", **props: PropValue,
+    *children: PropValue,
+    class_name: str = "",
+    **props: PropValue,
 ) -> rx.Component:
     """Marker content."""
     return rx.el.span(
