@@ -126,8 +126,8 @@ from reflex.components.component import ComponentNamespace
 from reflex.vars.base import Var
 from reflex_components_core.el import elements
 
-from components.core.core import PropValue
-from components.ui.separator import separator
+from ..core.core import PropValue
+from .separator import separator
 
 LiteralOrientation = Literal["vertical", "horizontal", "responsive"]
 LiteralLegendVariant = Literal["legend", "label"]
