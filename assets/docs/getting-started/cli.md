@@ -146,5 +146,6 @@ The kit passes ruff's `ANN401`, `D1xx`, and nearly all `E501` checks. A few find
   "A001",   # `input` mirrors the shadcn registry API
   "A004",
   "E501",   # unbreakable class tokens, SVG paths and inline JS
+  "FBT003", # Reflex event handlers are invoked positionally
 ]
 ```
