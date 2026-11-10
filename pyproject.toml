@@ -1,5 +1,5 @@
 [project]
-name = "buridan"
+name = "gtm-buridan-native"
 version = "0.0.3"
 description = "A command line interface (CLI) for adding components and themes to your project."
 requires-python = ">=3.11"
@@ -7,7 +7,7 @@ dependencies = []
 
 readme = "cli/README.md"
 license = "MIT"
-authors = [{ name = "LineIndent", email = "line.indent@gmail.com" }]
+authors = [{ name = "Elvis Kahoro", email = "elvis@elvis.ai" }]
 keywords = [
   "cli",
   "ui",
@@ -28,9 +28,9 @@ classifiers = [
 ]
 
 [project.urls]
-Homepage = "https://github.com/LineIndent/native"
-Repository = "https://github.com/LineIndent/native"
-Issues = "https://github.com/LineIndent/native/issues"
+Homepage = "https://github.com/elviskahoro/native"
+Repository = "https://github.com/elviskahoro/native"
+Issues = "https://github.com/elviskahoro/native/issues"
 
 [dependency-groups]
 dev = [

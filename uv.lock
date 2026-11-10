@@ -93,43 +93,6 @@ wheels = [
 ]
 
 [[package]]
-name = "buridan"
-version = "0.0.3"
-source = { editable = "." }
-
-[package.dev-dependencies]
-dev = [
-    { name = "beautifulsoup4" },
-    { name = "black" },
-    { name = "google-genai" },
-    { name = "inquirerpy" },
-    { name = "markdown" },
-    { name = "pillow" },
-    { name = "pytest" },
-    { name = "pyyaml" },
-    { name = "questionary" },
-    { name = "reflex" },
-    { name = "ruff" },
-]
-
-[package.metadata]
-
-[package.metadata.requires-dev]
-dev = [
-    { name = "beautifulsoup4", specifier = ">=4.15.0" },
-    { name = "black" },
-    { name = "google-genai" },
-    { name = "inquirerpy" },
-    { name = "markdown", specifier = ">=3.10.2" },
-    { name = "pillow", specifier = ">=12.2.0" },
-    { name = "pytest", specifier = ">=9.1.1" },
-    { name = "pyyaml", specifier = ">=6.0.3" },
-    { name = "questionary", specifier = ">=2.1.1" },
-    { name = "reflex", specifier = "==0.10.0" },
-    { name = "ruff", specifier = ">=0.15.22" },
-]
-
-[[package]]
 name = "certifi"
 version = "2026.6.17"
 source = { registry = "https://pypi.org/simple" }
@@ -517,6 +480,43 @@ wheels = [
 [package.optional-dependencies]
 reload = [
     { name = "watchfiles" },
+]
+
+[[package]]
+name = "gtm-buridan-native"
+version = "0.0.3"
+source = { editable = "." }
+
+[package.dev-dependencies]
+dev = [
+    { name = "beautifulsoup4" },
+    { name = "black" },
+    { name = "google-genai" },
+    { name = "inquirerpy" },
+    { name = "markdown" },
+    { name = "pillow" },
+    { name = "pytest" },
+    { name = "pyyaml" },
+    { name = "questionary" },
+    { name = "reflex" },
+    { name = "ruff" },
+]
+
+[package.metadata]
+
+[package.metadata.requires-dev]
+dev = [
+    { name = "beautifulsoup4", specifier = ">=4.15.0" },
+    { name = "black" },
+    { name = "google-genai" },
+    { name = "inquirerpy" },
+    { name = "markdown", specifier = ">=3.10.2" },
+    { name = "pillow", specifier = ">=12.2.0" },
+    { name = "pytest", specifier = ">=9.1.1" },
+    { name = "pyyaml", specifier = ">=6.0.3" },
+    { name = "questionary", specifier = ">=2.1.1" },
+    { name = "reflex", specifier = "==0.10.0" },
+    { name = "ruff", specifier = ">=0.15.22" },
 ]
 
 [[package]]

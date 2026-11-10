@@ -1,0 +1,76 @@
+# Publish gtm-buridan-native to PyPI on version tags (v*), same flow as
+# sdk-python-linear / sdk-python-attio. Cut a release with:
+#   git tag v0.0.4 && git push origin v0.0.4
+# `start: manually` makes a tag push wait for a human to start the run in the
+# RWX UI (approval gate). Provision the token once with:
+#   rwx vaults secrets set --vault native PYPI_TOKEN=<project-scoped token>
+# and restrict that vault to refs/tags/v*. Manual `rwx run` dispatch builds
+# and checks the package but never uploads (no tag).
+on:
+  github:
+    push:
+      - if: ${{ event.git.tag != '' && starts-with(event.git.tag, 'v') }}
+        start: manually
+        init:
+          commit-sha: ${{ event.git.sha }}
+          tag: ${{ event.git.tag }}
+  cli:
+    init:
+      commit-sha: ${{ event.git.sha }}
+      tag: ""
+
+base:
+  image: ubuntu:24.04
+  config: rwx/base 1.2.0
+
+tasks:
+  # Keep this URL in sync with the repo hosting this pipeline: it is what gets
+  # built and published when a tag fires.
+  - key: code
+    call: git/clone 2.2.0
+    with:
+      repository: https://github.com/elviskahoro/native.git
+      ref: ${{ init.commit-sha }}
+
+  - key: uv-install
+    run: |
+      set -euo pipefail
+      script="$(mktemp)"
+      trap 'rm -f "${script}"' EXIT
+      curl -LsSf https://astral.sh/uv/0.11.29/install.sh -o "${script}"
+      echo "504a79fd2ed0dcd47e7f04f0792cfd0871f62e24a7fe40fa8ae0f563a369f2bd  ${script}" | sha256sum -c -
+      sh "${script}"
+      echo "$HOME/.local/bin" >> "$RWX_ENV/PATH"
+
+  # The tag must match pyproject's version, or PyPI gets a mislabeled release.
+  - key: verify-version
+    use: [uv-install, code]
+    if: ${{ init.tag != '' }}
+    env:
+      TAG: ${{ init.tag }}
+    run: |
+      set -euo pipefail
+      version="$(python3 -c 'import tomllib;print(tomllib.load(open("pyproject.toml","rb"))["project"]["version"])')"
+      if [ "v${version}" != "${TAG}" ]; then
+        echo "tag ${TAG} does not match pyproject version ${version}" >&2
+        exit 1
+      fi
+
+  - key: build
+    use: [uv-install, code]
+    after: ${{ verify-version.succeeded || verify-version.skipped }}
+    run: |
+      set -euo pipefail
+      uv build
+      uvx twine check dist/*
+
+  - key: publish
+    use: build
+    if: ${{ init.tag != '' }}
+    # Uncached: an upload is an external effect and must never be skipped.
+    cache: false
+    env:
+      UV_PUBLISH_TOKEN:
+        value: ${{ vaults.native.secrets.PYPI_TOKEN }}
+        cache-key: excluded
+    run: uv publish dist/*

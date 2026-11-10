@@ -86,4 +86,4 @@ Visit [https://native.buridan.dev/docs/getting-started/cli](https://ui.buridan.d
 
 ## License
 
-Licensed under the [MIT license](https://github.com/LineIndent/ui/blob/main/LICENSE.md)
+Licensed under the [MIT license](https://github.com/elviskahoro/native/blob/main/LICENSE.md)

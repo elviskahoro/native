@@ -104,7 +104,7 @@ def navbar(class_name: str = "") -> Header:
                         p("buridan@0.0.3", class_name="font-medium"),
                         variant="ghost",
                     ),
-                    href="https://pypi.org/project/buridan/",
+                    href="https://pypi.org/project/gtm-buridan-native/",
                     class_name="hidden lg:flex",
                 ),
                 class_name="flex flex-row gap-x-2 items-center",
