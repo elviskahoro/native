@@ -6,10 +6,17 @@
   "checkpoints_count": 3,
   "files_touched": [
     ".rwx/publish.yml",
+    "assets/docs/components/marker.md",
     "assets/docs/getting-started/cli.md",
     "assets/docs/getting-started/installation.md",
+    "assets/docs/utilities/scroll-fade.md",
+    "assets/docs/utilities/shimmer.md",
+    "cli/README.md",
+    "docs/components/marker.md",
     "docs/getting_started/cli.md",
     "docs/getting_started/installation.md",
+    "docs/utilities/scroll_fade.md",
+    "docs/utilities/shimmer.md",
     "native/templates/navbar.py",
     "pyproject.toml",
     "uv.lock"
@@ -24,11 +31,11 @@
     }
   ],
   "token_usage": {
-    "input_tokens": 8,
-    "cache_creation_tokens": 2256,
-    "cache_read_tokens": 246136,
-    "output_tokens": 775,
-    "api_call_count": 4
+    "input_tokens": 4,
+    "cache_creation_tokens": 1309,
+    "cache_read_tokens": 125991,
+    "output_tokens": 625,
+    "api_call_count": 2
   },
   "redaction": {
     "replacements": 12,
