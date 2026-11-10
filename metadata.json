@@ -1,0 +1,56 @@
+{
+  "cli_version": "0.12.1",
+  "checkpoint_id": "01M73KAC5WJ6GYB91HXK800GFT",
+  "strategy": "manual-commit",
+  "branch": "conductor/native-issue-201",
+  "checkpoints_count": 2,
+  "files_touched": [
+    ".github/workflows/release.yml",
+    ".rwx/publish.yml",
+    "README.md",
+    "assets/docs/components/marker.md",
+    "assets/docs/getting-started/cli.md",
+    "assets/docs/getting-started/installation.md",
+    "assets/docs/utilities/scroll-fade.md",
+    "assets/docs/utilities/shimmer.md",
+    "cli/README.md",
+    "docs/components/marker.md",
+    "docs/getting_started/cli.md",
+    "docs/getting_started/installation.md",
+    "docs/utilities/scroll_fade.md",
+    "docs/utilities/shimmer.md",
+    "native/templates/navbar.py",
+    "pyproject.toml",
+    "uv.lock"
+  ],
+  "sessions": [
+    {
+      "metadata": "/0/metadata.json",
+      "transcript": "/0/full.jsonl",
+      "compact_transcript": "/0/transcript.jsonl",
+      "content_hash": "/0/content_hash.txt",
+      "prompt": "/0/prompt.txt"
+    }
+  ],
+  "token_usage": {
+    "input_tokens": 30,
+    "cache_creation_tokens": 64620,
+    "cache_read_tokens": 647738,
+    "output_tokens": 4351,
+    "api_call_count": 15
+  },
+  "redaction": {
+    "replacements": 8,
+    "layers": {
+      "betterleaks": 0,
+      "connection_string": 0,
+      "credential_key": 0,
+      "credential_value": 5,
+      "credentialed_uri": 0,
+      "entropy": 0,
+      "key_context": 3,
+      "provider_token": 0,
+      "shell_stdin": 0
+    }
+  }
+}
