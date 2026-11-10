@@ -223,7 +223,7 @@ def marker_status_demo() -> rx.Component:
 
 ## Shimmer
 
-Add the [`shimmer`](/docs/utilities/shimmer) utility class to `marker.content` for an animated streaming-text effect. The utility ships with the `buridan` package — see the shimmer docs for installation.
+Add the [`shimmer`](/docs/utilities/shimmer) utility class to `marker.content` for an animated streaming-text effect. The utility ships with the `gtm-buridan-native` package — see the shimmer docs for installation.
 
 ```python
 def marker_shimmer() -> rx.Component:

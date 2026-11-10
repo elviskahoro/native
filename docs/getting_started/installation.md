@@ -24,13 +24,13 @@ It's recommended to use the [uv](https://docs.astral.sh/uv/) package manager whe
 
 The following page provides a step-by-step [installation](https://reflex.dev/docs/getting-started/installation/) guide for Reflex apps. Buridan is installed into an existing Reflex project, so make sure you have a project with an `rxconfig.py` at its root before continuing. Every `buridan` command needs to be run from that project root.
 
-After setting up your Reflex environment, you can install the `buridan` package by adding it to your `pyproject.toml` file.
+After setting up your Reflex environment, you can install the `gtm-buridan-native` package by adding it to your `pyproject.toml` file.
 
 ```toml
-dependencies = ["buridan=={current version}"]
+dependencies = ["gtm-buridan-native=={current version}"]
 ```
 
-You can find the latest published version on [PyPI](https://pypi.org/project/buridan/).
+You can find the latest published version on [PyPI](https://pypi.org/project/gtm-buridan-native/).
 
 After adding the package, sync your environment with uv:
 
