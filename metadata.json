@@ -5,7 +5,14 @@
   "branch": "w-1137/pypi-package-publishing",
   "checkpoints_count": 3,
   "files_touched": [
-    ".rwx/publish.yml"
+    ".rwx/publish.yml",
+    "assets/docs/getting-started/cli.md",
+    "assets/docs/getting-started/installation.md",
+    "docs/getting_started/cli.md",
+    "docs/getting_started/installation.md",
+    "native/templates/navbar.py",
+    "pyproject.toml",
+    "uv.lock"
   ],
   "sessions": [
     {
@@ -17,11 +24,11 @@
     }
   ],
   "token_usage": {
-    "input_tokens": 2,
-    "cache_creation_tokens": 638,
-    "cache_read_tokens": 59794,
-    "output_tokens": 463,
-    "api_call_count": 1
+    "input_tokens": 8,
+    "cache_creation_tokens": 2256,
+    "cache_read_tokens": 246136,
+    "output_tokens": 775,
+    "api_call_count": 4
   },
   "redaction": {
     "replacements": 12,
