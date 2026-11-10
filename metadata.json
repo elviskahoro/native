@@ -6,7 +6,8 @@
   "checkpoints_count": 3,
   "files_touched": [
     ".rwx/publish.yml",
-    "pyproject.toml"
+    "pyproject.toml",
+    "uv.lock"
   ],
   "sessions": [
     {
@@ -14,15 +15,15 @@
       "transcript": "/0/full.jsonl",
       "compact_transcript": "/0/transcript.jsonl",
       "content_hash": "/0/content_hash.txt",
-      "prompt": "/0/prompt.txt"
+      "prompt": ""
     }
   ],
   "token_usage": {
-    "input_tokens": 44,
-    "cache_creation_tokens": 46443,
-    "cache_read_tokens": 631599,
-    "output_tokens": 6548,
-    "api_call_count": 18
+    "input_tokens": 2,
+    "cache_creation_tokens": 1245,
+    "cache_read_tokens": 58549,
+    "output_tokens": 157,
+    "api_call_count": 1
   },
   "redaction": {
     "replacements": 12,
