@@ -4,7 +4,7 @@ name: Release
 # RWX publish run (.rwx/publish.yml) uploads the matching version to PyPI.
 on:
   push:
-    tags: ["v*"]
+    tags: [v*]
 
 permissions:
   contents: write
