@@ -1,8 +1,10 @@
-# Publish gtm-buridan-native to PyPI on version tags (v*), same flow as
+# Publish gtm-ui-native to PyPI on version tags (v*), same flow as
 # sdk-python-linear / sdk-python-attio. Cut a release with:
 #   1. Bump `version` in pyproject.toml and the navbar badge label in
 #      native/templates/navbar.py, and merge that to main.
 #   2. git tag v<version> && git push origin v<version>
+#   3. The tag push also creates a draft GitHub release (release.yml). Publish
+#      it after the RWX run uploads to PyPI.
 # `start: manually` makes a tag push wait for a human to start the run in the
 # RWX UI (approval gate). Provision the token once with:
 #   rwx vaults secrets set --vault native PYPI_TOKEN=<token>

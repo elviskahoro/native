@@ -32,7 +32,7 @@ Set `role="status"` and include a [`Spinner`](/docs/components/spinner) for stre
 
 ## Shimmer
 
-Add the [`shimmer`](/docs/utilities/shimmer) utility class to `marker.content` for an animated streaming-text effect. The utility ships with the `gtm-buridan-native` package — see the shimmer docs for installation.
+Add the [`shimmer`](/docs/utilities/shimmer) utility class to `marker.content` for an animated streaming-text effect. The utility ships with the `gtm-ui-native` package — see the shimmer docs for installation.
 
 --DEMO(marker_shimmer)--
 

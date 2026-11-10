@@ -101,10 +101,10 @@ def navbar(class_name: str = "") -> Header:
                 a(
                     button(
                         hi("GitBranchIcon", class_name="shrink-0 size-4"),
-                        p("gtm-buridan-native@0.0.3", class_name="font-medium"),
+                        p("gtm-ui-native@0.0.3", class_name="font-medium"),
                         variant="ghost",
                     ),
-                    href="https://pypi.org/project/gtm-buridan-native/",
+                    href="https://pypi.org/project/gtm-ui-native/",
                     class_name="hidden lg:flex",
                 ),
                 class_name="flex flex-row gap-x-2 items-center",

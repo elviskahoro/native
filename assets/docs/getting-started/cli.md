@@ -12,10 +12,10 @@ All commands must be run from your Reflex project root, where `rxconfig.py` is l
 
 # Installation
 
-Add `gtm-buridan-native` to your `pyproject.toml`:
+Add `gtm-ui-native` to your `pyproject.toml`:
 
 ```toml
-dependencies = ["gtm-buridan-native=={current version}"]
+dependencies = ["gtm-ui-native=={current version}"]
 ```
 
 Then sync your environment with [uv](https://docs.astral.sh/uv/):

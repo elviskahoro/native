@@ -2,6 +2,20 @@
 
 A command line interface (CLI) for adding components and themes to your project.
 
+## Install
+
+```bash
+uv add gtm-ui-native
+# or
+pip install gtm-ui-native
+```
+
+The package on PyPI is `gtm-ui-native`; the command it installs is `buridan`.
+
+## Package naming
+
+This fork publishes `gtm-ui-native` from [elviskahoro/native](https://github.com/elviskahoro/native). Upstream `LineIndent/native` publishes `buridan`, and `LineIndent/ui` publishes `buridan-create`. All three install a `buridan` command, so install only one per environment.
+
 ## create
 
 Opens the Buridan Native theme builder in your browser. Use it to customize your design system and generate a unique preset ID.
