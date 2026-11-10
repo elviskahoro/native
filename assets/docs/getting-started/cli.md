@@ -12,7 +12,7 @@ All commands must be run from your Reflex project root, where `rxconfig.py` is l
 
 # Installation
 
-Add `buridan` to your `pyproject.toml`:
+Add `gtm-buridan-native` to your `pyproject.toml`:
 
 ```toml
 dependencies = ["gtm-buridan-native=={current version}"]

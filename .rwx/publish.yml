@@ -1,11 +1,15 @@
 # Publish gtm-buridan-native to PyPI on version tags (v*), same flow as
 # sdk-python-linear / sdk-python-attio. Cut a release with:
-#   git tag v0.0.4 && git push origin v0.0.4
+#   1. Bump `version` in pyproject.toml and the navbar badge label in
+#      native/templates/navbar.py, and merge that to main.
+#   2. git tag v<version> && git push origin v<version>
 # `start: manually` makes a tag push wait for a human to start the run in the
 # RWX UI (approval gate). Provision the token once with:
-#   rwx vaults secrets set --vault native PYPI_TOKEN=<project-scoped token>
-# and restrict that vault to refs/tags/v*. Manual `rwx run` dispatch builds
-# and checks the package but never uploads (no tag).
+#   rwx vaults secrets set --vault native PYPI_TOKEN=<token>
+# The first upload needs an account-scoped token (the PyPI project doesn't
+# exist yet); afterwards rotate it to a project-scoped one.
+# Restrict that vault to refs/tags/v*. Manual `rwx run` dispatch builds and
+# checks the package but never uploads (no tag).
 on:
   github:
     push:
