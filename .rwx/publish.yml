@@ -1,4 +1,4 @@
-# Publish gtm-buridan-native to PyPI on version tags (v*), same flow as
+# Publish gtm-ui-native to PyPI on version tags (v*), same flow as
 # sdk-python-linear / sdk-python-attio. Cut a release with:
 #   1. Bump `version` in pyproject.toml and the navbar badge label in
 #      native/templates/navbar.py, and merge that to main.

@@ -1,10 +1,22 @@
 # buridan/native
 
+[![PyPI](https://img.shields.io/pypi/v/gtm-ui-native)](https://pypi.org/project/gtm-ui-native/)
+
 Native HTML UI components you can copy, paste, and ship in minutes. Built for Reflex. Production-ready shadcn/ui-inspired blocks and components designed to extend and override naturally. Open source, with no lock-in.
 
 <p align="center">
   <img src="assets/site/github_readme.webp" alt="@Buridan">
 </p>
+
+## Install
+
+```bash
+uv add gtm-ui-native
+# or
+pip install gtm-ui-native
+```
+
+The package on PyPI is `gtm-ui-native`; the command it installs is `buridan`.
 
 ## Documentation
 

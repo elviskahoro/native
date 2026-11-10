@@ -9,9 +9,9 @@ order: 0
 >The **shimmer** utility is purely composed of CSS and is based on [shadcn/shimmer](https://ui.shadcn.com/docs/utils/shimmer). No extensions to **rxconfig.py** are needed as it uses **Tailwind v4** syntax. 
 
 
-If your project was set up with `buridan init`, you already have shimmer. It ships with the `gtm-buridan-native` package, which the CLI imports in your global CSS file.
+If your project was set up with `buridan init`, you already have shimmer. It ships with the `gtm-ui-native` package, which the CLI imports in your global CSS file.
 
-Otherwise install the `gtm-buridan-native` package:
+Otherwise install the `gtm-ui-native` package:
 
 ```python
 uv run buridan init
