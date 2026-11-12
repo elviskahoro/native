@@ -1,4 +1,5 @@
 # ruff: noqa: INP001, T201
+# pyrefly: ignore-errors
 """Native CI checks as a plain Dagger SDK program (no Dagger module).
 
 Run through `ci/run.sh <subcommand>`, which wraps `dagger run python ci/main.py`.
