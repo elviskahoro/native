@@ -1,5 +1,6 @@
 {
   "pythonVersion": "3.11",
+  "exclude": ["ci", "**/node_modules", "**/__pycache__", "**/.*"],
   "venvPath": ".",
   "venv": ".venv",
   "typeCheckingMode": "basic",

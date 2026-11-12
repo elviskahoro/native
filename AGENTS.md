@@ -228,6 +228,11 @@ Location:
 
 ## RWX CI
 
+CI check logic (pyright, pyrefly) lives in `ci/` as a plain Dagger SDK program;
+`.rwx/ci.yml` calls `ci/run.sh`. Locally: `ci/run.sh all` (needs Docker and
+dagger 0.21.8). Dagger cannot run in Conductor cloud sandboxes, so run it
+through RWX there. See `ci/README.md`.
+
 In Conductor workspaces the `rwx` CLI is installed (CI runners such as Pullfrog's do not
 have it, so fall back to the GitHub Actions and Trunk gates there). Tokens are injected as `RWX_ACCESS_TOKEN_<OWNER>`
 or `RWC_ACCESS_TOKEN_<OWNER>`, one per RWX workspace. The CLI reads only
@@ -242,7 +247,7 @@ rwx whoami
 
 Common commands (details in the `rwx` skill):
 
-- `rwx run .rwx/pyright.yml --wait` runs on the working tree, no push needed.
+- `rwx run .rwx/ci.yml --wait` runs on the working tree, no push needed.
 - `rwx results <run-id>` and `rwx logs <task-id>` read failures.
 - `rwx lint .rwx/<name>.yml` validates a config after every edit.
 - `rwx docs search "<query>"` / `rwx docs pull <path>` read RWX docs.
