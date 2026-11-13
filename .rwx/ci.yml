@@ -1,0 +1,79 @@
+# Type checks (pyright + pyrefly) via the Dagger program in ci/. Manual only:
+# no github trigger, so it is not a required status.
+#   rwx run .rwx/ci.yml --wait
+#   rwx run .rwx/ci.yml --wait --init paths="native/foo.py"
+# Local equivalent (Docker + dagger 0.21.8): ci/run.sh all
+# Dagger cannot run in Conductor cloud sandboxes; validate it here.
+on:
+  cli:
+    init:
+      commit-sha: ${{ event.git.sha }}
+      paths: ""
+
+base:
+  image: ubuntu:24.04
+  config: rwx/base 1.2.0
+
+tasks:
+  - key: code
+    call: git/clone 2.2.0
+    with:
+      repository: https://github.com/elviskahoro/native.git
+      ref: ${{ init.commit-sha }}
+
+  # Layer A: everything below uses no checkout, so it cache-hits across commits.
+  - key: uv-install
+    run: |
+      set -euo pipefail
+      script="$(mktemp)"
+      trap 'rm -f "${script}"' EXIT
+      curl -LsSf https://astral.sh/uv/0.11.29/install.sh -o "${script}"
+      echo "504a79fd2ed0dcd47e7f04f0792cfd0871f62e24a7fe40fa8ae0f563a369f2bd  ${script}" | sha256sum -c -
+      sh "${script}"
+      echo "$HOME/.local/bin" >> "$RWX_ENV/PATH"
+
+  - key: dagger-cli-install
+    run: |
+      set -euo pipefail
+      v=0.21.8
+      curl -fsSL "https://github.com/dagger/dagger/releases/download/v${v}/dagger_v${v}_linux_amd64.tar.gz" -o dagger.tgz
+      echo "53e226c7da8fb75171e58c35759d736d961ce8b3a12db0baa7b7107954fccc5a  dagger.tgz" | sha256sum -c -
+      mkdir -p "$HOME/.local/bin"
+      tar -xzf dagger.tgz -C "$HOME/.local/bin" dagger
+      rm dagger.tgz
+      echo "$HOME/.local/bin" >> "$RWX_ENV/PATH"
+      "$HOME/.local/bin/dagger" version
+
+  # Pre-pull the engine image so the check task doesn't pay the cold pull.
+  - key: dagger-engine-warm
+    use: dagger-cli-install
+    docker: preserve-data
+    run: |
+      set -euo pipefail
+      for i in 1 2 3; do
+        docker pull registry.dagger.io/engine:v0.21.8 && exit 0
+        sleep 5
+      done
+      exit 1
+
+  # ci/ Python deps only (filtered to its manifests, no repo checkout).
+  - key: ci-deps
+    use: [uv-install, code]
+    filter:
+      - ci/pyproject.toml
+      - ci/uv.lock
+    run: uv sync --project ci --frozen --no-install-project
+
+  # Layer C: high-churn source lands only here. Runs both checks in parallel
+  # inside Dagger. cache: false because type checks should always re-run.
+  - key: checks
+    use: [code, uv-install, dagger-cli-install, dagger-engine-warm, ci-deps]
+    docker: true
+    cache: false
+    timeout: 30m
+    env:
+      CHECK_PATHS: ${{ init.paths }}
+    run: |
+      set -euo pipefail
+      # shellcheck disable=SC2086
+      ci/run.sh all ${CHECK_PATHS}

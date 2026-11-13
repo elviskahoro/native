@@ -11,8 +11,7 @@ push trigger, so they are not required statuses.
 
 | File | Purpose |
 | --- | --- |
-| `.rwx/pyright.yml` | pyright with a synced venv |
-| `.rwx/pyrefly.yml` | pyrefly with a synced venv |
+| `.rwx/ci.yml` | pyright + pyrefly, run through the Dagger program in `ci/` |
 
 ## Auth: injected tokens, one per RWX workspace
 
@@ -50,11 +49,11 @@ not-found or unauthorized, try the other token. Without any token,
 - `RWX_DISABLE_GIT_PATCH=1` turns patching off.
 
 ```bash
-rwx run .rwx/pyright.yml --wait                    # run, block, print results
-rwx run .rwx/pyright.yml --wait --fail-fast        # stop at first failure
-rwx run .rwx/pyright.yml --target <task-key> --wait  # one task plus its deps
-rwx run .rwx/pyright.yml --title "wip: my change" --json
-rwx run .rwx/pyright.yml --wait --init paths="app/foo.py app/bar.py"
+rwx run .rwx/ci.yml --wait                    # run, block, print results
+rwx run .rwx/ci.yml --wait --fail-fast        # stop at first failure
+rwx run .rwx/ci.yml --target <task-key> --wait  # one task plus its deps
+rwx run .rwx/ci.yml --title "wip: my change" --json
+rwx run .rwx/ci.yml --wait --init paths="app/foo.py app/bar.py"
 ```
 
 Keep the `git/clone` task's `ref: ${{ init.commit-sha }}` and the `cli`
@@ -63,12 +62,12 @@ wiring is what makes the patch apply.
 
 ## Type checking without a local `.venv`
 
-Use `pyright.yml` / `pyrefly.yml` when there is no `.venv` or memory is tight.
+Use `ci.yml` when there is no `.venv` or memory is tight.
 Both accept `paths` (space separated; empty means the whole project).
 
 ```bash
-rwx run .rwx/pyright.yml --wait
-rwx run .rwx/pyrefly.yml --wait --init paths="app/foo.py"
+rwx run .rwx/ci.yml --wait
+rwx run .rwx/ci.yml --wait --init paths="app/foo.py"
 ```
 
 ## Results and logs ("CI failed")
@@ -104,10 +103,10 @@ rwx debug <task-id>             # debug a task; `rwx ssh` attaches to a running 
    versions, and `rwx update` / `rwx resolve` bump or pin base images and
    packages.
 5. Model tasks as a DAG: separate install from checks, and `filter:` install
-   tasks to lockfile inputs (see `pyright.yml`) so caching survives ordinary
+   tasks to lockfile inputs (see `ci.yml`) so caching survives ordinary
    commits. RWX caches by content, so drop GitHub-style cache steps.
 6. If you must download an installer, pin the version and verify its checksum,
-   as `pyright.yml` does for uv.
+   as `ci.yml` does for uv.
 
 ## Migrating a GitHub Actions workflow
 
