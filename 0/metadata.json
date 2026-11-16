@@ -1,0 +1,42 @@
+{
+  "cli_version": "0.12.1",
+  "checkpoint_id": "01M7JB0SH9JFDYR1PGGFACVKCV",
+  "session_id": "490616f0-84e2-4dba-87d8-d4792a6ec14b",
+  "strategy": "manual-commit",
+  "created_at": "2026-11-16T14:08:50.772915907Z",
+  "branch": "w-1372/remove-trunk-merge",
+  "checkpoints_count": 1,
+  "files_touched": [
+    ".github/workflows/impacted-targets.yml",
+    ".github/workflows/tests.yml",
+    ".github/workflows/trunk-check.yml",
+    ".github/workflows/validate-assets.yml",
+    ".trunk/trunk.yaml",
+    "AGENTS.md"
+  ],
+  "agent": "Claude Code",
+  "model": "claude-sonnet-5-5",
+  "turn_id": "e1dd3eb95980",
+  "compact_transcript_start": 0,
+  "token_usage": {
+    "input_tokens": 12,
+    "cache_creation_tokens": 25627,
+    "cache_read_tokens": 173647,
+    "output_tokens": 2358,
+    "api_call_count": 6
+  },
+  "redaction": {
+    "replacements": 4,
+    "layers": {
+      "betterleaks": 0,
+      "connection_string": 0,
+      "credential_key": 0,
+      "credential_value": 3,
+      "credentialed_uri": 0,
+      "entropy": 0,
+      "key_context": 1,
+      "provider_token": 0,
+      "shell_stdin": 0
+    }
+  }
+}
