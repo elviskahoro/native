@@ -1,0 +1,46 @@
+{
+  "cli_version": "0.12.1",
+  "checkpoint_id": "01M7JB5HF6H46F40NJ52E2183B",
+  "session_id": "490616f0-84e2-4dba-87d8-d4792a6ec14b",
+  "strategy": "manual-commit",
+  "created_at": "2026-11-16T14:11:26.337960933Z",
+  "branch": "w-1372/remove-trunk-merge",
+  "checkpoints_count": 1,
+  "files_touched": [
+    ".github/workflows/impacted-targets.yml",
+    ".github/workflows/tests.yml",
+    ".github/workflows/trunk-check.yml",
+    ".github/workflows/validate-assets.yml",
+    ".trunk/trunk.yaml"
+  ],
+  "agent": "Claude Code",
+  "model": "claude-sonnet-5-5",
+  "turn_id": "22c3df751425",
+  "checkpoint_transcript_start": 59,
+  "transcript_lines_at_start": 59,
+  "compact_transcript_start": 8,
+  "token_usage": {
+    "input_tokens": 6,
+    "cache_creation_tokens": 1326,
+    "cache_read_tokens": 79650,
+    "output_tokens": 892,
+    "api_call_count": 2
+  },
+  "redaction": {
+    "replacements": 5,
+    "layers": {
+      "betterleaks": 0,
+      "connection_string": 0,
+      "credential_key": 0,
+      "credential_value": 3,
+      "credentialed_uri": 0,
+      "entropy": 0,
+      "key_context": 2,
+      "provider_token": 0,
+      "shell_stdin": 0
+    }
+  },
+  "session_metrics": {
+    "turn_count": 1
+  }
+}
