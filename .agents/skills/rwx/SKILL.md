@@ -5,8 +5,8 @@ description: Authenticate and use the RWX CLI. Run RWX CI on the working tree (i
 
 # RWX CLI in this repo
 
-CI definitions live in `.rwx/`. Merge gates run in GitHub Actions and the Trunk
-Merge Queue (see `AGENTS.md`). The RWX pipelines are manual only, with no PR or
+CI definitions live in `.rwx/`. Merge gates run in GitHub Actions and the GitHub
+ruleset (see `AGENTS.md`). The RWX pipelines are manual only, with no PR or
 push trigger, so they are not required statuses.
 
 | File | Purpose |
@@ -114,4 +114,4 @@ Upstream skills: https://github.com/rwx-cloud/skills (`migrate-from-gha`,
 `review-gha-migration`). The approach: inventory jobs, `needs:`, secrets and
 env first, translate to a DAG using RWX packages, run `rwx lint`, then review
 the result against the inventory for dropped steps. Do not migrate the
-workflows that gate the merge queue without a request to do so.
+workflows that are required by the GitHub ruleset without a request to do so.
