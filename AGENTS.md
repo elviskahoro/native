@@ -95,45 +95,18 @@ The Native documentation and source code are the source of truth.
 
 ## Landing PRs
 
-PRs land through the Trunk Merge Queue, not the GitHub Merge button.
+PRs land with `gh pr merge <pr-number>` (or the GitHub Merge button) once the
+required checks pass.
 
-- Submit: `trunk merge <pr-number>` (a number, not a URL or branch name).
-- Check once: `trunk merge status <pr-number>`. States: Queued, Testing,
-  Tests Passed, Merged. Report the state and stop. Never poll in a loop.
-- Never use `gh pr merge` or the GitHub Merge button. They bypass the queue.
-- Never use `--force`, `pause` or `resume`.
-- Leave priority at the default (`medium`). `urgent` and `high` are for
-  incidents and need an explicit reason from the user.
-- Failed or PENDING_FAILURE: PENDING_FAILURE may be a flake, so retry once.
-  Failed means push a fix to the PR branch and resubmit. Do not resubmit
-  blindly in a loop.
-- Auth failure: run `trunk login` once and retry.
-- Refuse to queue from main or a protected branch.
-- A `Closes #N` line in the PR body auto-closes the issue when the queue lands
-  the PR. Do not close the issue by hand beforehand.
-
-The queue gates on the statuses in `.trunk/trunk.yaml` →
-`merge.required_statuses` ("Trunk Check", "Unit tests", "Generate & Verify
-Docs and Social Cards", "pullfrog-approval"). The three workflow gates
-trigger on every PR to `main` and on the queue's `trunk-merge/**` test
-branches. `pullfrog-approval` is posted by the Pullfrog App on PRs it
-reviews (the queue's Draft-PR test branches included) and is required by
-both the queue and the GitHub "main - PRs" ruleset. Known risk: it was not
-reliably green on the queue's `trunk-merge/**` test branches (it failed on
-Trunk's test PRs #174 and #185 even though it passed on the PRs themselves,
-which removed #160 and #169 from the queue). Neither the queue
-nor the GitHub "main - PRs" ruleset waits on "Entire Gates": the Entire App
-may not post it on the queue's `trunk-merge/**` test branches (which would
-stall them) and it can be unavailable (e.g. out of credits). Keep the
-ruleset in sync with `merge.required_statuses` (the ruleset pins
-`pullfrog-approval` to the Pullfrog App's integration ID). The
-queue itself is created in the Trunk web app (app.trunk.io); do not attempt
-to configure it from the repo.
-
-During a Pullfrog outage, or if the check is never posted on a queue test
-branch, queued PRs stall. A repo admin can temporarily drop the entry from
-the queue's required statuses in the Trunk web app and from the GitHub
-ruleset (the ruleset has no bypass actors), then restore both afterwards.
+- The GitHub "main - PRs" ruleset requires "Trunk Check", "Unit tests",
+  "Generate & Verify Docs and Social Cards" and "pullfrog-approval" (pinned to
+  the Pullfrog App's integration ID). Wait for them to be green first.
+- Never use `--admin` to bypass the ruleset.
+- Refuse to merge from main or a protected branch.
+- A `Closes #N` line in the PR body auto-closes the issue when the PR merges.
+  Do not close the issue by hand beforehand.
+- The gated workflow and job names are live ruleset status names. After any
+  rename, re-verify with `gh pr checks <pr-number> --json name`.
 
 A red "Entire Gates" check does not block merging — nothing waits on it. To
 clear one anyway, open the trail linked from the check, resolve or fix the
