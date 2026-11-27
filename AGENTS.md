@@ -99,8 +99,8 @@ PRs land with `gh pr merge <pr-number>` (or the GitHub Merge button) once the
 required checks pass.
 
 - The GitHub "main - PRs" ruleset requires "Trunk Check", "Unit tests",
-  "Generate & Verify Docs and Social Cards" and "pullfrog-approval" (pinned to
-  the Pullfrog App's integration ID). Wait for them to be green first.
+  "Generate & Verify Docs and Social Cards" and "RWX: pullfrog-approval" (posted
+  by `.rwx/pullfrog.yml`). Wait for them to be green first.
 - Never use `--admin` to bypass the ruleset.
 - Refuse to merge from main or a protected branch.
 - A `Closes #N` line in the PR body auto-closes the issue when the PR merges.
@@ -225,7 +225,15 @@ Common commands (details in the `rwx` skill):
 - `rwx lint .rwx/<name>.yml` validates a config after every edit.
 - `rwx docs search "<query>"` / `rwx docs pull <path>` read RWX docs.
 
-The `.rwx/` pipelines are manual only and are not merge gates.
+The `.rwx/` pipelines are manual only and are not merge gates, except
+`.rwx/pullfrog.yml` (status `RWX: pullfrog-approval`).
+
+Before pushing, run Roborev (dispatch-only; needs `KILO_API_KEY` in the RWX
+`roborev` vault) and fix its findings:
+
+```bash
+rwx run .rwx/roborev.yml --wait
+```
 
 ## Working With Native
 
