@@ -225,7 +225,15 @@ Common commands (details in the `rwx` skill):
 - `rwx lint .rwx/<name>.yml` validates a config after every edit.
 - `rwx docs search "<query>"` / `rwx docs pull <path>` read RWX docs.
 
-The `.rwx/` pipelines are manual only and are not merge gates.
+The `.rwx/` pipelines are manual only and are not merge gates, except
+`.rwx/pullfrog.yml` (status `pullfrog-approval`) once the ruleset points at it.
+
+Before pushing, run Roborev (dispatch-only; needs `KILO_API_KEY` in the RWX
+`roborev` vault) and fix its findings:
+
+```bash
+rwx run .rwx/roborev.yml --wait
+```
 
 ## Working With Native
 
