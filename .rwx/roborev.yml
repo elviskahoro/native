@@ -23,7 +23,6 @@ tasks:
       submodules: false
       preserve-git-dir: true
       fetch-full-depth: true
-      github-token: ${{ github['elviskahoro'].token }}
 
   - key: node
     call: nodejs/install 1.2.1
@@ -35,7 +34,6 @@ tasks:
     cache: false
     env:
       GITHUB_REPOSITORY: elviskahoro/native
-      GH_TOKEN: ${{ github['elviskahoro'].token }}
       ROBOREV_VERSION: 0.63.0
       PI_VERSION: 1.4.0
       # Kilo settings come from vars in the roborev vault (no repo change to switch model).
@@ -71,9 +69,8 @@ tasks:
           models: [{id: e.KILO_MODEL, name: e.KILO_MODEL, contextWindow: +e.KILO_CONTEXT, maxTokens: +e.KILO_MAX_OUTPUT}]
         }}}, null, 2));
       '
-      # The clone's credentials are not kept, so authenticate the fetch.
-      git -c "http.https://github.com/.extraheader=Authorization: Basic $(printf 'x-access-token:%s' "$GH_TOKEN" | base64 -w0)" \
-        fetch --no-tags origin main:refs/remotes/origin/main
+      # The repo is public, so the fetch needs no credentials.
+      git fetch --no-tags origin main:refs/remotes/origin/main
       # `rwx run` ships local work as a patch on top of the nearest pushed
       # commit, so commit it here or roborev (committed ranges only) sees an
       # empty diff. Merge-base, not origin/main, so a main that moved ahead
