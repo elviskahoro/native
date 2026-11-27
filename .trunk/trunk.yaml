@@ -235,12 +235,6 @@ lint:
       paths:
         - reflex.lock/**
 
-    # Pullfrog manages this workflow file ("DO NOT EDIT"); its workflow_dispatch
-    # inputs are the documented operator interface.
-    - linters: [checkov]
-      paths:
-        - .github/workflows/pullfrog.yml
-
     - linters: [checkov]
       paths:
         - api/specs/caldotcom-*.json
